@@ -3,7 +3,9 @@ language: java
 services:
   - docker
 
+
 deploy:
-  - docker build majortwip/escapeconnect
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker push
+  provider: script
+  script: bash scripts/deploy.sh
+  on:
+    branch: master
