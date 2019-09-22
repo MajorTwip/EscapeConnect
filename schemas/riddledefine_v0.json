@@ -1,0 +1,247 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/MajorTwip/EscapeConnect/schemas/riddledefine_v0.json",
+  "type": "object",
+  "title": "The Root of a Riddle Definition",
+  "description" : "Definitionsdatei zum EscapeConnect",
+  "required": [
+    "definition",
+    "device"
+  ],
+  "properties": {
+    "definition": {
+      "$id": "#/properties/definition",
+      "type": "object",
+      "title": "Eigenschaften der Definitionsdatei",
+      "required": [
+        "name",
+        "version",
+        "author",
+        "contact"
+      ],
+      "properties": {
+        "name": {
+          "$id": "#/properties/definition/properties/name",
+          "type": "string",
+          "title": "Name der Definitionsdatei",
+          "examples": [
+            "Sandriddle"
+          ]
+        },
+        "version": {
+          "$id": "#/properties/definition/properties/version",
+          "type": "string",
+          "title": "Die Version der Definitionsdatei",
+          "examples": [
+            "1.0"
+          ]
+        },
+        "author": {
+          "$id": "#/properties/definition/properties/author",
+          "type": "string",
+          "title": "Author der Definitionsdatei",
+          "examples": [
+            "Max Mustermann"
+          ]
+        },
+        "contact": {
+          "$id": "#/properties/definition/properties/contact",
+          "type": "string",
+          "title": "Kontaktmöglichkeit zum Author. Mail/Tel",
+          "examples": [
+            "max.mustermann@example.ch"
+          ]
+        }
+      }
+    },
+    "device": {
+      "$id": "#/properties/device",
+      "type": "object",
+      "title": "Gerät",
+      "required": [
+        "default_name",
+        "mac"
+      ],
+      "properties": {
+        "default_name": {
+          "$id": "#/properties/device/properties/default_name",
+          "type": "string",
+          "title": "Standardname des Gerätes",
+          "default": "",
+          "examples": [
+            "Sandrätsel 1"
+          ]
+        },
+        "mac": {
+          "$id": "#/properties/device/properties/mac",
+          "type": "string",
+          "title": "MAC-Adresse des Gerätes",
+          "default": "",
+          "examples": [
+            "12:AF:19:CB:43:23"
+          ]
+        },
+        "allows_ota": {
+          "$id": "#/properties/device/properties/allows_ota",
+          "type": "boolean",
+          "title": "OTA-Fähigkeit",
+          "default": false
+        }
+      }
+    },
+    "panel": {
+      "$id": "#/properties/panel",
+      "type": "object",
+      "title": "Definition des Dashboardbanels",
+      "required": [
+        "values",
+        "actions"
+      ],
+      "properties": {
+        "values": {
+          "$id": "#/properties/panel/properties/values",
+          "type": "array",
+          "title": "Werteanzeigen",
+          "items": {
+            "$id": "#/properties/panel/properties/values/items",
+            "type": "object",
+            "title": "Werteanzeige",
+            "required": [
+              "label",
+              "subtopic",
+              "type"
+            ],
+            "properties": {
+              "label": {
+                "$id": "#/properties/panel/properties/values/items/properties/label",
+                "type": "string",
+                "title": "Anzeigename",
+                "default": "",
+                "examples": [
+                  "Sandniveau"
+                ]
+              },
+              "subtopic": {
+                "$id": "#/properties/panel/properties/values/items/properties/subtopic",
+                "type": "string",
+                "title": "MQTT-Topic ohne base und deviceid",
+                "examples": [
+                  "tank/sandlevel"
+                ]
+              },
+              "type": {
+                "$id": "#/properties/panel/properties/values/items/properties/type",
+                "type": "string",
+                "title": "Typ des Anzeigewertes",
+				"description" : "Momentan nur string, zukünftig auch gauge, slider u.Ä",
+				"enum" : ["string"],
+                "examples": [
+                  "string"
+                ]
+              }
+            }
+          }
+        },
+        "actions": {
+          "$id": "#/properties/panel/properties/actions",
+          "type": "array",
+          "title": "Aktionen",
+          "items": {
+            "$id": "#/properties/panel/properties/actions/items",
+            "type": "object",
+            "title": "Aktion",
+            "required": [
+              "label",
+              "subtopic",
+              "payload"
+            ],
+            "properties": {
+              "label": {
+                "$id": "#/properties/panel/properties/actions/items/properties/label",
+                "type": "string",
+                "title": "Anzeigename",
+                "examples": [
+                  "Schlüssel freigeben"
+                ]
+              },
+              "subtopic": {
+                "$id": "#/properties/panel/properties/actions/items/properties/subtopic",
+                "type": "string",
+                "title": "MQTT-Topic ohne base und deviceid",
+                "examples": [
+                  "tank/trap/set"
+                ]
+              },
+              "payload": {
+                "$id": "#/properties/panel/properties/actions/items/properties/payload",
+                "type": "string",
+                "title": "zu veröffentlicher Befehl",
+                "default": "on",
+                "examples": [
+                  "1"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "settings": {
+      "$id": "#/properties/settings",
+      "type": "array",
+      "title": "Einstellungen",
+      "items": {
+        "$id": "#/properties/settings/items",
+        "type": "object",
+        "title": "Einstellung",
+        "required": [
+          "name",
+          "label",
+          "type"
+        ],
+        "properties": {
+          "name": {
+            "$id": "#/properties/settings/items/properties/name",
+            "type": "string",
+            "title": "Einstellungspfad",
+            "default": "",
+            "examples": [
+              "settings/riddleSolution"
+            ]
+          },
+          "label": {
+            "$id": "#/properties/settings/items/properties/label",
+            "type": "string",
+            "title": "Anzeigenamen",
+            "examples": [
+              "Lösungswert"
+            ]
+          },
+          "type": {
+            "$id": "#/properties/settings/items/properties/type",
+            "type": "string",
+            "title": "Typ der Einstellung",
+			"enum" : ["integer","string"]
+          },
+          "min": {
+            "$id": "#/properties/settings/items/properties/min",
+            "type": "integer",
+            "title": "Minimalwert für Integerwerte",
+            "examples": [
+              0
+            ]
+          },
+          "max": {
+            "$id": "#/properties/settings/items/properties/max",
+            "type": "integer",
+            "title": "Maximalwert für Integerwerte",
+            "examples": [
+              1024
+            ]
+          }
+        }
+      }
+    }
+  }
+}
