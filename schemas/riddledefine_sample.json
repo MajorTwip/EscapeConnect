@@ -37,33 +37,33 @@
 		{
 			"name" : "settings/riddleSolution",
 			"label" : "Lösungswert",
-			"type" : "integer",
+			"type" : "long",
 			"min" : 0,
 			"max" : 1024
 		},
 		{
 			"name" : "settings/riddleSolutionPrecision",
 			"label" : "Lösungstoleranz",
-			"type" : "integer",
+			"type" : "long",
 			"min" : 0,
 			"max" : 1024
 		},
 		{
 			"name" : "settings/sensorIntervall",
 			"label" : "Sendeintervall in Sekunden",
-			"type" : "integer",
+			"type" : "long",
 			"min" : 1,
 			"max" : 3600
 		},
 		{
 			"name" : "wifi/ssid",
 			"label" : "WLAN-Name",
-			"type" : "string"
+			"type" : "constchar"
 		},
 		{
 			"name" : "wifi/password",
 			"label" : "WLAN-Passwort",
-			"type" : "string"
+			"type" : "constchar"
 		}
 	]
 }

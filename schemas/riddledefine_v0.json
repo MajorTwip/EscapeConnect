@@ -220,14 +220,15 @@
           },
           "type": {
             "$id": "#/properties/settings/items/properties/type",
+			"description" : "Typ der Einstellung, gemäss HomieESP: https://homieiot.github.io/homie-esp8266/docs/develop-v3/advanced-usage/custom-settings/",
             "type": "string",
             "title": "Typ der Einstellung",
-			"enum" : ["integer","string"]
+			"enum" : ["bool","long","double","constchar"]
           },
           "min": {
             "$id": "#/properties/settings/items/properties/min",
             "type": "integer",
-            "title": "Minimalwert für Integerwerte",
+            "title": "Minimalwert für long/double",
             "examples": [
               0
             ]
@@ -235,9 +236,17 @@
           "max": {
             "$id": "#/properties/settings/items/properties/max",
             "type": "integer",
-            "title": "Maximalwert für Integerwerte",
+            "title": "Maximalwert für long/double",
             "examples": [
               1024
+            ]
+          },
+		  "default": {
+            "$id": "#/properties/settings/items/properties/default",
+            "type": "string",
+            "title": "Defaultwert",
+            "examples": [
+              "510"
             ]
           }
         }
