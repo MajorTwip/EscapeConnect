@@ -1,0 +1,216 @@
+swagger: "2.0"
+info:
+  description: "Dies ist die Dokumentation des REST API des EscapeManager"
+  version: "0.0.1"
+  title: "EscapeManager"
+  contact:
+    email: "yvo.vonkaenel@stidents.ffhs.ch"
+
+host: "EscapeManager.comstock.ch"
+basePath: "/rest"
+tags:
+- name: "panel"
+  description: "Dashboardspezifische Interaktionen"
+- name: "device"
+  description: "Gerätebezogene Interaktionen"
+- name: "action"
+  description: "Eine auszulösende Aktion"
+schemes:
+- "https"
+- "http"
+
+
+paths:
+  /panel/getAll:
+    get:
+      tags:
+      - "panel"
+      summary: "Erhalt einer Liste der konfigurierten panels"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Lister der Panels"
+          schema:
+            type: array
+            items: 
+              $ref: "#/definitions/Panel"
+  /panel/swap:
+    get:
+      tags:
+        - "panel"
+      summary: "tauscht zwei Panele auf dem Dashboard"
+      parameters:
+        - in: query
+          name: pid1
+          required: true
+          type: integer
+          description: "Ein Panel welches mit einem anderen ausgetauscht werden soll"
+        - in: query
+          name: pid2
+          required: true
+          type: integer
+          description: "Das andere Panel"
+      responses:
+        200:
+          description: "Liste der modifizierten Panels"
+          schema:
+            type: array
+            items: 
+              $ref: "#/definitions/Panel"
+        400:
+          description: "Mindestens einer der Parameter war keine gültige PanelID"
+          
+  /device/add:
+    post:
+      tags:
+      - "device"
+      summary: "Hinzufügen eines neuen Gerätes mittels der JSON-Datei des Herstellers"
+      consumes:
+      - "multipart/form-data"
+      parameters:
+      - in: formData
+        type: string
+        name: "name"
+        required: false
+        description: "Name für das Panel"
+      - in: formData
+        type: file
+        name: "file"
+        required: true
+        description: "Datei des Herstellers im JSON-Format"
+      responses:
+        200:
+          description: "Erfolgreich importiert"
+        415:
+          description: "Datei hat unerlaubtes Format"
+        418:
+          description: "Datei konnte nicht gEEparsed werden"
+          
+  /device/upgrade:
+    post:
+      tags:
+      - "device"
+      summary: "Firmwareupgrade eines Gerätes mittels der .bin Datei des Herstellers"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/octet-stream"
+      parameters:
+      - in: query
+        name: deviceid
+        type: integer
+        required: true
+        description: "Id des devices welches upgedatet werden soll"
+      - in: query
+        name: forces
+        type: boolean
+        required: false
+        description: "Muss gesetzt werden, falls Firmware-name alt und neu nicht übereinstimmen"
+      - in: formData
+        type: file
+        name: "firmware"
+        required: true
+        description: "Datei des Herstellers im .bin-Format"
+      responses:
+        200:
+          description: "Erfolgreich update angestossen"
+          schema:
+            type: array
+            items:
+              type: object
+              required: ["status"]
+              properties:
+                status:
+                  type: integer
+                  description: "updatestatus gemäss https://homieiot.github.io/homie-esp8266/docs/develop-v3/others/ota-configuration-updates/"
+                byteswritten:
+                  type: integer
+                bytestotal:
+                  type: integer
+              
+        403:
+          description: "Firmwarenamen alt/neu stimmen nicht überein, forced?"
+        404:
+          description: "DeviceId nicht verfügbar  "
+        415:
+          description: "Datei hat unerlaubtes Format"
+        418:
+          description: "Datei konnte nicht geparsed werden"
+          
+  /action:
+    post:
+      tags:
+      - "action"
+      summary: "löst eine Aktion aus"
+      parameters:
+      - in: query
+        name: "actionId"
+        type: integer
+        required: true
+      responses:
+        200:
+          description: "Ausführung übermittelt"
+        404:
+          description: "AktionsID nicht gefunden"
+        
+      
+  
+  
+
+definitions:
+  Panel:
+    description: "Objekt, welches ein Panel beschreibt"
+    type: "object"
+    required: ["id","title"]
+    properties:
+      id:
+        type: "integer"
+        description: "Die ID des Panels"
+      order:
+        type: "integer"
+        description: "Das wievielte Element dieses Panel im Dashboard sein sollte"
+      title:
+        type: "string"
+        description: "Der angezeigte Titel des Panel, verutlich der Name des Rätsels"
+      status:
+        type: boolean
+        description: "online/offline, online = true"
+      values:
+        type: array
+        items:
+          $ref: "#/definitions/Value"
+      actions:
+        type: array
+        items:
+          $ref: '#/definitions/Action'
+          
+  Value:
+    type: "object"
+    description: "Anzuzeigender Wert"
+    required: ["id","label"]
+    properties:
+      id:
+        type: "integer"
+        description: "id des Anzeigewertes"
+      label:
+        type: "string"
+        description: "Label des Wertes"
+      value:
+        type: "string"
+        description: "Anzeigewert"
+          
+  Action:
+    type: "object"
+    description: "Auslösbare Aktion"
+    required: ["id","label"]
+    properties:
+      id:
+        type: "integer"
+        description: "id der Aktion"
+      label:
+        type: "string"
+        description: "Label der aktion, Beschriftung des Buttons"
+externalDocs:
+  description: "Die ganze Doku wird schlussendlich hier zu finden sein"
+  url: "https://github.com/MajorTwip/EscapeConnect"
