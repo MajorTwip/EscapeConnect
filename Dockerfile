@@ -3,5 +3,8 @@ FROM tomcat:9
 RUN rm -rf /usr/local/tomcat/webapps/*
 COPY ROOT.war /usr/local/tomcat/webapps/
 
+RUN mkdir /usr/local/tomcat/webapps/doc
+COPY swagger-dist/* /usr/local/tomcat/webapps/doc
+
 RUN mkdir /data
 VOLUME /data
