@@ -1,215 +1,442 @@
-swagger: '2.0'
+openapi: 3.0.1
 info:
-  description: Dies ist die Dokumentation des REST API des EscapeManager
-  version: 0.0.1
   title: EscapeManager
+  description: Dies ist die Dokumentation des REST API des EscapeManager
   contact:
     email: yvo.vonkaenel@stidents.ffhs.ch
-host: EscapeManager.comstock.ch
-basePath: /rest
+  version: 0.0.2
+externalDocs:
+  description: Die ganze Doku wird schlussendlich hier zu finden sein
+  url: https://github.com/MajorTwip/EscapeConnect
+servers:
+- url: https://EscapeManager.comstock.ch/rest
+- url: http://EscapeManager.comstock.ch/rest
 tags:
-  - name: panel
-    description: Dashboardspezifische Interaktionen
-  - name: device
-    description: Gerätebezogene Interaktionen
-  - name: action
-    description: Eine auszulösende Aktion
-schemes:
-  - https
-  - http
+- name: panel
+  description: Dashboardspezifische Interaktionen
+- name: device
+  description: Gerätebezogene Interaktionen
+- name: action
+  description: Eine auszulösende Aktion
+- name: admin
+  description: Administration, Login
+- name: setting
+  description: Einstellungen
 paths:
   /panel/getAll:
     get:
       tags:
-        - panel
+      - panel
       summary: Erhalt einer Liste der konfigurierten panels
-      produces:
-        - application/json
       responses:
-        '200':
+        200:
           description: Lister der Panels
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Panel'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Panel'
   /panel/swap:
-    get:
+    post:
       tags:
-        - panel
+      - panel
       summary: tauscht zwei Panele auf dem Dashboard
+      security:
+        - bearerAuth: []
       parameters:
-        - in: query
-          name: pid1
-          required: true
+      - name: pid1
+        in: query
+        description: Ein Panel welches mit einem anderen ausgetauscht werden soll
+        required: true
+        schema:
           type: integer
-          description: Ein Panel welches mit einem anderen ausgetauscht werden soll
-        - in: query
-          name: pid2
-          required: true
+      - name: pid2
+        in: query
+        description: Das andere Panel
+        required: true
+        schema:
           type: integer
-          description: Das andere Panel
       responses:
-        '200':
+        200:
           description: Liste der modifizierten Panels
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Panel'
-        '400':
+          content:
+            application/JSON:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Panel'
+        404:
           description: Mindestens einer der Parameter war keine gültige PanelID
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
   /device/add:
     post:
       tags:
-        - device
+      - device
       summary: Hinzufügen eines neuen Gerätes mittels der JSON-Datei des Herstellers
-      consumes:
-        - multipart/form-data
-      parameters:
-        - in: formData
-          type: string
-          name: name
-          required: false
-          description: Name für das Panel
-        - in: formData
-          type: file
-          name: file
-          required: true
-          description: Datei des Herstellers im JSON-Format
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+              - file
+              properties:
+                name:
+                  type: string
+                  description: Name für das Panel
+                file:
+                  type: string
+                  description: Datei des Herstellers im JSON-Format
+                  format: binary
+        required: true
       responses:
-        '200':
+        200:
           description: Erfolgreich importiert
-        '415':
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        415:
           description: Datei hat unerlaubtes Format
-        '418':
+        418:
           description: Datei konnte nicht gEEparsed werden
   /device/upgrade:
     post:
       tags:
-        - device
+      - device
       summary: Firmwareupgrade eines Gerätes mittels der .bin Datei des Herstellers
-      consumes:
-        - multipart/form-data
-      produces:
-        - application/octet-stream
+      security:
+        - bearerAuth: []     
       parameters:
-        - in: query
-          name: deviceid
+      - name: deviceid
+        in: query
+        description: Id des devices welches upgedatet werden soll
+        required: true
+        schema:
           type: integer
-          required: true
-          description: Id des devices welches upgedatet werden soll
-        - in: query
-          name: forces
+      - name: forces
+        in: query
+        description: Muss gesetzt werden, falls Firmware-name alt und neu nicht übereinstimmen
+        schema:
           type: boolean
-          required: false
-          description: 'Muss gesetzt werden, falls Firmware-name alt und neu nicht übereinstimmen'
-        - in: formData
-          type: file
-          name: firmware
-          required: true
-          description: Datei des Herstellers im .bin-Format
-      responses:
-        '200':
-          description: Erfolgreich update angestossen
-          schema:
-            type: array
-            items:
-              type: object
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
               required:
-                - status
+              - firmware
               properties:
-                status:
-                  type: integer
-                  description: 'updatestatus gemäss https://homieiot.github.io/homie-esp8266/docs/develop-v3/others/ota-configuration-updates/'
-                byteswritten:
-                  type: integer
-                bytestotal:
-                  type: integer
-        '403':
-          description: 'Firmwarenamen alt/neu stimmen nicht überein, forced?'
-        '404':
-          description: 'DeviceId nicht verfügbar  '
-        '415':
+                firmware:
+                  type: string
+                  description: Datei des Herstellers im .bin-Format
+                  format: binary
+        required: true
+      responses:
+        200:
+          description: Erfolgreich update angestossen
+          content:
+            application/octet-stream:
+              schema:
+                type: array
+                items:
+                  required:
+                  - status
+                  type: object
+                  properties:
+                    byteswritten:
+                      type: integer
+                    bytestotal:
+                      type: integer
+                    status:
+                      type: integer
+                      description: updatestatus gemäss https://homieiot.github.io/homie-esp8266/docs/develop-v3/others/ota-configuration-updates/
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Firmwarenamen alt/neu stimmen nicht überein, forced?
+        404:
+          description: DeviceId nicht verfügbar
+        415:
           description: Datei hat unerlaubtes Format
-        '418':
+        418:
           description: Datei konnte nicht geparsed werden
+  /device/delete:
+    post:
+      tags:
+      - device
+      summary: Entfernen eines Gerätes
+      security:
+        - bearerAuth: []
+      parameters:
+      - name: deviceid
+        in: query
+        description: Id des devices welches upgedatet werden soll
+        required: true
+        schema:
+          type: integer
+      - name: forces
+        in: query
+        description: Muss gesetzt werden, zusätzliche Sicherheit
+        schema:
+          type: boolean
+      responses:
+        200:
+          description: Erfolgreich gelöscht
+
   /action:
     post:
       tags:
-        - action
+      - action
       summary: löst eine Aktion aus
       parameters:
-        - in: query
-          name: actionId
+      - name: actionId
+        in: query
+        required: true
+        schema:
           type: integer
-          required: true
       responses:
-        '200':
+        200:
           description: Ausführung übermittelt
-        '404':
+          content: {}
+        404:
           description: AktionsID nicht gefunden
-definitions:
-  Panel:
-    description: 'Objekt, welches ein Panel beschreibt'
-    type: object
-    required:
+          content: {}
+  /admin/login:
+    post:
+      tags:
+      - admin
+      summary: Freischalten der Adminfunktionen
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+              - passhash
+              properties:
+                passhash:
+                  type: string
+                  description: SHA256 Hash des Passwortes
+        required: true
+      responses:
+        200:
+          description: Login erfolgreich
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Token
+        401:
+          description: Passwort falsch
+  /admin/setup:
+    post:
+      tags:
+      - admin
+      summary: Setzen der Einstellungen des Systems
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Setup' 
+      responses:
+        200:
+          description: OK
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        409:
+          description: Eine Einstellung enthielt Ungütligen Wert
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: Name des ugültigen Parameters
+  /setting/get:
+    get:
+      tags:
+      - setting
+      summary: Abfrage der Einstellungen eines Gerätes
+      parameters:
+      - in: query
+        name: deviceId
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Liste der Einstellungen
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Setting' 
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          description: DeviceId nicht verfügbar
+  /setting/set:
+    post:
+      tags:
+      - setting
+      summary: Setzen der Einstellungen eines Gerätes
+      parameters:
+      - in: query
+        name: deviceId
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items: 
+                $ref: '#/components/schemas/SettingMod' 
+      responses:
+        200:
+          description: OK
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          description: DeviceId nicht verfügbar
+        409:
+          description: Eine Einstellung enthielt Ungütligen Wert
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  description: SettingID die missglückten
+components:
+  schemas:
+    Panel:
+      required:
       - id
       - title
-    properties:
-      id:
-        type: integer
-        description: Die ID des Panels
-      order:
-        type: integer
-        description: Das wievielte Element dieses Panel im Dashboard sein sollte
-      title:
-        type: string
-        description: 'Der angezeigte Titel des Panel, verutlich der Name des Rätsels'
-      status:
-        type: boolean
-        description: 'Device online/offline, online = true'
-      setingsenabled:
-        type: boolean
-        description: 'Unterstützt das Device Einstellungsänderungen'      
-      upgradeenabled:
-        type: boolean
-        description: 'Unterstützt das Device OTA-Update'
-      values:
-        type: array
-        items:
-          $ref: '#/definitions/Value'
-      actions:
-        type: array
-        items:
-          $ref: '#/definitions/Action'
-  Value:
-    type: object
-    description: Anzuzeigender Wert
-    required:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Die ID des Panels
+        order:
+          type: integer
+          description: Das wievielte Element dieses Panel im Dashboard sein sollte
+        title:
+          type: string
+          description: Der angezeigte Titel des Panel, verutlich der Name des Rätsels
+        status:
+          type: boolean
+          description: Device online/offline, online = true
+        settingsenabled:
+          type: boolean
+          description: Unterstützt das Device Einstellungsänderungen
+        upgradeenabled:
+          type: boolean
+          description: Unterstützt das Device OTA-Update
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/Value'
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Action'
+      description: Objekt, welches ein Panel beschreibt
+    Value:
+      required:
       - id
       - label
-    properties:
-      id:
-        type: integer
-        description: id des Anzeigewertes
-      label:
-        type: string
-        description: Label des Wertes
-      value:
-        type: string
-        description: Anzeigewert
-  Action:
-    type: object
-    description: Auslösbare Aktion
-    required:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: id des Anzeigewertes
+        label:
+          type: string
+          description: Label des Wertes
+        value:
+          type: string
+          description: Anzeigewert
+      description: Anzuzeigender Wert
+    Action:
+      required:
       - id
       - label
-    properties:
-      id:
-        type: integer
-        description: id der Aktion
-      label:
-        type: string
-        description: 'Label der aktion, Beschriftung des Buttons'
-externalDocs:
-  description: Die ganze Doku wird schlussendlich hier zu finden sein
-  url: 'https://github.com/MajorTwip/EscapeConnect'
+      type: object
+      properties:
+        id:
+          type: integer
+          description: id der Aktion
+        label:
+          type: string
+          description: Label der aktion, Beschriftung des Buttons
+      description: Auslösbare Aktion
+      
+    Setting:
+      type: object
+      required:
+      - id
+      - label
+      - type
+      properties:
+        id:
+          type: integer
+          description: EinstellungsID
+        label:
+          type: string
+          description: Einstellungsanzeigename
+        type:
+          type: string
+          enum: [constchar, bool, long, double]
+          description: typ der Einstellung
+        value:
+          type: string
+          description: Aktueller Wert als String
+        min:
+          type: string
+          description: Minimalwert als String
+        max:
+          type: string
+          description: Maximalwert als String
+    SettingMod:
+      description: Änderungsauftrag einer Einstellung
+      type: object
+      required:
+      - id
+      - value
+      properties:
+        id:
+          type: integer
+          description: EinstellungsID
+        value:
+          type: string
+          description: Neuer Wert als String
+    Setup:
+      description: Installation von EscapeConnect
+      type: object
+      required:
+      - mqtturl
+      properties:
+        mqtturl:
+          type: string
+          description: IP oder FQDN des MQTT-servers
+        mqttuser:
+          type: string
+          description: Benutzername für den MQTT-server. Leer für Anonym
+        mqttpass:
+          type: string
+          description: Passwort für den MQTT-server. Nur mit mqttuser
+        adminpass:
+          type: string
+          description: Passwort ür EscapeConnect, SHA256
+          
+      
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Token
+  responses:
+    UnauthorizedError:
+      description: Token nicht mitgeliefert oder ungültig
