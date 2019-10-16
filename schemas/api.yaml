@@ -3,8 +3,8 @@ info:
   title: EscapeManager
   description: Dies ist die Dokumentation des REST API des EscapeManager
   contact:
-    email: yvo.vonkaenel@stidents.ffhs.ch
-  version: 0.0.2
+    email: yvo.vonkaenel@students.ffhs.ch
+  version: 0.0.3
 externalDocs:
   description: Die ganze Doku wird schlussendlich hier zu finden sein
   url: https://github.com/MajorTwip/EscapeConnect
@@ -25,6 +25,7 @@ tags:
 paths:
   /panel/getAll:
     get:
+      operationId: getPanes
       tags:
       - panel
       summary: Erhalt einer Liste der konfigurierten panels
@@ -39,6 +40,7 @@ paths:
                   $ref: '#/components/schemas/Panel'
   /panel/swap:
     post:
+      operationId: swapPanes
       tags:
       - panel
       summary: tauscht zwei Panele auf dem Dashboard
@@ -72,6 +74,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
   /device/add:
     post:
+      operationId: addDevice
       tags:
       - device
       summary: Hinzufügen eines neuen Gerätes mittels der JSON-Datei des Herstellers
@@ -103,6 +106,7 @@ paths:
           description: Datei konnte nicht gEEparsed werden
   /device/upgrade:
     post:
+      operationId: upgradeFirmware
       tags:
       - device
       summary: Firmwareupgrade eines Gerätes mittels der .bin Datei des Herstellers
@@ -163,6 +167,7 @@ paths:
           description: Datei konnte nicht geparsed werden
   /device/delete:
     post:
+      operationId: deleteDevice
       tags:
       - device
       summary: Entfernen eines Gerätes
@@ -186,6 +191,7 @@ paths:
 
   /action:
     post:
+      operationId: doAction
       tags:
       - action
       summary: löst eine Aktion aus
@@ -204,6 +210,7 @@ paths:
           content: {}
   /admin/login:
     post:
+      operationId: doLogin
       tags:
       - admin
       summary: Freischalten der Adminfunktionen
@@ -230,6 +237,7 @@ paths:
           description: Passwort falsch
   /admin/setup:
     post:
+      operationId: setup
       tags:
       - admin
       summary: Setzen der Einstellungen des Systems
@@ -254,6 +262,7 @@ paths:
                   description: Name des ugültigen Parameters
   /setting/get:
     get:
+      operationId: getSettingsByDeviceId
       tags:
       - setting
       summary: Abfrage der Einstellungen eines Gerätes
@@ -277,6 +286,7 @@ paths:
           description: DeviceId nicht verfügbar
   /setting/set:
     post:
+      operationId: setSetting
       tags:
       - setting
       summary: Setzen der Einstellungen eines Gerätes
