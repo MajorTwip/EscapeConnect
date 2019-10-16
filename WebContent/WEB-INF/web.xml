@@ -16,6 +16,10 @@
              <param-name>jersey.config.server.provider.packages</param-name>
              <param-value>ch.ffhs.pa5.escapeconnect.api</param-value>
         </init-param>
+        <init-param>
+             <param-name>javax.ws.rs.Application</param-name>
+             <param-value>ch.ffhs.pa5.escapeconnect.EscapeConnect</param-value>
+        </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>

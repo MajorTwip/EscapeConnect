@@ -10,7 +10,7 @@ public class PanelAPIimplement implements PanelApiService {
 	@Override
 	public Response getPanes(SecurityContext securityContext) {
 		// TODO Auto-generated method stub
-		return null;
+		return Response.status(Response.Status.OK).entity("TEST").build();
 	}
 
 	@Override
