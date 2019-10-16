@@ -1,6 +1,5 @@
 package ch.ffhs.pa5.escapeconnect.api;
 
-import ch.ffhs.pa5.escapeconnect.bean.*;
 import ch.ffhs.pa5.escapeconnect.api.SettingApiService;
 
 import io.swagger.annotations.ApiParam;
@@ -9,20 +8,12 @@ import ch.ffhs.pa5.escapeconnect.bean.Setting;
 import ch.ffhs.pa5.escapeconnect.bean.SettingMod;
 
 
-import java.util.Map;
 import java.util.List;
-
-import java.io.InputStream;
-
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.*;
-
-import javax.validation.constraints.*;
 
 
 @Path("/setting")

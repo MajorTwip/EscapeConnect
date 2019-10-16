@@ -1,20 +1,7 @@
 package ch.ffhs.pa5.escapeconnect.api;
 
-import ch.ffhs.pa5.escapeconnect.api.*;
-import ch.ffhs.pa5.escapeconnect.bean.*;
-
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
 import ch.ffhs.pa5.escapeconnect.bean.Body;
 import ch.ffhs.pa5.escapeconnect.bean.Body1;
-import ch.ffhs.pa5.escapeconnect.bean.InlineResponse200;
-
-
-import java.util.Map;
-import java.util.List;
-
-import java.io.InputStream;
-
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 

@@ -6,9 +6,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 
 
-import com.fasterxml.jackson.datatype.joda.*;
-
-
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
 import javax.ws.rs.Produces;
@@ -26,7 +23,6 @@ public class JacksonJsonProvider extends JacksonJaxbJsonProvider {
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 
 
-            .registerModule(new JodaModule())
 
             .setDateFormat(new RFC3339DateFormat());
 
