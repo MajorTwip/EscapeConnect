@@ -1,6 +1,4 @@
 language: java
-jdk:
-  - oraclejdk11
 
 services:
   - docker
