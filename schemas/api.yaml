@@ -9,8 +9,8 @@ externalDocs:
   description: Die ganze Doku wird schlussendlich hier zu finden sein
   url: https://github.com/MajorTwip/EscapeConnect
 servers:
-- url: https://EscapeManager.comstock.ch/rest
-- url: http://EscapeManager.comstock.ch/rest
+- url: https://EscapeConnect.comstock.ch/rest
+- url: http://EscapeConnect.comstock.ch/rest
 tags:
 - name: panel
   description: Dashboardspezifische Interaktionen
