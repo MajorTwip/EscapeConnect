@@ -45,6 +45,7 @@ public class DBAdapter {
 				"  \"mqttuser\" VARCHAR(45)," +
 				"  \"mqttpass\" VARCHAR(45)" +
 				");" +
+				"INSERT INTO ecsettings VALUES(\"1234\");" +
 				"CREATE TABLE IF NOT EXISTS \"firmware\"(" +
 				"  \"id\" INTEGER PRIMARY KEY NOT NULL," +
 				"  \"label\" VARCHAR(45) NOT NULL," +
