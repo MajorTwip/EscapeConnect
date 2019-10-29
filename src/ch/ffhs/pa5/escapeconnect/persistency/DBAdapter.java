@@ -125,10 +125,10 @@ public class DBAdapter {
 
 					stmt.executeUpdate(query);
 				} catch (SQLException e) {
-					e.printStackTrace();
+					throw new WebApplicationException(e.getMessage());
 				}
 		} catch (NamingException e1) {
-			e1.printStackTrace();
+			throw new WebApplicationException(e1.getMessage());
 		}
 		
 	}
