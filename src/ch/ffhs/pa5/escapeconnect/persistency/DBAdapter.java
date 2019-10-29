@@ -22,4 +22,9 @@ public class DBAdapter {
 			throw new WebApplicationException(e.getMessage());
 		}		
 	}
+
+	public static void createDBifNone() {
+		// TODO Auto-generated method stub
+		
+	}
 }
