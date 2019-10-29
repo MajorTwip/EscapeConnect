@@ -1,6 +1,9 @@
 package ch.ffhs.pa5.escapeconnect.persistency;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -30,10 +33,13 @@ public class DBAdapter {
 			Context ctx = new InitialContext();
 			DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/escapeconnect");
 			try (Connection con = ds.getConnection();
-					Statement stmt = con.createStatement()){
-
-
-
+				Statement stmt = con.createStatement()){
+				
+				DatabaseMetaData md = con.getMetaData();
+		        ResultSet rs = md.getTables(null, null, "ecsettings", null);
+		        if(rs.next()) return; //If table allready exists, stop creation
+		        
+		        
 				 // BuildMyString.com generated code. Please enjoy your string responsibly.
 
 				String query = 
@@ -45,7 +51,7 @@ public class DBAdapter {
 				"  \"mqttuser\" VARCHAR(45)," +
 				"  \"mqttpass\" VARCHAR(45)" +
 				");" +
-				"INSERT INTO ecsettings VALUES(\"1234\");" +
+				"INSERT INTO ecsettings (adminpass,mqtturl) VALUES(\"1234\",\"mqtt.comstock,ch\");" +
 				"CREATE TABLE IF NOT EXISTS \"firmware\"(" +
 				"  \"id\" INTEGER PRIMARY KEY NOT NULL," +
 				"  \"label\" VARCHAR(45) NOT NULL," +
@@ -125,10 +131,14 @@ public class DBAdapter {
 
 
 					stmt.executeUpdate(query);
+					con.close();
+					stmt.close();
 				} catch (SQLException e) {
+					e.printStackTrace();
 					throw new WebApplicationException(e.getMessage());
 				}
 		} catch (NamingException e1) {
+			e1.printStackTrace();
 			throw new WebApplicationException(e1.getMessage());
 		}
 		

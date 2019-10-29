@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import javax.ws.rs.WebApplicationException;
+
 import ch.ffhs.pa5.escapeconnect.bean.EcSettings;
 
 public class DAOecsettings{
@@ -28,8 +30,14 @@ public class DAOecsettings{
 			pstm.setString(4, settings.getMqttName());
 			pstm.setString(5, settings.getMqttPass());
 			pstm.execute();
+			pstm.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+		try {
+			con.close();
+		} catch (SQLException e) {
+			throw new WebApplicationException(e.getMessage());
 		}
 		
 	}
