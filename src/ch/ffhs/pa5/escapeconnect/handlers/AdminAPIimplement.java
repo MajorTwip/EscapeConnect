@@ -1,5 +1,6 @@
 package ch.ffhs.pa5.escapeconnect.handlers;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
@@ -20,6 +21,9 @@ public class AdminAPIimplement implements AdminApiService {
 
 	@Override
 	public Response setup(Setup body, SecurityContext securityContext) {
+		if(body==null) {
+			return Response.status(Response.Status.CONFLICT).entity("No information in Body. Please read API-Docs").build();
+		}
 		System.out.println(String.format("Got setup-request:\nPassword: %s\nMQTT-URL: %s\nName:pass:%s%s",body.getAdminpass(),body.getMqtturl(),body.getMqttuser(),body.getMqttpass()));
 		
 		//If Databasefile is not allready created, do so
@@ -27,7 +31,7 @@ public class AdminAPIimplement implements AdminApiService {
 		
 		//Read given settings and write them to DB
 		EcSettings settings = new EcSettings(body.getAdminpass(),body.getMqtturl());
-		if(!body.getMqttuser().isBlank()&&!body.getMqttpass().isBlank()) {
+		if(body.getMqttuser()!=null&&body.getMqttpass()!=null) {
 			settings.setMqttName(body.getMqttuser());
 			settings.setMqttPass(body.getMqttpass());
 		}
