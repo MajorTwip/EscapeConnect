@@ -4,8 +4,8 @@ import ch.ffhs.pa5.escapeconnect.api.DeviceApiService;
 
 import io.swagger.annotations.ApiParam;
 
-import ch.ffhs.pa5.escapeconnect.bean.Body;
-import ch.ffhs.pa5.escapeconnect.bean.Body1;
+import ch.ffhs.pa5.escapeconnect.bean.AddDeviceBody;
+import ch.ffhs.pa5.escapeconnect.bean.UpdateDeviceBody;
 import ch.ffhs.pa5.escapeconnect.bean.InlineResponse200;
 
 
@@ -47,10 +47,10 @@ public class DeviceApi  {
         @io.swagger.annotations.ApiResponse(code = 415, message = "Datei hat unerlaubtes Format", response = Void.class),
         
         @io.swagger.annotations.ApiResponse(code = 418, message = "Datei konnte nicht gEEparsed werden", response = Void.class) })
-    public Response addDevice(@ApiParam(value = "" ,required=true) Body body
+    public Response addDevice(@ApiParam(value = "" ,required=true) AddDeviceBody addDeviceBody
 ,@Context SecurityContext securityContext)
     throws NotFoundException {
-        return delegate.addDevice(body,securityContext);
+        return delegate.addDevice(addDeviceBody,securityContext);
     }
 
     @POST
@@ -84,7 +84,7 @@ public class DeviceApi  {
         @io.swagger.annotations.ApiResponse(code = 415, message = "Datei hat unerlaubtes Format", response = Void.class),
         
         @io.swagger.annotations.ApiResponse(code = 418, message = "Datei konnte nicht geparsed werden", response = Void.class) })
-    public Response upgradeFirmware(@ApiParam(value = "" ,required=true) Body1 body
+    public Response upgradeFirmware(@ApiParam(value = "" ,required=true) UpdateDeviceBody body
 ,@ApiParam(value = "Id des devices welches upgedatet werden soll",required=true) @QueryParam("deviceid") Integer deviceid
 ,@ApiParam(value = "Muss gesetzt werden, falls Firmware-name alt und neu nicht übereinstimmen") @QueryParam("forces") Boolean forces
 ,@Context SecurityContext securityContext)

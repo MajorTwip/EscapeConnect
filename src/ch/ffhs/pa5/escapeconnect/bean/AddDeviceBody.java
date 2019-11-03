@@ -33,7 +33,7 @@ import javax.validation.constraints.*;
  * Body
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaJerseyDIServerCodegen", date = "2019-10-16T16:22:47.544870800+02:00[Europe/Berlin]")
-public class Body   {
+public class AddDeviceBody   {
   
     
       
@@ -61,7 +61,7 @@ public class Body   {
   
   
   
-  public Body name(String name) {
+  public AddDeviceBody name(String name) {
     this.name = name;
     return this;
   }
@@ -96,7 +96,7 @@ public class Body   {
 
   
   
-  public Body file(byte[] file) {
+  public AddDeviceBody file(byte[] file) {
     this.file = file;
     return this;
   }
@@ -142,9 +142,9 @@ public class Body   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Body body = (Body) o;
-    return Objects.equals(this.name, body.name) &&
-        Objects.equals(this.file, body.file);
+    AddDeviceBody addDeviceBody = (AddDeviceBody) o;
+    return Objects.equals(this.name, addDeviceBody.name) &&
+        Objects.equals(this.file, addDeviceBody.file);
   }
 
   @Override

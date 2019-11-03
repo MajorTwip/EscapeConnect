@@ -5,13 +5,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 import ch.ffhs.pa5.escapeconnect.api.DeviceApiService;
-import ch.ffhs.pa5.escapeconnect.bean.Body;
-import ch.ffhs.pa5.escapeconnect.bean.Body1;
+import ch.ffhs.pa5.escapeconnect.bean.AddDeviceBody;
+import ch.ffhs.pa5.escapeconnect.bean.UpdateDeviceBody;
 
 public class DeviceAPIimplement implements DeviceApiService {
 
 	@Override
-	public Response addDevice(Body body, SecurityContext securityContext) {
+	public Response addDevice(AddDeviceBody addDeviceBody, SecurityContext securityContext) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -23,7 +23,7 @@ public class DeviceAPIimplement implements DeviceApiService {
 	}
 
 	@Override
-	public Response upgradeFirmware(Body1 body, @NotNull Integer deviceid, Boolean forces,
+	public Response upgradeFirmware(UpdateDeviceBody body, @NotNull Integer deviceid, Boolean forces,
 			SecurityContext securityContext) {
 		// TODO Auto-generated method stub
 		return null;
