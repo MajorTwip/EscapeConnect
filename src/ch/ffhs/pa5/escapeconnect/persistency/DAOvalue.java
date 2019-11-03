@@ -6,20 +6,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.ws.rs.WebApplicationException;
 
-import ch.ffhs.pa5.escapeconnect.bean.PanelDAOBean;
+import ch.ffhs.pa5.escapeconnect.bean.ValueDAOBean;
 
-public class DAOpanel {
-	public static int write(PanelDAOBean panel) {
+public class DAOvalue {
+	public static int write(ValueDAOBean value) {
 		
 		String query = "";
 		
-		if(panel.getId()<1) {
-			query = "INSERT INTO panel (name,device_mac) VALUES(?,?)";
+		if(value.getId()<1) {
+			query = "INSERT INTO value (panel_id,label,topic,type) VALUES(?,?,?,?)";
 			
 			try (Connection con = DBAdapter.getConnection();
 					PreparedStatement pstm = con.prepareStatement(query);){
-				pstm.setString(1, panel.getName());				
-				pstm.setString(2, panel.getDevice_mac());
+				pstm.setInt(1, value.getPanel_id());				
+				pstm.setString(2, value.getLabel());				
+				pstm.setString(3, value.getSubtopic());				
+				pstm.setString(4, value.getType());
 				
 				int rowsAffected = pstm.executeUpdate();
 				if(rowsAffected==1) {
@@ -34,13 +36,15 @@ public class DAOpanel {
 				throw new WebApplicationException(e.getMessage());
 			}
 		}else {
-			query = "UPDATE panel SET name = ?, device_mac = ? WHERE id = ?";
+			query = "UPDATE value SET panel_id = ?,label = ?,topic = ?,type = ? WHERE id = ?";
 			
 			try (Connection con = DBAdapter.getConnection();
 					PreparedStatement pstm = con.prepareStatement(query);){
-				pstm.setString(1, panel.getName());				
-				pstm.setString(2, panel.getDevice_mac());
-				pstm.setInt(3, panel.getId());
+				pstm.setInt(1, value.getPanel_id());				
+				pstm.setString(2, value.getLabel());				
+				pstm.setString(3, value.getSubtopic());				
+				pstm.setString(4, value.getType());
+				pstm.setInt(5, value.getId());
 				pstm.executeUpdate();
 				pstm.close();
 			} catch (SQLException e) {

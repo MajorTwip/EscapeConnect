@@ -2,7 +2,6 @@ package ch.ffhs.pa5.escapeconnect.persistency;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -12,7 +11,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import javax.ws.rs.WebApplicationException;
-import javax.xml.crypto.Data;
 
 public class DBAdapter {
 
@@ -89,6 +87,7 @@ public class DBAdapter {
 				"  \"panel_id\" INTEGER," +
 				"  \"label\" VARCHAR(45) NOT NULL," +
 				"  \"topic\" VARCHAR(45) NOT NULL," +
+				"  \"type\" VARCHAR(45) NOT NULL," +				
 				"  CONSTRAINT \"value_panel_id\"" +
 				"    FOREIGN KEY(\"panel_id\")" +
 				"    REFERENCES \"panel\"(\"id\")" +
