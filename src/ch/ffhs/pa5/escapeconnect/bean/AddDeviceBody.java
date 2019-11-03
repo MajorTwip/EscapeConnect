@@ -119,7 +119,7 @@ public class AddDeviceBody   {
   
   @ApiModelProperty(required = true, value = "Datei des Herstellers im JSON-Format")
 
-  @NotNull
+  //@NotNull
 
   public byte[] getFile() {
     return file;

@@ -19,7 +19,7 @@ public class DAOecsettings{
 		
 		String query = "UPDATE ecsettings SET adminpass = ?, mqtturl = ?, mqttport = ?, mqttuser = ?, mqttpass = ?";
 		
-		Connection con = DBAdapter.getConnectio();
+		Connection con = DBAdapter.getConnection();
 		try (PreparedStatement pstm = con.prepareStatement(query);){
 			pstm.setString(1, settings.getPassword());
 			String mqtturl[] = settings.getMqttUrl().split(":");

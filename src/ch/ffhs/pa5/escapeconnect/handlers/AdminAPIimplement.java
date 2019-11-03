@@ -24,7 +24,7 @@ public class AdminAPIimplement implements AdminApiService {
 		if(body==null) {
 			return Response.status(Response.Status.CONFLICT).entity("No information in Body. Please read API-Docs").build();
 		}
-		System.out.println(String.format("Got setup-request:\nPassword: %s\nMQTT-URL: %s\nName:pass:%s%s",body.getAdminpass(),body.getMqtturl(),body.getMqttuser(),body.getMqttpass()));
+		System.out.println(String.format("Got setup-request:\nPassword:  %s\nMQTT-URL:  %s\nName:pass:  %s:%s",body.getAdminpass(),body.getMqtturl(),body.getMqttuser(),body.getMqttpass()));
 		
 		//If Databasefile is not allready created, do so
 		DBAdapter.createDBifNone();

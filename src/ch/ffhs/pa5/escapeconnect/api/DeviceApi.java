@@ -12,6 +12,13 @@ import ch.ffhs.pa5.escapeconnect.bean.InlineResponse200;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.Response.Status;
+
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
+import java.io.IOException;
+import java.io.InputStream;
+
 import javax.ws.rs.*;
 
 
@@ -47,9 +54,19 @@ public class DeviceApi  {
         @io.swagger.annotations.ApiResponse(code = 415, message = "Datei hat unerlaubtes Format", response = Void.class),
         
         @io.swagger.annotations.ApiResponse(code = 418, message = "Datei konnte nicht gEEparsed werden", response = Void.class) })
-    public Response addDevice(@ApiParam(value = "" ,required=true) AddDeviceBody addDeviceBody
-,@Context SecurityContext securityContext)
+    public Response addDevice(@FormDataParam("file") InputStream file, @FormDataParam("name") String name,@Context SecurityContext securityContext)
     throws NotFoundException {
+    	AddDeviceBody addDeviceBody = new AddDeviceBody();
+    	if(name!=null&&!name.isBlank()) addDeviceBody.setName(name);
+    	if(file!=null) {
+    		try {
+				addDeviceBody.setFile(file.readAllBytes());
+				file.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error receiving File").build();
+			}
+    	}
         return delegate.addDevice(addDeviceBody,securityContext);
     }
 
