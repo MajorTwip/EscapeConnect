@@ -2,7 +2,6 @@ package ch.ffhs.pa5.escapeconnect.persistency;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -12,11 +11,10 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import javax.ws.rs.WebApplicationException;
-import javax.xml.crypto.Data;
 
 public class DBAdapter {
 
-	public static Connection getConnectio() throws WebApplicationException {
+	public static Connection getConnection() throws WebApplicationException {
 		try {
 			Context ctx = new InitialContext();
 			DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/escapeconnect");
@@ -60,12 +58,11 @@ public class DBAdapter {
 				"  \"file\" BLOB NOT NULL" +
 				");" +
 				"CREATE TABLE IF NOT EXISTS \"device\"(" +
-				"  \"id\" INTEGER PRIMARY KEY NOT NULL," +
 				"  \"name\" VARCHAR(45) NOT NULL," +
-				"  \"mac\" VARCHAR(12) NOT NULL," +
-				"  \"basetopic\" VARCHAR(45) NOT NULL," +
-				"  \"deviceid\" VARCHAR(45) NOT NULL," +
-				"  \"supportsOTA\" INTEGER NOT NULL DEFAULT 0," +
+				"  \"mac\" VARCHAR(12) PRIMARY KEY NOT NULL," +
+				"  \"basetopic\" VARCHAR(45)," +
+				"  \"deviceid\" VARCHAR(45)," +
+				"  \"supportsOTA\" INTEGER DEFAULT 0," +
 				"  \"firmware_id\" INTEGER," +
 				"  CONSTRAINT \"device_firmware_id\"" +
 				"    FOREIGN KEY(\"firmware_id\")" +
@@ -76,20 +73,21 @@ public class DBAdapter {
 				"CREATE INDEX IF NOT EXISTS \"device.device_firmware_id_idx\" ON \"device\" (\"firmware_id\");" +
 				"CREATE TABLE IF NOT EXISTS \"panel\"(" +
 				"  \"id\" INTEGER PRIMARY KEY NOT NULL," +
-				"  \"device_id\" INTEGER," +
+				"  \"device_mac\" VARCHAR(12)," +
 				"  \"name\" VARCHAR(45)," +
-				"  CONSTRAINT \"device_id\"" +
-				"    FOREIGN KEY(\"device_id\")" +
-				"    REFERENCES \"device\"(\"id\")" +
+				"  CONSTRAINT \"device_mac\"" +
+				"    FOREIGN KEY(\"device_mac\")" +
+				"    REFERENCES \"device\"(\"mac\")" +
 				"    ON DELETE CASCADE" +
 				"    ON UPDATE CASCADE" +
 				");" +
-				"CREATE INDEX IF NOT EXISTS \"panel.device_id_idx\" ON \"panel\" (\"device_id\");" +
+				"CREATE INDEX IF NOT EXISTS \"panel.device_id_idx\" ON \"panel\" (\"device_mac\");" +
 				"CREATE TABLE IF NOT EXISTS \"value\"(" +
 				"  \"id\" INTEGER PRIMARY KEY NOT NULL," +
 				"  \"panel_id\" INTEGER," +
 				"  \"label\" VARCHAR(45) NOT NULL," +
 				"  \"topic\" VARCHAR(45) NOT NULL," +
+				"  \"type\" VARCHAR(45) NOT NULL," +				
 				"  CONSTRAINT \"value_panel_id\"" +
 				"    FOREIGN KEY(\"panel_id\")" +
 				"    REFERENCES \"panel\"(\"id\")" +
@@ -112,7 +110,7 @@ public class DBAdapter {
 				"CREATE INDEX IF NOT EXISTS \"action.action_panel_id_idx\" ON \"action\" (\"panel_id\");" +
 				"CREATE TABLE IF NOT EXISTS \"setting\"(" +
 				"  \"id\" INTEGER PRIMARY KEY NOT NULL," +
-				"  \"device_id\" INTEGER NOT NULL," +
+				"  \"device_mac\" VARCHAR(12) NOT NULL," +
 				"  \"panel_id\" INTEGER," +
 				"  \"label\" VARCHAR(45) NOT NULL," +
 				"  \"value\" VARCHAR(45)," +
@@ -120,13 +118,12 @@ public class DBAdapter {
 				"  \"type\" VARCHAR(45) NOT NULL," +
 				"  \"min\" FLOAT," +
 				"  \"max\" FLOAT," +
-				"  CONSTRAINT \"setting_device_id\"" +
-				"    FOREIGN KEY(\"device_id\")" +
-				"    REFERENCES \"device\"(\"id\")" +
+				"  CONSTRAINT \"setting_device_mac\"" +
+				"    FOREIGN KEY(\"device_mac\")" +
+				"    REFERENCES \"device\"(\"mac\")" +
 				"    ON DELETE CASCADE" +
 				"    ON UPDATE CASCADE" +
 				");" +
-				"CREATE INDEX IF NOT EXISTS \"setting.setting_device_id_idx\" ON \"setting\" (\"device_id\");" +
 				"COMMIT;";
 
 

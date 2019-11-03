@@ -1,7 +1,7 @@
 package ch.ffhs.pa5.escapeconnect.api;
 
-import ch.ffhs.pa5.escapeconnect.bean.Body;
-import ch.ffhs.pa5.escapeconnect.bean.Body1;
+import ch.ffhs.pa5.escapeconnect.bean.AddDeviceBody;
+import ch.ffhs.pa5.escapeconnect.bean.UpdateDeviceBody;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
@@ -11,11 +11,11 @@ import javax.validation.constraints.*;
 
 public interface DeviceApiService {
     
-    public Response addDevice(Body body,SecurityContext securityContext);
+    public Response addDevice(AddDeviceBody addDeviceBody,SecurityContext securityContext);
     
     public Response deleteDevice( @NotNull Integer deviceid, Boolean forces,SecurityContext securityContext);
     
-    public Response upgradeFirmware(Body1 body, @NotNull Integer deviceid, Boolean forces,SecurityContext securityContext);
+    public Response upgradeFirmware(UpdateDeviceBody body, @NotNull Integer deviceid, Boolean forces,SecurityContext securityContext);
     
 }
 

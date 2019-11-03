@@ -4,14 +4,21 @@ import ch.ffhs.pa5.escapeconnect.api.DeviceApiService;
 
 import io.swagger.annotations.ApiParam;
 
-import ch.ffhs.pa5.escapeconnect.bean.Body;
-import ch.ffhs.pa5.escapeconnect.bean.Body1;
+import ch.ffhs.pa5.escapeconnect.bean.AddDeviceBody;
+import ch.ffhs.pa5.escapeconnect.bean.UpdateDeviceBody;
 import ch.ffhs.pa5.escapeconnect.bean.InlineResponse200;
 
 
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.Response.Status;
+
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
+import java.io.IOException;
+import java.io.InputStream;
+
 import javax.ws.rs.*;
 
 
@@ -47,10 +54,20 @@ public class DeviceApi  {
         @io.swagger.annotations.ApiResponse(code = 415, message = "Datei hat unerlaubtes Format", response = Void.class),
         
         @io.swagger.annotations.ApiResponse(code = 418, message = "Datei konnte nicht gEEparsed werden", response = Void.class) })
-    public Response addDevice(@ApiParam(value = "" ,required=true) Body body
-,@Context SecurityContext securityContext)
+    public Response addDevice(@FormDataParam("file") InputStream file, @FormDataParam("name") String name,@Context SecurityContext securityContext)
     throws NotFoundException {
-        return delegate.addDevice(body,securityContext);
+    	AddDeviceBody addDeviceBody = new AddDeviceBody();
+    	if(name!=null&&!name.isBlank()) addDeviceBody.setName(name);
+    	if(file!=null) {
+    		try {
+				addDeviceBody.setFile(file.readAllBytes());
+				file.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error receiving File").build();
+			}
+    	}
+        return delegate.addDevice(addDeviceBody,securityContext);
     }
 
     @POST
@@ -84,7 +101,7 @@ public class DeviceApi  {
         @io.swagger.annotations.ApiResponse(code = 415, message = "Datei hat unerlaubtes Format", response = Void.class),
         
         @io.swagger.annotations.ApiResponse(code = 418, message = "Datei konnte nicht geparsed werden", response = Void.class) })
-    public Response upgradeFirmware(@ApiParam(value = "" ,required=true) Body1 body
+    public Response upgradeFirmware(@ApiParam(value = "" ,required=true) UpdateDeviceBody body
 ,@ApiParam(value = "Id des devices welches upgedatet werden soll",required=true) @QueryParam("deviceid") Integer deviceid
 ,@ApiParam(value = "Muss gesetzt werden, falls Firmware-name alt und neu nicht übereinstimmen") @QueryParam("forces") Boolean forces
 ,@Context SecurityContext securityContext)

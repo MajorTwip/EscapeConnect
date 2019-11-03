@@ -33,7 +33,7 @@ import javax.validation.constraints.*;
  * Body1
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaJerseyDIServerCodegen", date = "2019-10-16T16:22:47.544870800+02:00[Europe/Berlin]")
-public class Body1   {
+public class UpdateDeviceBody   {
   
     
       
@@ -49,7 +49,7 @@ public class Body1   {
   
   
   
-  public Body1 firmware(byte[] firmware) {
+  public UpdateDeviceBody firmware(byte[] firmware) {
     this.firmware = firmware;
     return this;
   }
@@ -95,8 +95,8 @@ public class Body1   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Body1 body1 = (Body1) o;
-    return Objects.equals(this.firmware, body1.firmware);
+    UpdateDeviceBody updateDeviceBody = (UpdateDeviceBody) o;
+    return Objects.equals(this.firmware, updateDeviceBody.firmware);
   }
 
   @Override
