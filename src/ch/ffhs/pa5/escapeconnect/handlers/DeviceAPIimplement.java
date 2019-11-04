@@ -23,6 +23,7 @@ import ch.ffhs.pa5.escapeconnect.persistency.DAOdevice;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOpanel;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOsettings;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOvalue;
+import ch.ffhs.pa5.escapeconnect.utils.MACformating;
 
 public class DeviceAPIimplement implements DeviceApiService {
 
@@ -43,10 +44,10 @@ public class DeviceAPIimplement implements DeviceApiService {
 			//lade "device" aus dem JSON-File und transformiere dieses in ein Bean für die DAO-Methoden
 			JsonNode devicejson = root.path("device");
 			DeviceDAOBean device = objectMapper.treeToValue(devicejson, DeviceDAOBean.class);
-			System.out.println("creating Device with MAC: " + device.getMac());
 			
 			//schreibe Device in DB
 			DAOdevice.write(device);
+			System.out.println("creating Device with MAC: " + device.getMac());
 			
 			//Lade Panel aus dem JSON 
 			JsonNode paneljson = root.path("panel");
@@ -100,15 +101,18 @@ public class DeviceAPIimplement implements DeviceApiService {
 			e1.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();	
 		}
-		
-		
-		return Response.status(Response.Status.OK).entity(addDeviceBody.getFile()).build();
+		return Response.status(Response.Status.OK).build();
 	}
 
 	@Override
-	public Response deleteDevice(@NotNull Integer deviceid, Boolean forces, SecurityContext securityContext) {
-		// TODO Auto-generated method stub
-		return null;
+	public Response deleteDevice(@NotNull String devicemac, Boolean forces, SecurityContext securityContext) {
+		if(forces==null||!forces) {
+			return Response.status(Response.Status.EXPECTATION_FAILED).entity("forced must be set").build();
+		}
+		String mac = MACformating.sanitizeMAC(devicemac);
+		System.out.println("Deleting device: " + mac);
+		DAOdevice.delete(mac);
+		return Response.status(Response.Status.OK).build();
 	}
 
 	@Override
