@@ -4,7 +4,7 @@ info:
   description: Dies ist die Dokumentation des REST API des EscapeManager
   contact:
     email: yvo.vonkaenel@students.ffhs.ch
-  version: 0.0.3
+  version: 0.0.4
 externalDocs:
   description: Die ganze Doku wird schlussendlich hier zu finden sein
   url: https://github.com/MajorTwip/EscapeConnect
@@ -103,7 +103,7 @@ paths:
         415:
           description: Datei hat unerlaubtes Format
         418:
-          description: Datei konnte nicht gEEparsed werden
+          description: Datei konnte nicht geparsed werden
   /device/upgrade:
     post:
       operationId: upgradeFirmware
@@ -174,12 +174,12 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-      - name: deviceid
+      - name: devicemac
         in: query
-        description: Id des devices welches upgedatet werden soll
+        description: Id des devices welches gelöscht werden soll
         required: true
         schema:
-          type: integer
+          type: string
       - name: forces
         in: query
         description: Muss gesetzt werden, zusätzliche Sicherheit
