@@ -13,7 +13,7 @@ public interface DeviceApiService {
     
     public Response addDevice(AddDeviceBody addDeviceBody,SecurityContext securityContext);
     
-    public Response deleteDevice( @NotNull Integer deviceid, Boolean forces,SecurityContext securityContext);
+    public Response deleteDevice( @NotNull String devicemac, Boolean forces,SecurityContext securityContext);
     
     public Response upgradeFirmware(UpdateDeviceBody body, @NotNull Integer deviceid, Boolean forces,SecurityContext securityContext);
     

@@ -77,11 +77,11 @@ public class DeviceApi  {
     @io.swagger.annotations.ApiOperation(value = "Entfernen eines Gerätes", notes = "", response = Void.class, tags={ "device", })
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "Erfolgreich gelöscht", response = Void.class) })
-    public Response deleteDevice(@ApiParam(value = "Id des devices welches upgedatet werden soll",required=true) @QueryParam("deviceid") Integer deviceid
+    public Response deleteDevice(@ApiParam(value = "Id des devices welches upgedatet werden soll",required=true) @QueryParam("devicemac") String devicemac
 ,@ApiParam(value = "Muss gesetzt werden, zusätzliche Sicherheit") @QueryParam("forces") Boolean forces
 ,@Context SecurityContext securityContext)
     throws NotFoundException {
-        return delegate.deleteDevice(deviceid,forces,securityContext);
+        return delegate.deleteDevice(devicemac,forces,securityContext);
     }
 
     @POST
