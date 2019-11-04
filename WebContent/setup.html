@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+
+<title>EscapeConnect</title>
+</head>
+
+<body>
+	<nav class="navbar navbar-light bg-light">
+		<a class="navbar-brand">EscapeConnect Setup</a>
+		<button class="btn my-2 my-sm-0 btn-outline-primary" type="button"
+			id="btn_save">Save</button>
+		<a href="index.html"><button
+				class="btn my-2 my-sm-0 btn-outline-primary" type="button">Back
+				to Main</button></a>
+	</nav>
+	<div class="container">
+		<div class="alert alert-warning invisible" role="alert" id="pw_mismatch">Password not equal to Confirmation</div>
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<div class="panel-title">Admin</div>
+			</div>
+			<div class="panel-body">
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label for="pw">Admin Password</label> <input type="password"
+							class="form-control" id="pw">
+					</div>
+					<div class="form-group col-md-6">
+						<label for="pw_confirm">Confirm</label> <input type="password"
+							class="form-control" id="pw_confirm">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<div class="panel-title">MQTT Server</div>
+			</div>
+			<div class="panel-body">
+				<div class="form-row">
+
+					<div class="form-group col-md-6">
+						<label for="server_url">FQDN / IP</label> <input type="url"
+							class="form-control" id="server_url" placeholder="example.com">
+					</div>
+					<div class="form-group col-md-2">
+						<label for="server_port">Port</label> <input type="number"
+							class="form-control" id="server_port" value="1883" min="1"
+							max="65535">
+					</div>
+				</div>
+			</div>
+			<div class="form-row">
+
+				<div class="form-group col-md-6">
+					<label for="server_user">Username</label> <input type="text"
+						class="form-control" id="server_user" placeholder="User1">
+				</div>
+				<div class="form-group col-md-6">
+					<label for="server_pass">Password</label> <input
+						class="form-control" id="server_pass" type="password">
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		$("#btn_save").bind("click", save);
+
+		function save() {
+			var pass = $("#pw").val().trim();
+			if (pass != $("#pw_confirm").val() || pass.length==0) {
+				alert("Passwords mismatch");
+				return;
+			}
+			var url=$("#server_url").val().trim();
+			var port=$("#server_port").val().trim();
+			if(port.length>1){
+				if(isNaN(port)){
+					alert("Port must be a number");
+					return;
+				}else{
+					url=url + ":" + port;	
+				}
+			}
+			var json = new Object();
+			json.adminpass = pass;
+			json.mqtturl = url;
+			if(url.length<3){
+				alert("URL too short or not provided");
+				return;
+			}
+			var server_name = $("#server_user").val().trim();
+			var server_pass = $("#server_pass").val().trim();
+			if(server_name.length>0)json.mqttuser = server_name;
+			if(server_pass.length>0)json.mqttpass = server_pass;
+			console.log(JSON.stringify(json));
+			
+			try {
+				  const resp = postJson('rest/admin/setup', json);
+				  console.log((resp));
+				} catch (error) {
+				  alert(error);
+				}
+		}
+		
+		async function postJson(url = '', data = {}) {
+			  const response = await fetch(url, {
+			    method: 'POST', 
+			    headers: {
+			      'Content-Type': 'application/json'
+			    },
+			    body: JSON.stringify(data) 
+			  });
+			  if(response.ok){
+				  alert("Setup successful");
+			  }
+			}
+	</script>
+
+</body>
+
+</html>
