@@ -9,8 +9,9 @@ import javax.ws.rs.WebApplicationException;
 
 import ch.ffhs.pa5.escapeconnect.bean.SettingDAOBean;
 
-public class DAOsettings {
+public class DAOsettings implements DAOsettingIF {
 
+	@Override
 	public int write(SettingDAOBean setting) {
 
 		String query = "";

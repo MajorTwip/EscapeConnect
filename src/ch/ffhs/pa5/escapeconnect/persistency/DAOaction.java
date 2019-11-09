@@ -8,7 +8,8 @@ import javax.ws.rs.WebApplicationException;
 
 import ch.ffhs.pa5.escapeconnect.bean.ActionDAOBean;
 
-public class DAOaction {
+public class DAOaction implements DAOactionIF {
+	@Override
 	public int write(ActionDAOBean action) {
 		
 		String query = "";

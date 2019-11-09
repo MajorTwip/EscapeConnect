@@ -18,20 +18,22 @@ import ch.ffhs.pa5.escapeconnect.bean.PanelDAOBean;
 import ch.ffhs.pa5.escapeconnect.bean.SettingDAOBean;
 import ch.ffhs.pa5.escapeconnect.bean.UpdateDeviceBody;
 import ch.ffhs.pa5.escapeconnect.bean.ValueDAOBean;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOaction;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOactionIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOdevice;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOdeviceIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOpanel;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOsettings;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOvalue;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOpanelIF;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOsettingIF;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOvalueIF;
 import ch.ffhs.pa5.escapeconnect.utils.MACformating;
 
 public class DeviceAPIimplement implements DeviceApiService {
 
-	DAOdevice daodevice;
-	DAOpanel daopanel;
-	DAOaction daoaction;
-	DAOvalue daovalue;
-	DAOsettings daosetting;
+	DAOdeviceIF daodevice;
+	DAOpanelIF daopanel;
+	DAOactionIF daoaction;
+	DAOvalueIF daovalue;
+	DAOsettingIF daosetting;
 	
 	public DeviceAPIimplement() {
 		daodevice = new DAOdevice();

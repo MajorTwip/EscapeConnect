@@ -8,7 +8,8 @@ import javax.ws.rs.WebApplicationException;
 
 import ch.ffhs.pa5.escapeconnect.bean.ValueDAOBean;
 
-public class DAOvalue {
+public class DAOvalue implements DAOvalueIF {
+	@Override
 	public int write(ValueDAOBean value) {
 		
 		String query = "";

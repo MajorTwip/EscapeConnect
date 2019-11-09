@@ -14,11 +14,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import ch.ffhs.pa5.escapeconnect.bean.AddDeviceBody;
 import ch.ffhs.pa5.escapeconnect.handlers.DeviceAPIimplement;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOaction;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOdevice;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOpanel;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOsettings;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOvalue;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOactionIF;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOdeviceIF;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOpanelIF;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOsettingIF;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOvalueIF;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -28,19 +28,19 @@ class TestDevice {
 	DeviceAPIimplement devapi;
 	
 	@Mock
-	DAOdevice daodevice;
+	DAOdeviceIF daodevice;
 	
 	@Mock
-	DAOpanel daopanel;
+	DAOpanelIF daopanel;
 	
 	@Mock
-	DAOaction daoaction;
+	DAOactionIF daoaction;
 	
 	@Mock
-	DAOvalue daovalue;
+	DAOvalueIF daovalue;
 	
 	@Mock
-	DAOsettings daosetting;
+	DAOsettingIF daosetting;
     
 	@Test
 	void addDevice() {
