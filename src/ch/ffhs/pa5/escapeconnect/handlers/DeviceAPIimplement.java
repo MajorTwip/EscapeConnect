@@ -27,6 +27,17 @@ import ch.ffhs.pa5.escapeconnect.utils.MACformating;
 
 public class DeviceAPIimplement implements DeviceApiService {
 
+	DAOdevice daodevice;
+	DAOpanel daopanel;
+	DAOaction daoaction;
+	DAOvalue daovalue;
+	DAOsettings daosetting;
+	
+	public DeviceAPIimplement() {
+		daodevice = new DAOdevice();
+		daopanel = new DAOpanel();
+	}
+
 	@Override
 	public Response addDevice(AddDeviceBody addDeviceBody, SecurityContext securityContext) {
 	//wird aufgerufen wenn /device/add aufgerufen wird
@@ -43,10 +54,13 @@ public class DeviceAPIimplement implements DeviceApiService {
 			
 			//lade "device" aus dem JSON-File und transformiere dieses in ein Bean für die DAO-Methoden
 			JsonNode devicejson = root.path("device");
+			if(devicejson.isEmpty()) {
+				return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE).entity("not compling to JSON-schema, no 'device'-Node").build();
+			}
 			DeviceDAOBean device = objectMapper.treeToValue(devicejson, DeviceDAOBean.class);
 			
 			//schreibe Device in DB
-			DAOdevice.write(device);
+			daodevice.write(device);
 			System.out.println("creating Device with MAC: " + device.getMac());
 			
 			//Lade Panel aus dem JSON 
@@ -54,13 +68,13 @@ public class DeviceAPIimplement implements DeviceApiService {
 			PanelDAOBean panel = new PanelDAOBean();
 			panel.setName(device.getName());
 			//Falls explizit Name gewünscht, wähle diesen für das Panel, sonst Devicename
-			if(!addDeviceBody.getName().isBlank()) {
+			if(addDeviceBody.getName()!=null&&!addDeviceBody.getName().isBlank()) {
 				panel.setName(addDeviceBody.getName());
 			}
 			//Setze FK mac
 			panel.setDevice_mac(device.getMac());
 			//schreibe Panel in DB und erhalte ID (fortlaufende Int)
-			int panel_id = DAOpanel.write(panel); 
+			int panel_id = daopanel.write(panel); 
 			System.out.println("Wrote Panel with id: " + String.valueOf(panel_id));
 			
 			//iteriere über alle values im Panel und schreibe diese in DB
@@ -69,7 +83,7 @@ public class DeviceAPIimplement implements DeviceApiService {
 				JsonNode valuejson = values.next();
 				ValueDAOBean value = objectMapper.treeToValue(valuejson, ValueDAOBean.class);
 				value.setPanel_id(panel_id);
-				int value_id=DAOvalue.write(value);
+				int value_id=daovalue.write(value);
 				System.out.println("Wrote value with id: " + String.valueOf(value_id));
 			}
 			
@@ -79,7 +93,7 @@ public class DeviceAPIimplement implements DeviceApiService {
 				JsonNode actionjson = actions.next();
 				ActionDAOBean action = objectMapper.treeToValue(actionjson, ActionDAOBean.class);
 				action.setPanel_id(panel_id);
-				int action_id = DAOaction.write(action);
+				int action_id = daoaction.write(action);
 				System.out.println("Wrote action with id: " + String.valueOf(action_id));
 			}
 			
@@ -90,7 +104,7 @@ public class DeviceAPIimplement implements DeviceApiService {
 				SettingDAOBean setting = objectMapper.treeToValue(settingjson, SettingDAOBean.class);
 				setting.setDevice_mac(device.getMac());
 				setting.setPanel_id(panel_id);
-				int setting_id = DAOsettings.write(setting);
+				int setting_id = daosetting.write(setting);
 				System.out.println("Wrote Setting with id: " + String.valueOf(setting_id));
 			}
 			
@@ -111,7 +125,7 @@ public class DeviceAPIimplement implements DeviceApiService {
 		}
 		String mac = MACformating.sanitizeMAC(devicemac);
 		System.out.println("Deleting device: " + mac);
-		DAOdevice.delete(mac);
+		daodevice.delete(mac);
 		return Response.status(Response.Status.OK).build();
 	}
 

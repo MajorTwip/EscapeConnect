@@ -11,7 +11,7 @@ import ch.ffhs.pa5.escapeconnect.bean.SettingDAOBean;
 
 public class DAOsettings {
 
-	public static int write(SettingDAOBean setting) {
+	public int write(SettingDAOBean setting) {
 
 		String query = "";
 
