@@ -8,8 +8,9 @@ import javax.ws.rs.WebApplicationException;
 
 import ch.ffhs.pa5.escapeconnect.bean.EcSettings;
 
-public class DAOecsettings{
+public class DAOecsettings implements DAOecsettingsIF{
 
+	@Override
 	public EcSettings get() {
 		// TODO Auto-generated method stub
 		return null;
@@ -42,6 +43,7 @@ public class DAOecsettings{
 		
 	}
 
+	@Override
 	public void delete() {
 		// TODO Auto-generated method stub
 		

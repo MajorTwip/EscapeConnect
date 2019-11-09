@@ -8,8 +8,9 @@ import javax.ws.rs.WebApplicationException;
 
 import ch.ffhs.pa5.escapeconnect.bean.DeviceDAOBean;
 
-public class DAOdevice {
-	public static void write(DeviceDAOBean device) {
+public class DAOdevice implements DAOdeviceIF {
+	@Override
+	public  boolean write(DeviceDAOBean device) {
 		String query = "INSERT INTO device (name,mac,basetopic,deviceid,supportsOTA,firmware_id) VALUES(?,?,?,?,?,?)" + 
 				"  ON CONFLICT(mac) DO UPDATE SET name=?, basetopic=?, deviceid=?, supportsOTA=?,firmware_id=? WHERE mac=?;";
 		
@@ -46,9 +47,11 @@ public class DAOdevice {
 			e.printStackTrace();
 			throw new WebApplicationException(e.getMessage());
 		}
+		return true;
 	}
 
-	public static void delete(String mac) {
+	@Override
+	public  boolean delete(String mac) {
 		String query = "DELETE FROM device WHERE mac=?;";
 		
 		//Connection con = DBAdapter.getConnection();
@@ -61,5 +64,6 @@ public class DAOdevice {
 			e.printStackTrace();
 			throw new WebApplicationException(e.getMessage());
 		}
+		return true;
 	}
 }

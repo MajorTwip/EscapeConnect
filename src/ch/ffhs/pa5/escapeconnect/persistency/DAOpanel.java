@@ -8,8 +8,10 @@ import javax.ws.rs.WebApplicationException;
 
 import ch.ffhs.pa5.escapeconnect.bean.PanelDAOBean;
 
-public class DAOpanel {
-	public static int write(PanelDAOBean panel) {
+public class DAOpanel implements DAOpanelIF {
+	
+	@Override
+	public int write(PanelDAOBean panel) {
 		
 		String query = "";
 		

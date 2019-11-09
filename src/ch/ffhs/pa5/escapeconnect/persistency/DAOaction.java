@@ -8,12 +8,13 @@ import javax.ws.rs.WebApplicationException;
 
 import ch.ffhs.pa5.escapeconnect.bean.ActionDAOBean;
 
-public class DAOaction {
-	public static int write(ActionDAOBean action) {
+public class DAOaction implements DAOactionIF {
+	@Override
+	public int write(ActionDAOBean action) {
 		
 		String query = "";
 		
-		if(action.getId()<1) {
+		if(action.getId() == 0 ||action.getId() <1) {
 			query = "INSERT INTO action (panel_id,label,topic,payload) VALUES(?,?,?,?)";
 			
 			try (Connection con = DBAdapter.getConnection();
