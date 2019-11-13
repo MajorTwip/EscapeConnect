@@ -35,7 +35,7 @@ then
     
     sudo docker rm MQTT EscapeConnect
     sudo docker run -d -p 1883:1883 -p 9001:9001 -v /data/mqtt_conf/:/mosquitto/config/ --name MQTT --restart always eclipse-mosquitto
-    sudo docker run -d -p 80:8080 -v /data/escapeconnect/:/data/ --name EscapeConnect --restart always majortwip/escapeconnect
+    sudo docker run -d -p 80:8080 -v /data/escapeconnect/:/data/ --name EscapeConnect --restart always majortwip/escapeconnect:arm32v7
 fi
 
 
