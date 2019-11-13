@@ -62,5 +62,4 @@ Zugriff:
 
 Installation EscapeConnect:
 	Führen Sie folgenden Befehl aus, entweder über SSH oder auf dem Raspberry mittels einem Terminal:
-		-	
-		
+		-	bash <(curl -s https://raw.githubusercontent.com/MajorTwip/EscapeConnect/master/scripts/install.sh?token=ABOW6OGSERVU6L44SFAVSNS52WRHE)
