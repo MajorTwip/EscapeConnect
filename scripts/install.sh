@@ -13,10 +13,8 @@ echo "4. Starte einen MQTT-Broker in einem Dockercontainer (mosquitto)"
 echo "5. Starte EscapeConnect"
 echo ""
 echo "Jetzt starten? "
-echo "[J] Ja     [n] Nein"
-read answer
-echo ""
-if [ $answer =~ ^[YyJj]$ ]
+read -r -p "[J] Ja     [n] Nein   " response
+if [[ "$response" =~ ^([jJyY])+$ ]]
 then
     sudo apt-get update -y
     sudo apt-get upgrade -y
