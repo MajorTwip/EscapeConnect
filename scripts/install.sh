@@ -19,14 +19,23 @@ then
     sudo apt-get update -y
     sudo apt-get upgrade -y
     sudo apt-get install curl wget
+    
+    
     sudo curl -sSL https://get.docker.com | sh
     sudo usermod -aG docker pi
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    
+    
     sudo mkdir /data
     sudo mkdir /data/escapeconnect
-    sudo touch /data/mqtt_conf/
-    sudo mkdir /data/mqtt_conf
-    docker run -it -p 1883:1883 -p 9001:9001 -v /data/mqtt_conf/:/mosquitto/config/ --name MQTT eclipse-mosquitto
-    docker run -it -p 80:8080 -v /data/escapeconnect/:/data/ --name EscapeConnect majortwip/escapeconnect
+    sudo mkdir /data/mqtt_conf/
+    sudo touch /data/mqtt_conf/mosquitto.conf
+    
+    
+    sudo docker rm MQTT EscapeConnect
+    sudo docker run -d -p 1883:1883 -p 9001:9001 -v /data/mqtt_conf/:/mosquitto/config/ --name MQTT --restart always eclipse-mosquitto
+    sudo docker run -d -p 80:8080 -v /data/escapeconnect/:/data/ --name EscapeConnect --restart always majortwip/escapeconnect
 fi
 
 
