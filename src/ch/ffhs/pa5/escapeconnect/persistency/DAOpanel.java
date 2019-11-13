@@ -101,7 +101,7 @@ public class DAOpanel implements DAOpanelIF {
 			if(rs.next() != false) {
 				PanelDAOBean generated_panel = new PanelDAOBean();
 				generated_panel.setId(rs.getInt("id"));
-				generated_panel.setTitle(rs.getString("name"));
+				generated_panel.setName(rs.getString("name"));
 				single_panel.add(generated_panel);
 			}
 			// Close the connection to the DB
@@ -128,7 +128,7 @@ public class DAOpanel implements DAOpanelIF {
 			if(rs.next() != false) {
 				PanelDAOBean generated_panel = new PanelDAOBean();
 				generated_panel.setId(rs.getInt("id"));
-				generated_panel.setTitle(rs.getString("name"));
+				generated_panel.setName(rs.getString("name"));
 				single_panel.add(generated_panel);
 			}
 			// Close the connection to the DB
