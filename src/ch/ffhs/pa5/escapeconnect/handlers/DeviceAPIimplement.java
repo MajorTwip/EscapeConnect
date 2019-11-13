@@ -18,12 +18,15 @@ import ch.ffhs.pa5.escapeconnect.bean.PanelDAOBean;
 import ch.ffhs.pa5.escapeconnect.bean.SettingDAOBean;
 import ch.ffhs.pa5.escapeconnect.bean.UpdateDeviceBody;
 import ch.ffhs.pa5.escapeconnect.bean.ValueDAOBean;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOaction;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOactionIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOdevice;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOdeviceIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOpanel;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOpanelIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOsettingIF;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOsettings;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOvalue;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOvalueIF;
 import ch.ffhs.pa5.escapeconnect.utils.MACformating;
 
@@ -38,6 +41,9 @@ public class DeviceAPIimplement implements DeviceApiService {
 	public DeviceAPIimplement() {
 		daodevice = new DAOdevice();
 		daopanel = new DAOpanel();
+		daoaction = new DAOaction();
+		daovalue = new DAOvalue();
+		daosetting = new DAOsettings();
 	}
 
 	@Override
@@ -54,7 +60,7 @@ public class DeviceAPIimplement implements DeviceApiService {
 			JsonNode root = objectMapper.readTree(addDeviceBody.getFile());
 			System.out.println("Got JSON-Riddledefinition with name: " + root.path("definition").path("name").asText());
 			
-			//lade "device" aus dem JSON-File und transformiere dieses in ein Bean für die DAO-Methoden
+			//lade "device" aus dem JSON-File und transformiere dieses in ein Bean fï¿½r die DAO-Methoden
 			JsonNode devicejson = root.path("device");
 			if(devicejson.isEmpty()) {
 				return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE).entity("not compling to JSON-schema, no 'device'-Node").build();
@@ -69,8 +75,8 @@ public class DeviceAPIimplement implements DeviceApiService {
 			JsonNode paneljson = root.path("panel");
 			PanelDAOBean panel = new PanelDAOBean();
 			panel.setName(device.getName());
-			//Falls explizit Name gewünscht, wähle diesen für das Panel, sonst Devicename
-			if(addDeviceBody.getName()!=null&&!addDeviceBody.getName().isBlank()) {
+			//Falls explizit Name gewï¿½nscht, wï¿½hle diesen fï¿½r das Panel, sonst Devicename
+			if(addDeviceBody.getName()!=null&&addDeviceBody.getName().length()>0) {
 				panel.setName(addDeviceBody.getName());
 			}
 			//Setze FK mac
@@ -79,7 +85,7 @@ public class DeviceAPIimplement implements DeviceApiService {
 			int panel_id = daopanel.write(panel); 
 			System.out.println("Wrote Panel with id: " + String.valueOf(panel_id));
 			
-			//iteriere über alle values im Panel und schreibe diese in DB
+			//iteriere ï¿½ber alle values im Panel und schreibe diese in DB
 			Iterator<JsonNode> values = paneljson.path("values").elements();
 			while(values.hasNext()) {
 				JsonNode valuejson = values.next();
@@ -89,7 +95,7 @@ public class DeviceAPIimplement implements DeviceApiService {
 				System.out.println("Wrote value with id: " + String.valueOf(value_id));
 			}
 			
-			//iteriere über alle actions im Panel und schreibe diese in DB
+			//iteriere ï¿½ber alle actions im Panel und schreibe diese in DB
 			Iterator<JsonNode> actions = paneljson.path("actions").elements();
 			while(actions.hasNext()) {
 				JsonNode actionjson = actions.next();
@@ -99,7 +105,7 @@ public class DeviceAPIimplement implements DeviceApiService {
 				System.out.println("Wrote action with id: " + String.valueOf(action_id));
 			}
 			
-			//iteriere über alle settings im Device und schreibe diese in DB
+			//iteriere ï¿½ber alle settings im Device und schreibe diese in DB
 			Iterator<JsonNode> settings = root.path("settings").elements();
 			while(settings.hasNext()) {
 				JsonNode settingjson = settings.next();
