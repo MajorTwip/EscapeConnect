@@ -15,6 +15,7 @@ echo ""
 echo "Jetzt starten? "
 echo "[J] Ja     [n] Nein"
 read answer
+echo ""
 if [[ $answer =~ ^[YyJj]$ ]]
 then
     sudo apt-get update -y
