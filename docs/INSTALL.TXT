@@ -1,0 +1,66 @@
+Installation:
+
+	Laden Sie Raspian herunter:
+		-	Falls der Raspberry Pi ausschliesslich als EscapeConnect-Server dienen soll, reicht die Light-Version.
+		-	Falls Sie den Raspberry Pi auch als PC benutzen wollen (z.B. für EscapeConnect) wählen Sie die Version mit Desktop. 
+		https://www.raspberrypi.org/downloads/raspbian/
+		
+	
+	Stecken Sie die SD-Karte des Raspberry Pi in einen entsprechenden Leser
+	
+	
+	Laden Sie Balena-Etcher herunter:
+		-	Die Portable-Version für Windows muss nicht installiert werden, dies macht den Prozess etwas einfacher
+		-	https://www.balena.io/etcher/
+	
+	
+	Starten Sie Balena-Etcher und wählen Sie das heruntergeladene Raspian:
+		-	Normalerweise etwas in der Art von "2019-09-26-raspbian-buster-lite.zip"
+	
+
+	Wählen Sie Ihre SD-Karte aus. Überprüfen Sie die Eingaben und wählen Sie "Flash"
+
+Konfiguration:
+
+	Falls Sie den Raspberry Pi ohne Bildschirm betreiben wollen, müssen Sie SSH vorgängig aktivieren.
+	SSH erlaubt den ersten Zugriff auf Distanz. 
+		-	Entfernen Sie die SD-Karte und stecken Sie sie wieder ein.
+		-	Im nun erschienenen Laufwerk "boot" erstellen Sie eine Datei mit dem Namen ssh (ohne Endung)
+		
+	Alternative möglichkeiten mit Bildschirm finden Sie auf:
+		-	https://pi-buch.info/geaenderte-ssh-server-konfiguration-von-raspbian/
+
+		
+	Falls Sie den Raspberry Pi über WLAN betreiben wollen können Sie dieses bequem über die Benutzeroberfläche konfigurieren.
+		-	https://pi-buch.info/neue-wlan-konfiguration-unter-raspbian/
+	
+	Bei einer erstkonfiguration ohne Bildschirm:
+		-	erstellen Sie eine Datei im Laufwerk "boot" der SD-Karte mit dem Namen: wpa_supplicant.conf
+		-	Fügen Sie in dieser Datei folgenden Inhalt hinzu (WLAN-Name und Passwort anpassen):
+		country=ch
+		update_config=1
+		ctrl_interface=/var/run/wpa_supplicant
+
+		network={
+		 scan_ssid=1
+		 ssid="MeinWLAN"
+		 psk="Secret1234"
+		}
+		
+Zugriff:
+	Falls Sie einen Bildschirm und Eingabegeräte angeschlossen haben, sollten Sie bereits Zugriff haben.
+	
+	Um aus der Distanz auf den Raspberry Pi zuzugreifen, müssen Sie dessen IP-Adresse kennen.
+		-	Kurz Bildschirm einstecken, die IP wird angezeigt.
+		-	Mit einem Netzwerkscanner (raspberrypi.local sollte gefunden werden)
+			https://angryip.org/download/
+		
+	Der Zugriff über SSH kann in Windows mit dem Tool putty erreicht werden.
+		-	https://www.putty.org/   
+		-	Benutzername ist "pi", Passwort "raspberry"
+		
+
+Installation EscapeConnect:
+	Führen Sie folgenden Befehl aus, entweder über SSH oder auf dem Raspberry mittels einem Terminal:
+		-	
+		
