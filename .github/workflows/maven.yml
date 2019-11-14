@@ -44,9 +44,26 @@ jobs:
         asset_path: ./ROOT.war
         asset_name: ROOT.war
         asset_content_type: application/zip
+        
     - name: Make docker
       run: |
         cp schemas/api.yaml swagger-dist/api.yaml
         docker build -t majortwip/escapeconnect:latest .
         echo "${{ secrets.DOCKER_USERNAME }}" | docker login -u "${{ secrets.DOCKER_PASSWORD }}" --password-stdin
         docker push majortwip/escapeconnect
+  buildARM:
+    runs-on: [ubuntu-18.04]
+    name: Buld for Arm32v7
+    steps:
+          - uses: actions/checkout@v1.0.0
+          - uses: uraimo/run-on-arch-action@v1.0.5
+            id: runcmd
+            with:
+              architecture: armv7
+              distribution: ubuntu18.04
+              run: |
+                uname -a
+                echo ::set-output name=uname::$(uname -a)
+          - name: Get the output
+            run: |
+                echo "The uname output was ${{ steps.runcmd.outputs.uname }}"
