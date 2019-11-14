@@ -62,4 +62,11 @@ Zugriff:
 
 Installation EscapeConnect:
 	Führen Sie folgenden Befehl aus, entweder über SSH oder auf dem Raspberry mittels einem Terminal:
-		-	bash <(curl -s https://raw.githubusercontent.com/MajorTwip/EscapeConnect/master/scripts/install.sh?token=ABOW6OGSERVU6L44SFAVSNS52WRHE)
+		-	wget https://gist.githubusercontent.com/MajorTwip/654516cefa1e2258e37bdf431b9edb5d/raw/install.sh && chmod +x install.sh && sudo ./install.sh
+
+	Die Installation wird auf der Webseite fertiggestellt.
+		-	http://escapeconnect.local/setup.html oder http://IP-Adresse-des-Raspberry/setup.html
+		-	Administratorpasswort wählen
+		-	MQTT-Server angeben: IP des Raspberry
+		-	Übrige Eingaben sind bei einer Standardinstallation leer zu belassen
+		-	Über Button "Save" speichern
