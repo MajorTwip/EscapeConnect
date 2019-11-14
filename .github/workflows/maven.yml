@@ -49,6 +49,7 @@ jobs:
         
         
   BuildDockerAMD64:
+    needs: [BuildWAR]
     name: Buid Docker AMD64
     runs-on: ubuntu-latest
     steps:
@@ -64,6 +65,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
       
   BuildDockerARM32v7:
+    needs: [BuildWAR]
     runs-on: [ubuntu-latest]
     name: Build for Arm32v7
   
