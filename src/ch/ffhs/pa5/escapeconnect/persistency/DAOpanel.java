@@ -86,23 +86,21 @@ public class DAOpanel implements DAOpanelIF {
 		return list_panels;
 	}
 	
-	public List<PanelDAOBean> getByDevice(int deviceId) {
+	public PanelDAOBean getByDevice(int deviceId) {
 		
 		// start the connection with the BD
 		String query = "SELECT * FROM panel WHERE device_id = ?";
 		Connection con = DBAdapter.getConnection();
+		// Create an empty PanelDAOBean
+		PanelDAOBean generated_panel = new PanelDAOBean();
 		// We use an ArrayList so that TomCat can easily convert it to a JSON.
-		List<PanelDAOBean> single_panel = new ArrayList<>();
 		try (PreparedStatement pstm = con.prepareStatement(query)){
 			pstm.setInt(1, deviceId);
 			ResultSet rs = pstm.executeQuery();
 			// Take the ResultSet rs and get the first line.
-			// if nothing, next() returns false. We do check this first.
 			if(rs.next() != false) {
-				PanelDAOBean generated_panel = new PanelDAOBean();
 				generated_panel.setId(rs.getInt("id"));
 				generated_panel.setName(rs.getString("name"));
-				single_panel.add(generated_panel);
 			}
 			// Close the connection to the DB
 			pstm.close(); 
@@ -111,25 +109,22 @@ public class DAOpanel implements DAOpanelIF {
 			throw new WebApplicationException(e.getMessage());
 		}
 		// Return the rs with the panel or empty.
-		return single_panel;			
+		return generated_panel;			
 	}
 	
 	public List<PanelDAOBean> getById(int id) {
 		// start the connection with the BD
 		String query = "SELECT * FROM panel WHERE id = ?";
 		Connection con = DBAdapter.getConnection();
-		// We use an ArrayList so that TomCat can easily convert it to a JSON.
-		List<PanelDAOBean> single_panel = new ArrayList<>();
+		// Create an empty PanelDAOBean
+		PanelDAOBean generated_panel = new PanelDAOBean();
 		try (PreparedStatement pstm = con.prepareStatement(query)){
 			pstm.setInt(1, id);
 			ResultSet rs = pstm.executeQuery();
 			// Take the ResultSet rs and get the first line.
-			// if nothing, next() returns false. We do check this first.
 			if(rs.next() != false) {
-				PanelDAOBean generated_panel = new PanelDAOBean();
 				generated_panel.setId(rs.getInt("id"));
 				generated_panel.setName(rs.getString("name"));
-				single_panel.add(generated_panel);
 			}
 			// Close the connection to the DB
 			pstm.close(); 
@@ -138,7 +133,7 @@ public class DAOpanel implements DAOpanelIF {
 			throw new WebApplicationException(e.getMessage());
 		}
 		// Return the rs with the panel or empty.
-		return single_panel;			
+		return generated_panel;			
 	}
 	
 	public void delete(int id) {
