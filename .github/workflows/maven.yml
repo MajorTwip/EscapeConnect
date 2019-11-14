@@ -71,5 +71,5 @@ jobs:
           apt-get update && apt-get install curl -y
           curl -sSL https://get.docker.com/ | sh
           docker build -t majortwip/escapeconnect:arm32v7 -f Dockerfile-arm32v7 .
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          echo ${{ secrets.DOCKER_USERNAME }} | docker login -u ${{ secrets.DOCKER_PASSWORD }} --password-stdin
           docker push majortwip/escapeconnect
