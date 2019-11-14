@@ -71,9 +71,5 @@ jobs:
           apt-get update && apt-get install curl -y
           curl -sSL https://get.docker.com/ | sh
           docker build -t majortwip/escapeconnect:arm32v7 -f Dockerfile-arm32v7 .
-    - name: Publish to Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
-      with:
-        name: majortwip/escapeconnect
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          docker push majortwip/escapeconnect
