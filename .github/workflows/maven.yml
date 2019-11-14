@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  build:
+  Build WAR:
 
     runs-on: ubuntu-latest
 
@@ -20,8 +20,10 @@ jobs:
       run: mvn -B package --file pom.xml
     
     - name: copy WAR to root/
-      run: cp target/*.war ./ROOT.war
-      
+      run: |
+        cp target/*.war ./ROOT.war
+        cp schemas/api.yaml swagger-dist/api.yaml
+
     - name: Create Release
       if: contains(github.ref, 'release')
       id: create_release
@@ -45,9 +47,12 @@ jobs:
         asset_name: ROOT.war
         asset_content_type: application/zip
         
+        
+  Build Docker AMD64:
+    runs-on: ubuntu-latest
+    steps:
     - name: Make docker
       run: |
-        cp schemas/api.yaml swagger-dist/api.yaml
         docker build -t majortwip/escapeconnect:latest .
         
     - name: Publish to Registry
@@ -57,20 +62,23 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
       
-  buildARM:
-    runs-on: [ubuntu-18.04]
-    name: Buld for Arm32v7
+  Build Docker ARM32v7:
+    runs-on: [ubuntu-latest]
+    name: Build for Arm32v7
     steps:
-          - uses: actions/checkout@v1.0.0
-          - uses: uraimo/run-on-arch-action@v1.0.5
-            id: runcmd
-            with:
-              architecture: armv7
-              distribution: ubuntu18.04
-              run: |
-                uname -a
-                echo ::set-output name=uname::$(uname -a)
-          - name: Get the output
-            run: |
-                ls -la
-                echo "The uname output was ${{ steps.runcmd.outputs.uname }}"
+
+      - uses: uraimo/run-on-arch-action@v1.0.5
+      - name: Make Container
+        id: runcmd
+        with:
+          architecture: armv7
+          distribution: ubuntu18.04
+          run: |
+            uname -a
+            docker build -t majortwip/escapeconnect:arm32v7 -f Dockerfile-arm32v7 .
+      - name: Publish to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: majortwip/escapeconnect
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
