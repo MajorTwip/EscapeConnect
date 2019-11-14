@@ -46,14 +46,8 @@ jobs:
         asset_path: ./ROOT.war
         asset_name: ROOT.war
         asset_content_type: application/zip
-        
-        
-  BuildDockerAMD64:
-    needs: [BuildWAR]
-    name: Buid Docker AMD64
-    runs-on: ubuntu-latest
-    steps:
-    - name: Make docker
+
+    - name: Make docker AMD64
       run: |
         ls -la
         docker build -t majortwip/escapeconnect:latest .
@@ -65,25 +59,20 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
       
-  BuildDockerARM32v7:
-    needs: [BuildWAR]
-    runs-on: [ubuntu-latest]
-    name: Build for Arm32v7
-  
-    steps:
-      - name: Make Container
-        uses: uraimo/run-on-arch-action@v1.0.5
-        id: runcmd
-        with:
-          architecture: armv7
-          distribution: ubuntu18.04
-          run: |
-            uname -a
-            apt-get install docker -y
-            docker build -t majortwip/escapeconnect:arm32v7 -f Dockerfile-arm32v7 .
-      - name: Publish to Registry
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with:
-          name: majortwip/escapeconnect
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Make Container ARM32v7
+      uses: uraimo/run-on-arch-action@v1.0.5 
+      id: runcmd
+      with:
+        architecture: armv7
+        distribution: ubuntu18.04
+        run: |
+          uname -a
+          apt-get install docker -y
+          docker build -t majortwip/escapeconnect:arm32v7 -f Dockerfile-arm32v7 .
+    - name: Publish to Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: majortwip/escapeconnect
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
