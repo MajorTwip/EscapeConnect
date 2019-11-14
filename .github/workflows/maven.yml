@@ -66,9 +66,8 @@ jobs:
     runs-on: [ubuntu-latest]
     name: Build for Arm32v7
     steps:
-
-      - uses: uraimo/run-on-arch-action@v1.0.5
       - name: Make Container
+        uses: uraimo/run-on-arch-action@v1.0.5
         id: runcmd
         with:
           architecture: armv7
