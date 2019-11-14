@@ -18,19 +18,23 @@ jobs:
         java-version: 11
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    
+    - name: Print ls target/
+      run: ls -la target/
+      
     - name: Create Release
+      if: contains(github.ref, release)
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        tag_name: master
+        release_name: master
         draft: false
         prerelease: true
-    - name: Print ls
-      run: ls -la
     - name: Upload Release Asset
+      if: success()
       id: upload-release-asset 
       uses: actions/upload-release-asset@v1.0.1
       env:
