@@ -19,8 +19,8 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     
-    - name: Print ls target/
-      run: ls -la target/
+    - name: copy WAR to root/
+      run: cp target/*.war ./ROOT.war
       
     - name: Create Release
       if: contains(github.ref, 'release')
@@ -41,13 +41,12 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: target/*.war
+        asset_path: ./ROOT.war
         asset_name: ROOT.war
         asset_content_type: application/zip
     - name: Make docker
       run: |
-        cp target/*.war ./ROOT.war
         cp schemas/api.yaml swagger-dist/api.yaml
         docker build -t majortwip/escapeconnect:latest .
-        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        echo "${{ secrets.DOCKER_USERNAME }}" | docker login -u "${{ secrets.DOCKER_PASSWORD }}" --password-stdin
         docker push majortwip/escapeconnect
