@@ -6,8 +6,8 @@ on:
       - master
 
 jobs:
-  Build WAR:
-
+  BuildWAR:
+    name: Build WAR
     runs-on: ubuntu-latest
 
     steps:
@@ -48,7 +48,8 @@ jobs:
         asset_content_type: application/zip
         
         
-  Build Docker AMD64:
+  BuildDockerAMD64:
+    name: Buid Docker AMD64
     runs-on: ubuntu-latest
     steps:
     - name: Make docker
@@ -62,9 +63,10 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
       
-  Build Docker ARM32v7:
+  BuildDockerARM32v7:
     runs-on: [ubuntu-latest]
     name: Build for Arm32v7
+  
     steps:
       - name: Make Container
         uses: uraimo/run-on-arch-action@v1.0.5
