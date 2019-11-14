@@ -68,7 +68,7 @@ jobs:
         distribution: ubuntu18.04
         run: |
           uname -a
-          apt-get install curl -y
+          apt-get update && apt-get install curl -y
           curl -sSL https://get.docker.com/ | sh
           docker build -t majortwip/escapeconnect:arm32v7 -f Dockerfile-arm32v7 .
     - name: Publish to Registry
