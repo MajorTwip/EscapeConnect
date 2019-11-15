@@ -112,7 +112,7 @@ public class DAOpanel implements DAOpanelIF {
 		return generated_panel;			
 	}
 	
-	public List<PanelDAOBean> getById(int id) {
+	public PanelDAOBean getById(int id) {
 		// start the connection with the BD
 		String query = "SELECT * FROM panel WHERE id = ?";
 		Connection con = DBAdapter.getConnection();
