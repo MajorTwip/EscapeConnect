@@ -51,6 +51,7 @@ public class MQTTconnector implements MqttCallback {
 		}
 		if(client.isConnected()) {
 			client.setCallback(this);
+			System.out.println("Subscribe to " + topic);
 			client.subscribe(topic);
 		}
 		
@@ -87,8 +88,9 @@ public class MQTTconnector implements MqttCallback {
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
+		System.out.println("got msg, topic: " + topic + " Msg: " + String.valueOf(message.getPayload()));
 		if(this.callback!=null) {
-			callback.onMessage(topic,message.getPayload().toString());
+			callback.onMessage(topic,String.valueOf(message.getPayload()));
 		}
 	}
 
