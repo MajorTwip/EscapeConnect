@@ -51,6 +51,30 @@ public class MQTTconnector implements MqttCallback {
 		}
 		
 	}
+	
+	public void publish(String topic, MqttMessage msg) {
+		try {
+			connect();
+			this.client.publish(topic, msg);
+			while(this.client.getPendingDeliveryTokens().length>0) {
+				Thread.sleep(50);
+			}
+		}catch(MqttException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+	}
+	
+	private void close() {
+		try {
+			this.client.close();
+		}catch (MqttException e){
+			//Schliessen einer geschlossenen Verbindung, keine Reaktion nötig
+		}
+	}
 
 	@Override
 	public void connectionLost(Throwable cause) {
