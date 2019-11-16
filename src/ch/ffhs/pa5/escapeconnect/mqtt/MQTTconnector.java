@@ -30,6 +30,7 @@ public class MQTTconnector implements MqttCallback {
 		client = new MqttClient(url, "EscapeConnect",persistence);
 		MqttConnectOptions connOpts = new MqttConnectOptions();
         connOpts.setCleanSession(true);
+        connOpts.setWill("EscapeConnect/client", "diconnect".getBytes(), 0, false);
         if(this.name!=null) {
         	connOpts.setUserName(this.name);
         }
@@ -38,6 +39,9 @@ public class MQTTconnector implements MqttCallback {
         }
         System.out.println("Connecting to broker: "+url);
         client.connect(connOpts);
+        MqttMessage hello = new MqttMessage();
+        hello.setPayload("connect".getBytes());
+        client.publish("EscapeConnect/client", hello);
 	}
 	
 	public void subscribe(MQTTmessageHandler callback, String topic) throws MqttException {
