@@ -57,7 +57,7 @@ public class DeviceApi  {
     public Response addDevice(@FormDataParam("file") InputStream file, @FormDataParam("name") String name,@Context SecurityContext securityContext)
     throws NotFoundException {
     	AddDeviceBody addDeviceBody = new AddDeviceBody();
-    	if(name!=null&&!name.isBlank()) addDeviceBody.setName(name);
+    	if(name!=null&&name.length()>0) addDeviceBody.setName(name);
     	if(file!=null) {
     		try {
 				addDeviceBody.setFile(file.readAllBytes());
