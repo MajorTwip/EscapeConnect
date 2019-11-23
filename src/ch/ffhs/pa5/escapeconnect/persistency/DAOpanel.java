@@ -57,14 +57,13 @@ public class DAOpanel implements DAOpanelIF {
 		return -1;
 	}
 	
-	public List<PanelDAOBean> getAllPanels() {
-		
-		// start the connection with the BD
+
+	public List<PanelDAOBean> getAllPanels() {		
 		String query = "SELECT * FROM panel";
-		Connection con = DBAdapter.getConnection();
 		// We use an ArrayList so that TomCat can easily convert it to a JSON.
 		List<PanelDAOBean> list_panels = new ArrayList<>();
-		try (PreparedStatement pstm = con.prepareStatement(query)){
+		try (Connection con = DBAdapter.getConnection();
+			 PreparedStatement pstm = con.prepareStatement(query)) {
 			ResultSet rs = pstm.executeQuery();
 			// if the DB has no Panels, skip the code with the if-statement
 			// Take the ResultSet rs and iterate through it in order to create the beans "Panel"
@@ -88,13 +87,12 @@ public class DAOpanel implements DAOpanelIF {
 	
 	public PanelDAOBean getByDevice(int deviceId) {
 		
-		// start the connection with the BD
 		String query = "SELECT * FROM panel WHERE device_id = ?";
-		Connection con = DBAdapter.getConnection();
 		// Create an empty PanelDAOBean
 		PanelDAOBean generated_panel = new PanelDAOBean();
 		// We use an ArrayList so that TomCat can easily convert it to a JSON.
-		try (PreparedStatement pstm = con.prepareStatement(query)){
+		try (Connection con = DBAdapter.getConnection();
+				PreparedStatement pstm = con.prepareStatement(query)){
 			pstm.setInt(1, deviceId);
 			ResultSet rs = pstm.executeQuery();
 			// Take the ResultSet rs and get the first line.
@@ -113,12 +111,12 @@ public class DAOpanel implements DAOpanelIF {
 	}
 	
 	public PanelDAOBean getById(int id) {
-		// start the connection with the BD
+
 		String query = "SELECT * FROM panel WHERE id = ?";
-		Connection con = DBAdapter.getConnection();
 		// Create an empty PanelDAOBean
 		PanelDAOBean generated_panel = new PanelDAOBean();
-		try (PreparedStatement pstm = con.prepareStatement(query)){
+		try (Connection con = DBAdapter.getConnection();
+				PreparedStatement pstm = con.prepareStatement(query)){
 			pstm.setInt(1, id);
 			ResultSet rs = pstm.executeQuery();
 			// Take the ResultSet rs and get the first line.

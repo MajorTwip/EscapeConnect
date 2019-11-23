@@ -61,12 +61,11 @@ public class DAOaction implements DAOactionIF {
 	}
 	
 	public List<ActionDAOBean> getActionByPanelID(int panelId) {
-		// start the connection with the BD
 		String query = "SELECT * FROM action WHERE panel_id = ?";
-		Connection con = DBAdapter.getConnection();
 		// We use an ArrayList so that TomCat can easily convert it to a JSON.
 		List<ActionDAOBean> list_actions = new ArrayList<>();
-		try (PreparedStatement pstm = con.prepareStatement(query)){
+		try (Connection con = DBAdapter.getConnection();
+				PreparedStatement pstm = con.prepareStatement(query)){
 			pstm.setInt(1, panelId);
 			ResultSet rs = pstm.executeQuery();
 			// Take the ResultSet rs and iterate through it in order to create the beans "Action"
