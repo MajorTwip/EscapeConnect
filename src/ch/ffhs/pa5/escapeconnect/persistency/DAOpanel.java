@@ -57,6 +57,7 @@ public class DAOpanel implements DAOpanelIF {
 		return -1;
 	}
 	
+
 	public List<PanelDAOBean> getAllPanels() {		
 		String query = "SELECT * FROM panel";
 		// We use an ArrayList so that TomCat can easily convert it to a JSON.
@@ -110,6 +111,7 @@ public class DAOpanel implements DAOpanelIF {
 	}
 	
 	public PanelDAOBean getById(int id) {
+
 		String query = "SELECT * FROM panel WHERE id = ?";
 		// Create an empty PanelDAOBean
 		PanelDAOBean generated_panel = new PanelDAOBean();

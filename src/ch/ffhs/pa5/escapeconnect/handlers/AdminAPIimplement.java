@@ -15,8 +15,22 @@ public class AdminAPIimplement implements AdminApiService {
 
 	@Override
 	public Response doLogin(Body2 body, SecurityContext securityContext) {
-		// TODO Auto-generated method stub
-		return null;
+		if(body==null) {
+			System.out.println("Got no info from post request");
+			return Response.status(Response.Status.CONFLICT).entity("No information in Body. Please read API-Docs").build();
+		}
+		if(body.getPasshash()=="") {
+			System.out.println("Got empty login request");
+			return Response.status(Response.Status.CONFLICT).entity("No password entered").build();
+		}
+		
+		if(body.getPasshash().equals(DAOecsettings.getpassword())) {
+			System.out.println("Acess granted");
+			return Response.status(Response.Status.OK).entity("Acess granted").build();
+		}
+		System.out.println("Acess denied");
+		return Response.status(Response.Status.CONFLICT).entity("Acess denied").build();
+		
 	}
 
 	@Override

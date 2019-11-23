@@ -35,8 +35,8 @@ public class AdminApi  {
 
     @POST
     @Path("/login")
-    @Consumes({ "application/x-www-form-urlencoded" })
-    @Produces({ "text/plain" })
+    @Consumes({ "application/json" })
+    @Produces({ "application/json" })
     @io.swagger.annotations.ApiOperation(value = "Freischalten der Adminfunktionen", notes = "", response = String.class, tags={ "admin", })
     @io.swagger.annotations.ApiResponses(value = { 
         @io.swagger.annotations.ApiResponse(code = 200, message = "Login erfolgreich", response = String.class),

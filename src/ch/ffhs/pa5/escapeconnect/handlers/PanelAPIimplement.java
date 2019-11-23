@@ -28,6 +28,7 @@ public class PanelAPIimplement implements PanelApiService {
 		List<Panel> resultsToShow = new ArrayList<>();	
 		// get the data through the DAO
 		List<PanelDAOBean> resultsFromDB = daopanel.getAllPanels();
+
 		int place = 0;
 		// convert the PanelDAOBeans to Panels
 		for(PanelDAOBean generated_panel : resultsFromDB) {
