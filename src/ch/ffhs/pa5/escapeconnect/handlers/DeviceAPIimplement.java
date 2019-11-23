@@ -63,7 +63,7 @@ public class DeviceAPIimplement implements DeviceApiService {
 			//lade "device" aus dem JSON-File und transformiere dieses in ein Bean f�r die DAO-Methoden
 			JsonNode devicejson = root.path("device");
 			if(devicejson.isEmpty()) {
-				return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE).entity("not compling to JSON-schema, no 'device'-Node").build();
+				return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE).entity("Not compling to JSON-schema, no 'device'-Node").build();
 			}
 			DeviceDAOBean device = objectMapper.treeToValue(devicejson, DeviceDAOBean.class);
 			
@@ -138,10 +138,78 @@ public class DeviceAPIimplement implements DeviceApiService {
 	}
 
 	@Override
-	public Response upgradeFirmware(UpdateDeviceBody body, @NotNull Integer deviceid, Boolean forces,
-			SecurityContext securityContext) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public Response upgradeFirmware(UpdateDeviceBody updateDeviceBody, @NotNull String deviceid,SecurityContext securityContext) {
+		
+		if(updateDeviceBody==null||updateDeviceBody.getFirmware()==null) { 
+			// If there is no file, then the system sends back an error.
+			return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE).entity("no File provided").build();
+		}
+				
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			JsonNode root = objectMapper.readTree(updateDeviceBody.getFirmware());
+			System.out.println("Got JSON-Riddledefinition with name: " + root.path("definition").path("name").asText());
+			
+			// (1 - Device) Jackson ObjectMapper goes through the JsonNode and create a JAVA Object.
+			// The setter must have same naming than parameter in JSON.
+			// see tutorial: http://tutorials.jenkov.com/java-json/jackson-objectmapper.html
+			JsonNode devicejson = root.path("device");
+			if(devicejson.isEmpty()) {
+				return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE).entity("There is no 'device'-Node for this Upgrade. The JSON-Schema has not been respected").build();
+			}
+			DeviceDAOBean deviceUpgrade = objectMapper.treeToValue(devicejson, DeviceDAOBean.class);
+			deviceUpgrade.setDeviceid(deviceid);
+			// The DAO class instantiated above  
+			// write() takes the object "deviceUpgrade" and save in DB
+			daodevice.write(deviceUpgrade);
+			System.out.println("Upgrade's progress - Device with MAC is saved: " + deviceUpgrade.getMac());				 
+			
+			// (2 - Panel) Same logic
+			JsonNode paneljson = root.path("panel");
+			PanelDAOBean panelUpgrade = new PanelDAOBean();
+			// Assumption that a device has only 1 panel in this V1.0 of EscapeConnect
+			panelUpgrade.setName(deviceUpgrade.getName());
+			panelUpgrade.setDevice_mac(deviceUpgrade.getMac());	
+			// write() returns id of the panel	
+			int panel_id = daopanel.write(panelUpgrade); 
+			System.out.println("Upgrade's progress - Panel with id saved: " + String.valueOf(panel_id));
+			// (2.1 - Panel Value) Iterate through values contained in JSON node Panel
+			Iterator<JsonNode> values = paneljson.path("values").elements();
+			while(values.hasNext()) {
+				JsonNode valuejson = values.next();
+				ValueDAOBean value = objectMapper.treeToValue(valuejson, ValueDAOBean.class);
+				value.setPanel_id(panel_id);
+				int value_id = daovalue.write(value);
+				System.out.println("Upgrade's progress - Value with id saved: " + String.valueOf(value_id));
+			}
+			// (2.2 - Panel Action) Iterate through actions contained in JSON node Panel
+			Iterator<JsonNode> actions = paneljson.path("actions").elements();
+			while(actions.hasNext()) {
+				JsonNode actionjson = actions.next();
+				ActionDAOBean action = objectMapper.treeToValue(actionjson, ActionDAOBean.class);
+				action.setPanel_id(panel_id);
+				int action_id = daoaction.write(action);
+				System.out.println("Upgrade's progress - Value with id saved: " + String.valueOf(action_id));
+			}
+			// (3 - Panel Settings) Iterate through settings contained in JSON node Panel
+			Iterator<JsonNode> settings = root.path("settings").elements();
+			while(settings.hasNext()) {
+				JsonNode settingjson = settings.next();
+				SettingDAOBean setting = objectMapper.treeToValue(settingjson, SettingDAOBean.class);
+				setting.setDevice_mac(deviceUpgrade.getMac());
+				setting.setPanel_id(panel_id);
+				int setting_id = daosetting.write(setting);
+				System.out.println("Upgrade's progress - Setting with id saved: " + String.valueOf(setting_id));
+			}
+				
+			} catch (JsonParseException e) {
+				e.printStackTrace();		
+				return Response.status(418).build();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();	
+			}
+			return Response.status(Response.Status.OK).build();
+		}
 
 }

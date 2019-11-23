@@ -15,7 +15,9 @@ public interface DeviceApiService {
     
     public Response deleteDevice( @NotNull String devicemac, Boolean forces,SecurityContext securityContext);
     
-    public Response upgradeFirmware(UpdateDeviceBody body, @NotNull Integer deviceid, Boolean forces,SecurityContext securityContext);
+    // I have deleted the parameter "forces: boolean"
+    // I have changed the deviceid to String
+    public Response upgradeFirmware(UpdateDeviceBody UpdateDeviceBody, @NotNull String deviceid,SecurityContext securityContext);
     
 }
 
