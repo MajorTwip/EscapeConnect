@@ -11,8 +11,10 @@ import org.glassfish.jersey.media.sse.EventOutput;
 import org.glassfish.jersey.media.sse.OutboundEvent;
 import org.glassfish.jersey.media.sse.SseFeature;
 
+import ch.ffhs.pa5.escapeconnect.bean.EcSettings;
 import ch.ffhs.pa5.escapeconnect.mqtt.MQTTconnector;
 import ch.ffhs.pa5.escapeconnect.mqtt.MQTTmessageHandler;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOecsettings;
 
 @Path("/")
 public class SSEhandler{
@@ -23,8 +25,10 @@ public class SSEhandler{
 	public EventOutput  getSSE() throws MqttException {
 		final EventOutput eventOutput = new EventOutput();
         
-		MQTTconnector con = new MQTTconnector("tcp://mqtt.comstock.ch:1884", "User2", "Pass2");
-		con.subscribe(new MQTTmessageHandler() {
+		DAOecsettings daoecsettings = new DAOecsettings();
+		EcSettings settings = daoecsettings.get();
+		MQTTconnector con = new MQTTconnector(settings.getMqttUrl(), settings.getMqttName(), settings.getMqttPass());
+		try{con.subscribe(new MQTTmessageHandler() {
 			
 			@Override
 			public boolean onMessage(String topic, String msg) {
@@ -41,6 +45,9 @@ public class SSEhandler{
 				return true;
 			}
 		}, "#");
+		}catch(MqttException e) {
+			System.out.println(e.getMessage());
+		}
 		
         return eventOutput;	}
 }
