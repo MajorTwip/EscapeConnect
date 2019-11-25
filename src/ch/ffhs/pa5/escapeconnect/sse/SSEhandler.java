@@ -35,7 +35,8 @@ public class SSEhandler{
                 try {
 					eventOutput.write(event);
 				} catch (IOException e) {
-					e.printStackTrace();
+					con.close();
+					//e.printStackTrace();
 				}
 				return true;
 			}
