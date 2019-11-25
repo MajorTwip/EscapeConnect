@@ -1,11 +1,19 @@
 package ch.ffhs.pa5.escapeconnect.mqtt;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.WebApplicationException;
+
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class MQTTconnector implements MqttCallback {
@@ -98,6 +106,44 @@ public class MQTTconnector implements MqttCallback {
 	public void deliveryComplete(IMqttDeliveryToken token) {
 		// TODO Auto-generated method stub
 	};
+	
+	volatile boolean completed=false;
+	public Map<String,String> getMessages(List<String> topics, int timeout) throws WebApplicationException{
+		Map<String,String> result = new HashMap<>();
+		try {
+			this.connect();
+			for(String topic:topics) {
+				client.subscribe(topic, new IMqttMessageListener() {
+					@Override
+					public void messageArrived(String msgtopic, MqttMessage message) throws Exception {
+						if(topics.contains(msgtopic)){
+							topics.remove(msgtopic);
+							result.put(msgtopic, String.valueOf(message));
+							if(topics.size()==0) {
+								completed=true;
+							}
+						}
+						
+					}
+					
+				});
+			}
+			for(int i=timeout;i>0;i--) {
+				Thread.sleep(1);
+				if(completed)i=0;
+			}
+			this.close();
+		} catch (MqttSecurityException e) {
+			e.printStackTrace();
+			throw new WebApplicationException("MQTT Login error");
+		} catch (MqttException e) {
+			e.printStackTrace();
+			throw new WebApplicationException("MQTT error: " + e.getMessage());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 	
 	
 }
