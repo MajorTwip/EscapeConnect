@@ -14,11 +14,47 @@ public class DAOecsettings implements DAOecsettingsIF{
 
 	@Override
 	public EcSettings get() {
-		// TODO Auto-generated method stub
-		return null;
+		String query = "SELECT * FROM ecsettings";
+		// Create an empty PanelDAOBean
+		EcSettings settings = new EcSettings();
+		try (Connection con = DBAdapter.getConnection();
+				PreparedStatement pstm = con.prepareStatement(query)){
+			ResultSet rs = pstm.executeQuery();
+			// Take the ResultSet rs and get the first line.
+			if(rs.next() != false) {
+				String url = rs.getString("mqtturl");
+				int port = rs.getInt("mqttport");
+				
+				//prepend tcp:// if missing
+				if(!url.startsWith("tcp://")&&!url.startsWith("ssl://")) {
+					url="tcp://"+url;
+				}
+				
+				if(port==0) {
+					if(url.startsWith("tcp://")) {
+						port = 1883;
+					}else {
+						port = 8883;
+					}
+				}
+				url = url + ":" + String.valueOf(port);
+				
+				settings.setMqttUrl(url);
+				settings.setMqttName(rs.getString("mqttuser"));
+				settings.setMqttPass(rs.getString("mqttpass"));
+				settings.setPassword(rs.getString("adminpass"));				
+			}
+			// Close the connection to the DB
+			pstm.close(); 
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new WebApplicationException(e.getMessage());
+		}
+		// Return the rs with the settings.
+		return settings;
 	}
 
-	public static String getpassword() {
+	public String getpassword() {
 		Connection con = DBAdapter.getConnection();
 		Statement selectStmt = null;
 		try {
@@ -36,7 +72,7 @@ public class DAOecsettings implements DAOecsettingsIF{
 		}
 		return null;
 	}
-	public static void write(EcSettings settings) {
+	public void write(EcSettings settings) {
 		
 		String query = "UPDATE ecsettings SET adminpass = ?, mqtturl = ?, mqttport = ?, mqttuser = ?, mqttpass = ?";
 		
@@ -44,6 +80,9 @@ public class DAOecsettings implements DAOecsettingsIF{
 		try (PreparedStatement pstm = con.prepareStatement(query);){
 			pstm.setString(1, settings.getPassword());
 			String mqtturl[] = settings.getMqttUrl().split(":");
+			if(mqtturl[0].length()<1) {
+				mqtturl[0] = "MQTT";
+			}
 			pstm.setString(2, mqtturl[0]);
 			if(mqtturl.length>1) {
 				pstm.setInt(3, Integer.valueOf(mqtturl[1]));

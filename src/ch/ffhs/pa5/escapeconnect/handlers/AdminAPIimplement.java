@@ -1,6 +1,5 @@
 package ch.ffhs.pa5.escapeconnect.handlers;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
@@ -23,8 +22,8 @@ public class AdminAPIimplement implements AdminApiService {
 			System.out.println("Got empty login request");
 			return Response.status(Response.Status.CONFLICT).entity("No password entered").build();
 		}
-		
-		if(body.getPasshash().equals(DAOecsettings.getpassword())) {
+		DAOecsettings daoecsettings = new DAOecsettings();
+		if(body.getPasshash().equals(daoecsettings.getpassword())) {
 			System.out.println("Acess granted");
 			return Response.status(Response.Status.OK).entity("Acess granted").build();
 		}
@@ -44,13 +43,14 @@ public class AdminAPIimplement implements AdminApiService {
 		DBAdapter.createDBifNone();
 		
 		//Read given settings and write them to DB
-		EcSettings settings = new EcSettings(body.getAdminpass(),body.getMqtturl());
+		String mqtturl = body.getMqtturl().trim().toLowerCase();
+		EcSettings settings = new EcSettings(body.getAdminpass(),mqtturl);
 		if(body.getMqttuser()!=null&&body.getMqttpass()!=null) {
 			settings.setMqttName(body.getMqttuser());
 			settings.setMqttPass(body.getMqttpass());
 		}
-		
-		DAOecsettings.write(settings);
+		DAOecsettings daoecsettings = new DAOecsettings();
+		daoecsettings.write(settings);
 		return Response.status(Response.Status.OK).build();
 	}
 
