@@ -15,7 +15,7 @@ public class DeviceDAOBean {
 	private int firmwareid;
 	
 
-	DeviceDAOBean(){}
+	public DeviceDAOBean(){}
 	
 	DeviceDAOBean(String name){
 		this.name=name;

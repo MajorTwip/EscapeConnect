@@ -99,7 +99,7 @@ public class MQTTconnector implements MqttCallback {
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
 		System.out.println("got msg, topic: " + topic + " Msg: " + String.valueOf(message.getPayload()));
 		if(this.callback!=null) {
-			callback.onMessage(topic,String.valueOf(message.getPayload()));
+			callback.onMessage(topic,String.valueOf(message));
 		}
 	}
 
@@ -110,6 +110,10 @@ public class MQTTconnector implements MqttCallback {
 	
 	volatile boolean completed=false;
 	public Map<String,String> getMessages(List<String> topics, int timeout) throws WebApplicationException{
+		return getMessages(topics, timeout,false,false);
+	}
+	
+	public Map<String,String> getMessages(List<String> topics, int timeout, boolean wildcard, boolean single) throws WebApplicationException{
 		Map<String,String> result = new HashMap<>();
 		try {
 			this.connect();
@@ -117,14 +121,18 @@ public class MQTTconnector implements MqttCallback {
 				client.subscribe(topic, new IMqttMessageListener() {
 					@Override
 					public void messageArrived(String msgtopic, MqttMessage message) throws Exception {
-						if(topics.contains(msgtopic)){
-							topics.remove(msgtopic);
+						if(wildcard) {
 							result.put(msgtopic, String.valueOf(message));
-							if(topics.size()==0) {
-								completed=true;
+							completed=single;
+						}else {
+							if(topics.contains(msgtopic)){
+								topics.remove(msgtopic);
+								result.put(msgtopic, String.valueOf(message));
+								if(topics.size()==0) {
+									completed=true;
+								}
 							}
 						}
-						
 					}
 					
 				});
