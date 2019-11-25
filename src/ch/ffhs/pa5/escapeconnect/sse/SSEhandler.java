@@ -23,7 +23,7 @@ public class SSEhandler{
 	public EventOutput  getSSE() throws MqttException {
 		final EventOutput eventOutput = new EventOutput();
         
-		MQTTconnector con = new MQTTconnector("tcp://mqtt.comstock.ch:1883", null, null);
+		MQTTconnector con = new MQTTconnector("tcp://mqtt.comstock.ch:1884", "User2", "Pass2");
 		con.subscribe(new MQTTmessageHandler() {
 			
 			@Override

@@ -36,6 +36,7 @@
 			<param-name>jersey.config.server.provider.packages</param-name>
 			<param-value>ch.ffhs.pa5.escapeconnect.sse</param-value>
 		</init-param>
+		<async-supported>true</async-supported>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>jersey-servlet</servlet-name>
