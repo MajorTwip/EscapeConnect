@@ -1,6 +1,7 @@
 package ch.ffhs.pa5.escapeconnect.mqtt;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -115,6 +116,7 @@ public class MQTTconnector implements MqttCallback {
 	
 	public Map<String,String> getMessages(List<String> topics, int timeout, boolean wildcard, boolean single) throws WebApplicationException{
 		Map<String,String> result = new HashMap<>();
+		List<String> topicsOpen = new LinkedList<String>(topics);
 		try {
 			this.connect();
 			for(String topic:topics) {
@@ -126,9 +128,10 @@ public class MQTTconnector implements MqttCallback {
 							completed=single;
 						}else {
 							if(topics.contains(msgtopic)){
-								topics.remove(msgtopic);
+								topicsOpen.remove(msgtopic);
+								//client.unsubscribe(msgtopic);
 								result.put(msgtopic, String.valueOf(message));
-								if(topics.size()==0) {
+								if(topicsOpen.size()==0) {
 									completed=true;
 								}
 							}
