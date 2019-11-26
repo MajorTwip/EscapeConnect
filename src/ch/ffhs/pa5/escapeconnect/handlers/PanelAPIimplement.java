@@ -1,9 +1,12 @@
 package ch.ffhs.pa5.escapeconnect.handlers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -50,20 +53,28 @@ public class PanelAPIimplement implements PanelApiService {
 			DAOdevice daodevice = new DAOdevice();
 			DeviceDAOBean device = daodevice.getByMac(generated_panel.getDevice_mac());
 			
-			if(device.getBasetopic()==""||device.getDeviceid()==null) {
-				LinkedList<String> topicToQuery = new LinkedList<>();
+			panelToShow.setUpgradeenabled(device.issupportsOTA());
+			
+			LinkedList<String> topicToQuery = new LinkedList<>();
+
+			DAOecsettings daoecsettings = new DAOecsettings();
+			EcSettings settings = daoecsettings.get();
+			MQTTconnector mqtt = new MQTTconnector(settings.getMqttUrl(), settings.getMqttName(), settings.getMqttPass());
+			
+			String basetopic = device.getBasetopic();
+			String deviceid = device.getDeviceid();
+			
+			if(basetopic==""||deviceid==null) {
 				System.out.println("looking for device " + generated_panel.getDevice_mac());
 				topicToQuery.add("+/+/$mac");
-				DAOecsettings daoecsettings = new DAOecsettings();
-				EcSettings settings = daoecsettings.get();
-				MQTTconnector mqtt = new MQTTconnector(settings.getMqttUrl(), settings.getMqttName(), settings.getMqttPass());
 				Map<String,String> devices = mqtt.getMessages(topicToQuery, 1000, true,false);
+				topicToQuery.clear();
 				for(String key:devices.keySet()) {
 					System.out.println(key + ":" + devices.get(key));
 					if(MACformating.sanitizeMAC(devices.get(key)).equals(generated_panel.getDevice_mac())) {
 						String[] topiclevels = key.split("/");
-						String basetopic = topiclevels[0];
-						String deviceid = topiclevels[1];
+						basetopic = topiclevels[0];
+						deviceid = topiclevels[1];
 						System.out.println("Basetopic: " + basetopic);
 						System.out.println("deviceid: " + deviceid);
 						device.setBasetopic(basetopic);
@@ -73,6 +84,11 @@ public class PanelAPIimplement implements PanelApiService {
 				}
 			}
 			
+			//get status "ready"
+			topicToQuery.add(String.join("/", basetopic, deviceid, "$state"));
+			Map<String,String> result = mqtt.getMessages(topicToQuery, 500);
+			panelToShow.setStatus(!result.isEmpty()&&result.containsValue("ready"));
+			
 			// Add the action and add the values
 			List<ActionDAOBean> list_daoActions = daoaction.getActionByPanelID(panelToShow.getId());
 			for(ActionDAOBean generated_action : list_daoActions) {
@@ -81,12 +97,28 @@ public class PanelAPIimplement implements PanelApiService {
 				actionToShow.setLabel(generated_action.getLabel());
 				panelToShow.addActionsItem(actionToShow);  
 			}
+			
+			//get values
 			List<ValueDAOBean> list_daoValues = daovalue.getValuesByPanelID(panelToShow.getId());
+			Map<String,Value> topicToValue = new HashMap<>();
 			for(ValueDAOBean generated_value : list_daoValues) {
 				Value valueToShow = new Value();
 				valueToShow.setId(generated_value.getId());
 				valueToShow.setLabel(generated_value.getLabel());
-				panelToShow.addValuesItem(valueToShow);  
+				String topic = String.join("/", basetopic, deviceid, generated_value.getSubtopic());
+				topicToValue.put(topic, valueToShow);
+			}
+			
+			//retrieve values from mqtt
+			List<String> topics = topicToValue.keySet().stream().collect(Collectors.toList());
+			Map<String,String> valuesMQTT = mqtt.getMessages(topics, 1000);
+			for(String key:topicToValue.keySet()) {
+				System.out.println(key+":"+valuesMQTT.get(key));
+				Value valueElement = topicToValue.get(key);
+				String value = valuesMQTT.get(key);
+				if(value==null||value.length()==0) value = "N/A";
+				valueElement.setValue(value);
+				panelToShow.addValuesItem(valueElement);
 			}
 			resultsToShow.add(panelToShow);
 		}
