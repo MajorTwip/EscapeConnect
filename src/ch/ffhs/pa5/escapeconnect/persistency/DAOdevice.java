@@ -2,6 +2,7 @@ package ch.ffhs.pa5.escapeconnect.persistency;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.ws.rs.WebApplicationException;
@@ -65,5 +66,33 @@ public class DAOdevice implements DAOdeviceIF {
 			throw new WebApplicationException(e.getMessage());
 		}
 		return true;
+	}
+
+	public DeviceDAOBean getByMac(String device_mac) {
+		String query = "SELECT * FROM device WHERE mac = ?";
+		// Create an empty DAOBean
+		DeviceDAOBean device = new DeviceDAOBean();
+		// Get the device
+		try (Connection con = DBAdapter.getConnection();
+				PreparedStatement pstm = con.prepareStatement(query)){
+			pstm.setString(1, device_mac);
+			ResultSet rs = pstm.executeQuery();
+			// Take the ResultSet rs and get the first line.
+			if(rs.next() != false) {
+				device.setMac(device_mac);
+				device.setFirmwareid(rs.getInt("firmware_id"));
+				device.setName(rs.getString("name"));
+				device.setsupportsOTA(rs.getBoolean("supportsOTA"));
+				device.setBasetopic(rs.getString("basetopic"));
+				device.setDeviceid(rs.getString("deviceid"));
+			}
+			// Close the connection to the DB
+			pstm.close(); 
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new WebApplicationException(e.getMessage());
+		}
+		// Return the rs with the panel or empty.
+		return device;			
 	}
 }

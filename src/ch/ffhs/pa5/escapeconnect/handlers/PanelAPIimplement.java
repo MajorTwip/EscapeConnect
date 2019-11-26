@@ -1,7 +1,9 @@
 package ch.ffhs.pa5.escapeconnect.handlers;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -9,13 +11,19 @@ import javax.ws.rs.core.SecurityContext;
 import ch.ffhs.pa5.escapeconnect.api.PanelApiService;
 import ch.ffhs.pa5.escapeconnect.bean.Action;
 import ch.ffhs.pa5.escapeconnect.bean.ActionDAOBean;
+import ch.ffhs.pa5.escapeconnect.bean.DeviceDAOBean;
+import ch.ffhs.pa5.escapeconnect.bean.EcSettings;
 import ch.ffhs.pa5.escapeconnect.bean.Panel;
 import ch.ffhs.pa5.escapeconnect.bean.PanelDAOBean;
 import ch.ffhs.pa5.escapeconnect.bean.Value;
 import ch.ffhs.pa5.escapeconnect.bean.ValueDAOBean;
+import ch.ffhs.pa5.escapeconnect.mqtt.MQTTconnector;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOaction;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOdevice;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOecsettings;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOpanel;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOvalue;
+import ch.ffhs.pa5.escapeconnect.utils.MACformating;
 
 public class PanelAPIimplement implements PanelApiService {
 	DAOpanel daopanel = new DAOpanel();
@@ -37,6 +45,34 @@ public class PanelAPIimplement implements PanelApiService {
 			panelToShow.setTitle(generated_panel.getName());
 			panelToShow.setOrder(place);
 			place = place + 1;
+			
+			//check if allready recognised on server
+			DAOdevice daodevice = new DAOdevice();
+			DeviceDAOBean device = daodevice.getByMac(generated_panel.getDevice_mac());
+			
+			if(device.getBasetopic()==""||device.getDeviceid()==null) {
+				LinkedList<String> topicToQuery = new LinkedList<>();
+				System.out.println("looking for device " + generated_panel.getDevice_mac());
+				topicToQuery.add("+/+/$mac");
+				DAOecsettings daoecsettings = new DAOecsettings();
+				EcSettings settings = daoecsettings.get();
+				MQTTconnector mqtt = new MQTTconnector(settings.getMqttUrl(), settings.getMqttName(), settings.getMqttPass());
+				Map<String,String> devices = mqtt.getMessages(topicToQuery, 1000, true,false);
+				for(String key:devices.keySet()) {
+					System.out.println(key + ":" + devices.get(key));
+					if(MACformating.sanitizeMAC(devices.get(key)).equals(generated_panel.getDevice_mac())) {
+						String[] topiclevels = key.split("/");
+						String basetopic = topiclevels[0];
+						String deviceid = topiclevels[1];
+						System.out.println("Basetopic: " + basetopic);
+						System.out.println("deviceid: " + deviceid);
+						device.setBasetopic(basetopic);
+						device.setDeviceid(deviceid);
+						daodevice.write(device);
+					}
+				}
+			}
+			
 			// Add the action and add the values
 			List<ActionDAOBean> list_daoActions = daoaction.getActionByPanelID(panelToShow.getId());
 			for(ActionDAOBean generated_action : list_daoActions) {

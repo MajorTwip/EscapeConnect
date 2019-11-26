@@ -72,6 +72,7 @@ public class DAOpanel implements DAOpanelIF {
 					PanelDAOBean generated_panel = new PanelDAOBean();
 					generated_panel.setId(rs.getInt("id"));
 					generated_panel.setName(rs.getString("name"));
+					generated_panel.setDevice_mac(rs.getString("device_mac"));
 					list_panels.add(generated_panel);
 				} while (rs.next());	
 			}
