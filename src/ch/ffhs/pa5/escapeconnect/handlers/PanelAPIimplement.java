@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.core.Response;
@@ -42,70 +41,78 @@ public class PanelAPIimplement implements PanelApiService {
 
 		int place = 0;
 		// convert the PanelDAOBeans to Panels
-		for(PanelDAOBean generated_panel : resultsFromDB) {
+		for(PanelDAOBean generatedPanel : resultsFromDB) {
 			Panel panelToShow = new Panel();
-			panelToShow.setId(generated_panel.getId());
-			panelToShow.setTitle(generated_panel.getName());
+			panelToShow.setId(generatedPanel.getId());
+			panelToShow.setTitle(generatedPanel.getName());
 			panelToShow.setOrder(place);
 			place = place + 1;
 			
-			//check if allready recognised on server
-			DAOdevice daodevice = new DAOdevice();
-			DeviceDAOBean device = daodevice.getByMac(generated_panel.getDevice_mac());
+			//check if already recognized on server
+			//the function getByMac returns a DeviceDAOBean
+			//Only device has boolean OTA but panel use it on frontend
+			DAOdevice daoDevice = new DAOdevice();
+			DeviceDAOBean device = daoDevice.getByMac(generatedPanel.getDevice_mac());
 			
+			// Info will be used on the frontend (Button "Upgrade riddle" visible)
 			panelToShow.setUpgradeenabled(device.issupportsOTA());
 			
 			LinkedList<String> topicToQuery = new LinkedList<>();
-
+			
+			// Start the connection with MQTT with the correct credentials
 			DAOecsettings daoecsettings = new DAOecsettings();
 			EcSettings settings = daoecsettings.get();
 			MQTTconnector mqtt = new MQTTconnector(settings.getMqttUrl(), settings.getMqttName(), settings.getMqttPass());
 			
-			String basetopic = device.getBasetopic();
-			String deviceid = device.getDeviceid();
+			String baseTopic = device.getBasetopic();
+			String deviceId = device.getDeviceid();
 			
-			if(basetopic==""||deviceid==null) {
-				System.out.println("looking for device " + generated_panel.getDevice_mac());
+			// When new riddle is uploaded, this is not set.
+			if(baseTopic==""||deviceId==null) {
+				System.out.println("looking for device " + generatedPanel.getDevice_mac());
+				// This use MQTT wildcards in order to get the baseTopic and the device id
 				topicToQuery.add("+/+/$mac");
 				Map<String,String> devices = mqtt.getMessages(topicToQuery, 1000, true,false);
 				topicToQuery.clear();
+				// loop in order to get the baseTopic and the deviceId from the device
+				// loop goes through all the devices linked to this MQTT broker
 				for(String key:devices.keySet()) {
 					System.out.println(key + ":" + devices.get(key));
-					if(MACformating.sanitizeMAC(devices.get(key)).equals(generated_panel.getDevice_mac())) {
-						String[] topiclevels = key.split("/");
-						basetopic = topiclevels[0];
-						deviceid = topiclevels[1];
-						System.out.println("Basetopic: " + basetopic);
-						System.out.println("deviceid: " + deviceid);
-						device.setBasetopic(basetopic);
-						device.setDeviceid(deviceid);
-						daodevice.write(device);
+					if(MACformating.sanitizeMAC(devices.get(key)).equals(generatedPanel.getDevice_mac())) {
+						String[] topicLevels = key.split("/");
+						baseTopic = topicLevels[0];
+						deviceId = topicLevels[1];
+						System.out.println("Basetopic: " + baseTopic);
+						System.out.println("Device Id: " + deviceId);
+						device.setBasetopic(baseTopic);
+						device.setDeviceid(deviceId);
+						daoDevice.write(device);
 					}
 				}
 			}
 			
 			//get status "ready"
-			topicToQuery.add(String.join("/", basetopic, deviceid, "$state"));
+			topicToQuery.add(String.join("/", baseTopic, deviceId, "$state"));
 			Map<String,String> result = mqtt.getMessages(topicToQuery, 500);
 			panelToShow.setStatus(!result.isEmpty()&&result.containsValue("ready"));
 			
-			// Add the action and add the values
-			List<ActionDAOBean> list_daoActions = daoaction.getActionByPanelID(panelToShow.getId());
-			for(ActionDAOBean generated_action : list_daoActions) {
+			//Add the actions
+			List<ActionDAOBean> listDaoActions = daoaction.getActionByPanelID(panelToShow.getId());
+			for(ActionDAOBean generatedAction : listDaoActions) {
 				Action actionToShow = new Action();
-				actionToShow.setId(generated_action.getId());
-				actionToShow.setLabel(generated_action.getLabel());
+				actionToShow.setId(generatedAction.getId());
+				actionToShow.setLabel(generatedAction.getLabel());
 				panelToShow.addActionsItem(actionToShow);  
 			}
 			
-			//get values
-			List<ValueDAOBean> list_daoValues = daovalue.getValuesByPanelID(panelToShow.getId());
+			//Add the values
+			List<ValueDAOBean> listDaoValues = daovalue.getValuesByPanelID(panelToShow.getId());
 			Map<String,Value> topicToValue = new HashMap<>();
-			for(ValueDAOBean generated_value : list_daoValues) {
+			for(ValueDAOBean generatedValue : listDaoValues) {
 				Value valueToShow = new Value();
-				valueToShow.setId(generated_value.getId());
-				valueToShow.setLabel(generated_value.getLabel());
-				String topic = String.join("/", basetopic, deviceid, generated_value.getSubtopic());
+				valueToShow.setId(generatedValue.getId());
+				valueToShow.setLabel(generatedValue.getLabel());
+				String topic = String.join("/", baseTopic, deviceId, generatedValue.getSubtopic());
 				topicToValue.put(topic, valueToShow);
 			}
 			
