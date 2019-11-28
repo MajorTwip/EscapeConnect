@@ -207,8 +207,7 @@ public class DeviceAPIimplement implements DeviceApiService {
         ActionDAOBean action = objectMapper.treeToValue(actionjson, ActionDAOBean.class);
         action.setPanel_id(panelId);
         int actionId = daoaction.write(action);
-        System.out.println(
-            "Upgrade's progress - Value with id saved: " + String.valueOf(actionId));
+        System.out.println("Upgrade's progress - Value with id saved: " + String.valueOf(actionId));
       }
       // (3 - Panel Settings) Iterate through settings contained in JSON node Panel
       Iterator<JsonNode> settings = root.path("settings").elements();
