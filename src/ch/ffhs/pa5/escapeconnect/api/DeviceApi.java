@@ -14,6 +14,8 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
 
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import java.io.File;
+import java.nio.file.Files;
 
 import java.io.IOException;
 import java.io.InputStream;
