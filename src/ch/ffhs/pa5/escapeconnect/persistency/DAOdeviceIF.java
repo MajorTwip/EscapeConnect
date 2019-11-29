@@ -7,5 +7,9 @@ public interface DAOdeviceIF {
 	boolean write(DeviceDAOBean device);
 
 	boolean delete(String mac);
+	
+	DeviceDAOBean getByMac(String device_mac);
+	
+	DeviceDAOBean getByDeviceID(String deviceId);
 
 }
