@@ -1,7 +1,12 @@
 package ch.ffhs.pa5.escapeconnect.handlers;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.Response;
@@ -14,14 +19,17 @@ import ch.ffhs.pa5.escapeconnect.api.DeviceApiService;
 import ch.ffhs.pa5.escapeconnect.bean.ActionDAOBean;
 import ch.ffhs.pa5.escapeconnect.bean.AddDeviceBody;
 import ch.ffhs.pa5.escapeconnect.bean.DeviceDAOBean;
+import ch.ffhs.pa5.escapeconnect.bean.EcSettings;
 import ch.ffhs.pa5.escapeconnect.bean.PanelDAOBean;
 import ch.ffhs.pa5.escapeconnect.bean.SettingDAOBean;
 import ch.ffhs.pa5.escapeconnect.bean.UpdateDeviceBody;
 import ch.ffhs.pa5.escapeconnect.bean.ValueDAOBean;
+import ch.ffhs.pa5.escapeconnect.mqtt.MQTTconnector;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOaction;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOactionIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOdevice;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOdeviceIF;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOecsettings;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOpanel;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOpanelIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOsettingIF;
@@ -148,7 +156,7 @@ public class DeviceAPIimplement implements DeviceApiService {
   @Override
   public Response upgradeFirmware(
       UpdateDeviceBody updateDeviceBody,
-      @NotNull String deviceid,
+      @NotNull String deviceId,
       Boolean forces,
       SecurityContext securityContext) {
     if (updateDeviceBody == null || updateDeviceBody.getFirmware() == null) {
@@ -158,6 +166,41 @@ public class DeviceAPIimplement implements DeviceApiService {
           .build();
     }
 
+    // Start the connection with MQTT with the correct credentials
+    DAOecsettings daoecsettings = new DAOecsettings();
+    EcSettings settings = daoecsettings.get();
+    MQTTconnector mqtt = new MQTTconnector(settings.getMqttUrl(), settings.getMqttName(), settings.getMqttPass());
+    
+    // Get the MD5 from the device via MQTT
+    DeviceDAOBean deviceToUpdate = daodevice.getByDeviceID(deviceId);
+    LinkedList<String> requestMsgMd5 = new LinkedList<>();
+    requestMsgMd5.add(deviceToUpdate.getBasetopic() + "/" + deviceId + "/" + "$fw/checksum");
+    Map<String,String> receivedMsgMd5 = mqtt.getMessages(requestMsgMd5, 1000, true,false);
+    System.out.println("The MD5 is " + receivedMsgMd5);
+    
+    // Calculate the MD5 of the new firmware
+    byte[] newFirmware = updateDeviceBody.getFirmware();
+    String newChecksum = null;
+    try { 
+    	MessageDigest md = MessageDigest.getInstance("MD5"); 
+    	byte[] hash = md.digest(newFirmware); 
+    	StringBuilder sb = new StringBuilder(2*hash.length); 
+    	for(byte b : hash){ 
+    		sb.append(String.format("%02x", b&0xff)); 
+    	} 
+    	newChecksum = sb.toString(); 
+    } catch (NoSuchAlgorithmException e) { 
+    	e.printStackTrace();
+    } 
+    
+    // Compare the 2 MD5 Checksum
+    if(newChecksum == receivedMsgMd5.get("###")) {
+    	
+    } else {
+    	
+    } 
+    
+    // Make sure the modifications of the file are in the DB as well
     ObjectMapper objectMapper = new ObjectMapper();
     try {
       JsonNode root = objectMapper.readTree(updateDeviceBody.getFirmware());
@@ -175,7 +218,7 @@ public class DeviceAPIimplement implements DeviceApiService {
             .build();
       }
       DeviceDAOBean deviceUpgrade = objectMapper.treeToValue(devicejson, DeviceDAOBean.class);
-      deviceUpgrade.setDeviceid(deviceid);
+      deviceUpgrade.setDeviceid(deviceId);
       // The DAO class instantiated above
       // write() takes the object "deviceUpgrade" and save in DB
       daodevice.write(deviceUpgrade);
@@ -210,13 +253,13 @@ public class DeviceAPIimplement implements DeviceApiService {
         System.out.println("Upgrade's progress - Value with id saved: " + String.valueOf(actionId));
       }
       // (3 - Panel Settings) Iterate through settings contained in JSON node Panel
-      Iterator<JsonNode> settings = root.path("settings").elements();
-      while (settings.hasNext()) {
-        JsonNode settingjson = settings.next();
-        SettingDAOBean setting = objectMapper.treeToValue(settingjson, SettingDAOBean.class);
-        setting.setDevice_mac(deviceUpgrade.getMac());
-        setting.setPanel_id(panelId);
-        int settingId = daosetting.write(setting);
+      Iterator<JsonNode> setting = root.path("settings").elements();
+      while (setting.hasNext()) {
+        JsonNode settingjson = setting.next();
+        SettingDAOBean settingToDb = objectMapper.treeToValue(settingjson, SettingDAOBean.class);
+        settingToDb.setDevice_mac(deviceUpgrade.getMac());
+        settingToDb.setPanel_id(panelId);
+        int settingId = daosetting.write(settingToDb);
         System.out.println(
             "Upgrade's progress - Setting with id saved: " + String.valueOf(settingId));
       }
