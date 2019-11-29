@@ -95,4 +95,32 @@ public class DAOdevice implements DAOdeviceIF {
 		// Return the rs with the panel or empty.
 		return device;			
 	}
+	
+	public DeviceDAOBean getByDeviceID(String deviceId) {
+		String query = "SELECT * FROM device WHERE deviceid = ?";
+		// Create an empty DAOBean
+		DeviceDAOBean device = new DeviceDAOBean();
+		// Get the device
+		try (Connection con = DBAdapter.getConnection();
+				PreparedStatement pstm = con.prepareStatement(query)){
+			pstm.setString(1, deviceId);
+			ResultSet rs = pstm.executeQuery();
+			// Take the ResultSet rs and get the first line.
+			if(rs.next() != false) {
+				device.setMac(rs.getString("mac"));
+				device.setFirmwareid(rs.getInt("firmware_id"));
+				device.setName(rs.getString("name"));
+				device.setsupportsOTA(rs.getBoolean("supportsOTA"));
+				device.setBasetopic(rs.getString("basetopic"));
+				device.setDeviceid(deviceId);
+			}
+			// Close the connection to the DB
+			pstm.close(); 
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new WebApplicationException(e.getMessage());
+		}
+		// Return the rs with the panel or empty.
+		return device;			
+	}
 }
