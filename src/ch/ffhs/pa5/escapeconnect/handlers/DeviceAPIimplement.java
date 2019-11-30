@@ -12,6 +12,8 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -174,7 +176,7 @@ public class DeviceAPIimplement implements DeviceApiService {
     // Get the MD5 from the device via MQTT
     DeviceDAOBean deviceToUpdate = daodevice.getByDeviceID(deviceId);
     LinkedList<String> requestMsgMd5 = new LinkedList<>();
-    requestMsgMd5.add(deviceToUpdate.getBasetopic() + "/" + deviceId + "/" + "$fw/checksum");
+    requestMsgMd5.add("/" + deviceToUpdate.getBasetopic() + "/" + deviceId + "/" + "$fw/checksum");
     Map<String,String> receivedMsgMd5 = mqtt.getMessages(requestMsgMd5, 1000, true,false);
     System.out.println("The MD5 is " + receivedMsgMd5);
     
@@ -193,84 +195,14 @@ public class DeviceAPIimplement implements DeviceApiService {
     	e.printStackTrace();
     } 
     
-    // Compare the 2 MD5 Checksum
-    if(newChecksum == receivedMsgMd5.get("###")) {
-    	
-    } else {
-    	
-    } 
+    //Prepare topic for publishing
+    String topic = String.join("/" + deviceToUpdate.getBasetopic() + "/" + deviceId + "/" + "$fw/" + newChecksum);
     
-    // Make sure the modifications of the file are in the DB as well
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      JsonNode root = objectMapper.readTree(updateDeviceBody.getFirmware());
-      System.out.println(
-          "Got JSON-Riddledefinition with name: " + root.path("definition").path("name").asText());
-
-      // (1 - Device) Jackson ObjectMapper goes through the JsonNode and create a JAVA Object.
-      // The setter must have same naming than parameter in JSON.
-      // see tutorial: http://tutorials.jenkov.com/java-json/jackson-objectmapper.html
-      JsonNode devicejson = root.path("device");
-      if (devicejson.isEmpty()) {
-        return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE)
-            .entity(
-                "There is no 'device'-Node for this Upgrade. The JSON-Schema has not been respected")
-            .build();
-      }
-      DeviceDAOBean deviceUpgrade = objectMapper.treeToValue(devicejson, DeviceDAOBean.class);
-      deviceUpgrade.setDeviceid(deviceId);
-      // The DAO class instantiated above
-      // write() takes the object "deviceUpgrade" and save in DB
-      daodevice.write(deviceUpgrade);
-      System.out.println(
-          "Upgrade's progress - Device with MAC is saved: " + deviceUpgrade.getMac());
-
-      // (2 - Panel) Same logic
-      JsonNode paneljson = root.path("panel");
-      PanelDAOBean panelUpgrade = new PanelDAOBean();
-      // Assumption that a device has only 1 panel in this V1.0 of EscapeConnect
-      panelUpgrade.setName(deviceUpgrade.getName());
-      panelUpgrade.setDevice_mac(deviceUpgrade.getMac());
-      // write() returns id of the panel
-      int panelId = daopanel.write(panelUpgrade);
-      System.out.println("Upgrade's progress - Panel with id saved: " + String.valueOf(panelId));
-      // (2.1 - Panel Value) Iterate through values contained in JSON node Panel
-      Iterator<JsonNode> values = paneljson.path("values").elements();
-      while (values.hasNext()) {
-        JsonNode valuejson = values.next();
-        ValueDAOBean value = objectMapper.treeToValue(valuejson, ValueDAOBean.class);
-        value.setPanel_id(panelId);
-        int valueId = daovalue.write(value);
-        System.out.println("Upgrade's progress - Value with id saved: " + String.valueOf(valueId));
-      }
-      // (2.2 - Panel Action) Iterate through actions contained in JSON node Panel
-      Iterator<JsonNode> actions = paneljson.path("actions").elements();
-      while (actions.hasNext()) {
-        JsonNode actionjson = actions.next();
-        ActionDAOBean action = objectMapper.treeToValue(actionjson, ActionDAOBean.class);
-        action.setPanel_id(panelId);
-        int actionId = daoaction.write(action);
-        System.out.println("Upgrade's progress - Value with id saved: " + String.valueOf(actionId));
-      }
-      // (3 - Panel Settings) Iterate through settings contained in JSON node Panel
-      Iterator<JsonNode> setting = root.path("settings").elements();
-      while (setting.hasNext()) {
-        JsonNode settingjson = setting.next();
-        SettingDAOBean settingToDb = objectMapper.treeToValue(settingjson, SettingDAOBean.class);
-        settingToDb.setDevice_mac(deviceUpgrade.getMac());
-        settingToDb.setPanel_id(panelId);
-        int settingId = daosetting.write(settingToDb);
-        System.out.println(
-            "Upgrade's progress - Setting with id saved: " + String.valueOf(settingId));
-      }
-
-    } catch (JsonParseException e) {
-      e.printStackTrace();
-      return Response.status(418).build();
-    } catch (IOException e1) {
-      e1.printStackTrace();
-      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-    }
+    //Publish the bin file
+    //No need to handle exceptions here, since the MQTT functions do it.
+    MqttMessage msg = new MqttMessage(updateDeviceBody.getFirmware());
+    mqtt.publish(topic, msg);
+    
     return Response.status(Response.Status.OK).build();
   }
 }
