@@ -156,7 +156,7 @@ public class DeviceApi {
             response = Void.class)
       })
   public Response upgradeFirmware(
-      @ApiParam(value = "", required = true) UpdateDeviceBody body,
+      @ApiParam(value = "", required = true)  @FormDataParam("firmware") InputStream file,
       @ApiParam(value = "Id des devices welches upgedatet werden soll", required = true)
           @QueryParam("deviceid")
           String deviceid,
@@ -165,6 +165,18 @@ public class DeviceApi {
           Boolean forces,
       @Context SecurityContext securityContext)
       throws NotFoundException {
-    return delegate.upgradeFirmware(body, deviceid, forces, securityContext);
+	  UpdateDeviceBody updateDeviceBody = new UpdateDeviceBody();
+	    if (file != null) {
+	      try {
+	    	  updateDeviceBody.setFirmware(file.readAllBytes());
+	    	  file.close();
+	      } catch (IOException e) {
+	        e.printStackTrace();
+	        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+	            .entity("Error receiving File")
+	            .build();
+	      }  
+	    }
+    return delegate.upgradeFirmware(updateDeviceBody, deviceid, forces, securityContext);
   }
 }

@@ -174,11 +174,12 @@ public class DeviceAPIimplement implements DeviceApiService {
     MQTTconnector mqtt = new MQTTconnector(settings.getMqttUrl(), settings.getMqttName(), settings.getMqttPass());
     
     // Get the MD5 from the device via MQTT
-    DeviceDAOBean deviceToUpdate = daodevice.getByDeviceID(deviceId);
+    DeviceDAOBean deviceToUpdate = daodevice.getByMac(deviceId);
     LinkedList<String> requestMsgMd5 = new LinkedList<>();
-    requestMsgMd5.add("/" + deviceToUpdate.getBasetopic() + "/" + deviceId + "/" + "$fw/checksum");
-    Map<String,String> receivedMsgMd5 = mqtt.getMessages(requestMsgMd5, 1000, true,false);
-    System.out.println("The MD5 is " + receivedMsgMd5);
+    String fwrequest = String.join("/", deviceToUpdate.getBasetopic(),deviceToUpdate.getDeviceid(),"$fw/checksum");
+    requestMsgMd5.add(fwrequest);//("/" + deviceToUpdate.getBasetopic() + "/" + deviceToUpdate.getDeviceid() + "/" + "$fw/checksum");
+    Map<String,String> receivedMsgMd5 = mqtt.getMessages(requestMsgMd5, 1000);
+    System.out.println("The MD5 is " + receivedMsgMd5.get(fwrequest));
     
     // Calculate the MD5 of the new firmware
     byte[] newFirmware = updateDeviceBody.getFirmware();
@@ -196,7 +197,7 @@ public class DeviceAPIimplement implements DeviceApiService {
     } 
     
     //Prepare topic for publishing
-    String topic = String.join("/" + deviceToUpdate.getBasetopic() + "/" + deviceId + "/" + "$fw/" + newChecksum);
+    String topic = String.join("/", deviceToUpdate.getBasetopic(), deviceToUpdate.getDeviceid(), "$implementation/ota/firmware", newChecksum);
     
     //Publish the bin file
     //No need to handle exceptions here, since the MQTT functions do it.
