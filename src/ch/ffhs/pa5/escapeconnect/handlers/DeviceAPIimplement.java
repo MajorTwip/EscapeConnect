@@ -38,6 +38,7 @@ import ch.ffhs.pa5.escapeconnect.persistency.DAOsettingIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOsettings;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOvalue;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOvalueIF;
+import ch.ffhs.pa5.escapeconnect.utils.FirmwareUtil;
 import ch.ffhs.pa5.escapeconnect.utils.MACformating;
 
 public class DeviceAPIimplement implements DeviceApiService {
@@ -180,9 +181,13 @@ public class DeviceAPIimplement implements DeviceApiService {
     requestMsgMd5.add(fwrequest);//("/" + deviceToUpdate.getBasetopic() + "/" + deviceToUpdate.getDeviceid() + "/" + "$fw/checksum");
     Map<String,String> receivedMsgMd5 = mqtt.getMessages(requestMsgMd5, 1000);
     System.out.println("The MD5 is " + receivedMsgMd5.get(fwrequest));
+
+    byte[] newFirmware = updateDeviceBody.getFirmware();
+    
+    //get name/version of the new Fw
+    System.out.println("New Firmwarename:Version  " + FirmwareUtil.getFirmwareName(newFirmware) + ":" + FirmwareUtil.getFirmwareVersion(newFirmware));
     
     // Calculate the MD5 of the new firmware
-    byte[] newFirmware = updateDeviceBody.getFirmware();
     String newChecksum = null;
     try { 
     	MessageDigest md = MessageDigest.getInstance("MD5"); 
