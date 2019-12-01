@@ -9,32 +9,59 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
 	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 	crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/flatly/bootstrap.min.css"
+	integrity="sha384-yrfSO0DBjS56u5M+SjWTyAHujrkiYVtRYh2dtB3yLQtUz3bodOeialO59u5lUCFF"
+	crossorigin="anonymous">
 
 <title>EscapeConnect</title>
 </head>
 
 <body>
 
-	<nav class="navbar navbar-light navbar-expand-md bg-faded justify-content-center">
-    <a href="" class="navbar-brand d-flex w-50 mr-auto">EscapeConnect</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsingNavbar3">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="navbar-collapse collapse w-100" id="collapsingNavbar3">
-        <ul class="nav navbar-nav ml-auto w-100 justify-content-end">
-            <li class="nav-item">
-				<input type="password" id="txt_pw">
-            </li>
-            <li class="nav-item">
-				<button class="btn my-2 my-sm-0" type="button" id="btn_login">Login</button>
-            </li>
-        </ul>
-    </div>
-</nav>
 
-	<div class="container"></div>
+	<div class="container">
+
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="#">EscapeConnect</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarColor03" aria-controls="navbarColor03"
+				aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarColor03">
+				<div class="form-inline my-2 my-lg-0">
+					<input class="form-control mr-sm-2" type="password" placeholder=""
+						id="txt_pw">
+					<button class="btn btn-secondary my-2 my-sm-0" id="btn_login">Login</button>
+				</div>
+			</div>
+		</nav>
+
+		<div class="card border-primary mb-3 mt-3" id="card_addDevice">
+			<div class="card-header">Gerät hinzufügen</div>
+			<div class="card-body">
+				<div class="form-row">
+					<div class="form-group">
+						<label for="txt_deviceName">Gerätename</label> <input type="text"
+							class="form-control" id="txt_deviceName" placeholder="NA">
+					</div>
+					<div class="form-group col-md-5">
+						<label for="file_deviceFile">Konfigurationsdatei</label> <input
+							type="file" class="form-control" id="file_deviceFile"
+							placeholder="device.json">
+					</div>
+					<div class="form-group col-md-1">
+						<label for="btn_addDevice">Upload</label> <input type="button"
+							class="form-control" id="btn_addDevice" value="Go">
+					</div>
+				</div>
+			</div>
+		</div>
 
 
+	</div>
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
 		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
 		crossorigin="anonymous"></script>
@@ -46,8 +73,9 @@
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
 		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
 		crossorigin="anonymous"></script>
-		
+
 	<script type="text/javascript" src="js/login.js"></script>
+	<script type="text/javascript" src="js/addDevice.js"></script>
 
 </body>
 
