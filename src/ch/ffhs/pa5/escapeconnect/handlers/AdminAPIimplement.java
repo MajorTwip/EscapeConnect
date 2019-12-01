@@ -28,7 +28,7 @@ public class AdminAPIimplement implements AdminApiService {
 			return Response.status(Response.Status.OK).entity("Acess granted").build();
 		}
 		System.out.println("Acess denied");
-		return Response.status(Response.Status.CONFLICT).entity("Acess denied").build();
+		return Response.status(Response.Status.UNAUTHORIZED).entity("Acess denied").build();
 		
 	}
 
