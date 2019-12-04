@@ -65,11 +65,11 @@ public class TestDevice {
 		//Fehler bei fehlender Datei
 		assertEquals(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), devapi.addDevice(body, null).getStatus());
 
-		//Fehler bei ungültiger Datei
+		//Fehler bei ungÃ¼ltiger Datei
 		body.setFile(String.valueOf("sdfsdfsfsdf").getBytes());
 		assertEquals(418, devapi.addDevice(body, null).getStatus());
 		
-		//Fehler bei ungültiger Datei
+		//Fehler bei ungÃ¼ltiger Datei
 		body.setFile(String.valueOf("{}").getBytes());
 		assertEquals(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), devapi.addDevice(body, null).getStatus());
 		
@@ -143,7 +143,7 @@ public class TestDevice {
 				"	]\r\n" + 
 				"}\r\n";
 	
-	//Erfolg bei gültiger Datei
+	//Erfolg bei gÃ¼ltiger Datei
 	body.setFile(testFile.getBytes());
 	assertEquals(Response.Status.OK.getStatusCode(), devapi.addDevice(body, null).getStatus());
 	}
