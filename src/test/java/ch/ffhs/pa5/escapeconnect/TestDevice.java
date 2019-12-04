@@ -1,11 +1,11 @@
 package ch.ffhs.pa5.escapeconnect;
 
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.ws.rs.core.Response;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -20,7 +20,10 @@ import ch.ffhs.pa5.escapeconnect.persistency.DAOdeviceIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOpanelIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOsettingIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOvalueIF;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+
+@ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.class)
 public class TestDevice {
     
