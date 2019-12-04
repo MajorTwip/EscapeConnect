@@ -42,7 +42,7 @@ public class ActionAPIimplement implements ActionApiService {
 		    	  	MqttMessage hello = new MqttMessage();
 		            hello.setPayload("mainpayload".getBytes());
 					mqtt.publish(maintopic,hello);
-					return Response.status(Response.Status.OK).entity("Aktion ausgelöst").build();
+					return Response.status(Response.Status.OK).entity("Aktion ausgelÃ¶st").build();
 				
 }
 	}

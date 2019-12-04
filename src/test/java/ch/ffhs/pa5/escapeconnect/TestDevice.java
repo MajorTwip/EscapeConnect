@@ -21,7 +21,6 @@ import ch.ffhs.pa5.escapeconnect.persistency.DAOpanelIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOsettingIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOvalueIF;
 
-
 @RunWith(MockitoJUnitRunner.class)
 public class TestDevice {
     
