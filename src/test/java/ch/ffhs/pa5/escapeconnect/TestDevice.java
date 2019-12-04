@@ -1,10 +1,12 @@
 package ch.ffhs.pa5.escapeconnect;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.ws.rs.core.Response;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -19,10 +21,12 @@ import ch.ffhs.pa5.escapeconnect.persistency.DAOdeviceIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOpanelIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOsettingIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOvalueIF;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 
-@RunWith(MockitoJUnitRunner.class)
-class TestDevice {
+@ExtendWith(MockitoExtension.class)
+//@RunWith(MockitoJUnitRunner.class)
+public class TestDevice {
     
 	@InjectMocks
 	DeviceAPIimplement devapi;
@@ -43,7 +47,7 @@ class TestDevice {
 	DAOsettingIF daosetting;
     
 	@Test
-	void addDevice() {
+	public void addDevice() {
         MockitoAnnotations.initMocks(this);
 
 		//Mockito.doReturn(true);
@@ -64,11 +68,11 @@ class TestDevice {
 		//Fehler bei fehlender Datei
 		assertEquals(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), devapi.addDevice(body, null).getStatus());
 
-		//Fehler bei ungültiger Datei
+		//Fehler bei ungÃ¼ltiger Datei
 		body.setFile(String.valueOf("sdfsdfsfsdf").getBytes());
 		assertEquals(418, devapi.addDevice(body, null).getStatus());
 		
-		//Fehler bei ungültiger Datei
+		//Fehler bei ungÃ¼ltiger Datei
 		body.setFile(String.valueOf("{}").getBytes());
 		assertEquals(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), devapi.addDevice(body, null).getStatus());
 		
@@ -142,8 +146,13 @@ class TestDevice {
 				"	]\r\n" + 
 				"}\r\n";
 	
-	//Erfolg bei gültiger Datei
+	//Erfolg bei gÃ¼ltiger Datei
 	body.setFile(testFile.getBytes());
 	assertEquals(Response.Status.OK.getStatusCode(), devapi.addDevice(body, null).getStatus());
+	}
+	
+	@Test
+	public void testTest() {
+		assertTrue(true);
 	}
 }
