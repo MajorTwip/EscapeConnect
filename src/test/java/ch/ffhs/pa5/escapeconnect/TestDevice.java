@@ -1,5 +1,6 @@
 package ch.ffhs.pa5.escapeconnect;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.ws.rs.core.Response;
@@ -47,7 +48,7 @@ public class TestDevice {
     
 	@Test
 	public void addDevice() {
-        MockitoAnnotations.initMocks(this);
+        //MockitoAnnotations.initMocks(this);
 
 		//Mockito.doReturn(true);
 		
@@ -148,5 +149,10 @@ public class TestDevice {
 	//Erfolg bei gültiger Datei
 	body.setFile(testFile.getBytes());
 	assertEquals(Response.Status.OK.getStatusCode(), devapi.addDevice(body, null).getStatus());
+	}
+	
+	@Test
+	public void testTest() {
+		assertTrue(true);
 	}
 }
