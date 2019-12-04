@@ -25,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 @ExtendWith(MockitoExtension.class)
-@RunWith(MockitoJUnitRunner.class)
+//@RunWith(MockitoJUnitRunner.class)
 public class TestDevice {
     
 	@InjectMocks
@@ -48,7 +48,7 @@ public class TestDevice {
     
 	@Test
 	public void addDevice() {
-        //MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.initMocks(this);
 
 		//Mockito.doReturn(true);
 		
