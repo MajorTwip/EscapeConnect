@@ -1,10 +1,11 @@
 package ch.ffhs.pa5.escapeconnect;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.Assert.assertEquals;
 
 import javax.ws.rs.core.Response;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -22,7 +23,7 @@ import ch.ffhs.pa5.escapeconnect.persistency.DAOvalueIF;
 
 
 @RunWith(MockitoJUnitRunner.class)
-class TestDevice {
+public class TestDevice {
     
 	@InjectMocks
 	DeviceAPIimplement devapi;
@@ -43,7 +44,7 @@ class TestDevice {
 	DAOsettingIF daosetting;
     
 	@Test
-	void addDevice() {
+	public void addDevice() {
         MockitoAnnotations.initMocks(this);
 
 		//Mockito.doReturn(true);
