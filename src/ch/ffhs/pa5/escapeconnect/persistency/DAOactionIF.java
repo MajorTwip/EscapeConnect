@@ -9,5 +9,4 @@ public interface DAOactionIF {
 	int write(ActionDAOBean action);
 	
 	List<ActionDAOBean> getActionByPanelID(int id);
-
 }

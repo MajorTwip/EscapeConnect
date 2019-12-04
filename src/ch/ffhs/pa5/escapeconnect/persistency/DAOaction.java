@@ -59,6 +59,34 @@ public class DAOaction implements DAOactionIF {
 		}
 		return -1;
 	}
+	public List<ActionDAOBean> getActionByID(int actionId) {
+		String query = "select basetopic,deviceid,topic,payload from device,panel,action where device.mac in(select panel.device_mac from panel where panel.id in (select action.panel_id from action where action.id = ?)) and panel.id in (select action.id from action where action.id = ?) and action.id = ?";
+		List<ActionDAOBean> list_actions = new ArrayList<>();
+		try (Connection con = DBAdapter.getConnection();
+				PreparedStatement pstm = con.prepareStatement(query)){
+			pstm.setInt(1, actionId);
+			pstm.setInt(2, actionId);
+			pstm.setInt(3, actionId);
+			ResultSet rs = pstm.executeQuery();
+			// Take the ResultSet rs and get the first line.
+			if(rs.next() != false) 
+			do {
+				ActionDAOBean generated_action = new ActionDAOBean();
+				generated_action.setBasetopic(rs.getString("basetopic"));
+				generated_action.setDeviceid(rs.getString("deviceid"));
+				generated_action.setPayload(rs.getString("payload"));
+				generated_action.setSubtopic(rs.getString("topic"));
+				list_actions.add(generated_action);
+			} while (rs.next());
+			// Close the connection to the DB
+			pstm.close(); 
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new WebApplicationException(e.getMessage());
+		}
+		// Return the rs with the panel or empty.
+		return list_actions;			
+	}
 	
 	public List<ActionDAOBean> getActionByPanelID(int panelId) {
 		String query = "SELECT * FROM action WHERE panel_id = ?";

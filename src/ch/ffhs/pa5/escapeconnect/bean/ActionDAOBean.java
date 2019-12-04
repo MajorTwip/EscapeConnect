@@ -6,8 +6,13 @@ public class ActionDAOBean {
 	private String label;
 	private String subtopic;
 	private String payload;
+	private String basetopic;
+	private String deviceid;
 	
-	public ActionDAOBean() {}
+	public ActionDAOBean() {
+			super();
+
+	}
 
 	public int getId() {
 		return id;
@@ -32,7 +37,18 @@ public class ActionDAOBean {
 	public void setLabel(String label) {
 		this.label = label;
 	}
-
+	public String getBasetopic() {
+		return basetopic;
+	}
+	public void setBasetopic(String basetopic) {
+		this.basetopic = basetopic;
+	}
+	public String getDeviceid() {
+		return deviceid;
+	}
+	public void setDeviceid(String deviceid) {
+		this.deviceid = deviceid;
+	}
 	public String getSubtopic() {
 		return subtopic;
 	}
