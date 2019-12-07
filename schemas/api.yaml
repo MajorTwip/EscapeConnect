@@ -4,7 +4,7 @@ info:
   description: Dies ist die Dokumentation des REST API des EscapeManager
   contact:
     email: yvo.vonkaenel@students.ffhs.ch
-  version: 0.0.4
+  version: 0.0.5
 externalDocs:
   description: Die ganze Doku wird schlussendlich hier zu finden sein
   url: https://github.com/MajorTwip/EscapeConnect
@@ -113,13 +113,13 @@ paths:
       security:
         - bearerAuth: []     
       parameters:
-      - name: deviceid
+      - name: panelid
         in: query
-        description: Id des devices welches upgedatet werden soll
+        description: Id des Panels welches zum zu Upgradenden device gehört
         required: true
         schema:
           type: integer
-      - name: forces
+      - name: forced
         in: query
         description: Muss gesetzt werden, falls Firmware-name alt und neu nicht übereinstimmen
         schema:

@@ -19,7 +19,7 @@ public interface DeviceApiService {
 
   public Response upgradeFirmware(
       UpdateDeviceBody body,
-      @NotNull String deviceid,
-      Boolean forces,
+      @NotNull int panelid,
+      Boolean forced,
       SecurityContext securityContext);
 }

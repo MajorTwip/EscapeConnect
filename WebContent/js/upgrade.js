@@ -4,7 +4,7 @@ async function upgradeFw() {
 	console.log("Upgrade device of panel " + panelid);
 	var file = document.getElementById("file_deviceFw").files[0];
 	const formData = new FormData();
-	formData.append('file', file);
+	formData.append('firmware', file);
 	let url = "rest/device/upgrade?panelid="+ panelid + "&forces=true"
 	
 	try {

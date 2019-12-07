@@ -159,8 +159,8 @@ public class DeviceAPIimplement implements DeviceApiService {
   @Override
   public Response upgradeFirmware(
       UpdateDeviceBody updateDeviceBody,
-      @NotNull String deviceId,
-      Boolean forces,
+      @NotNull int panelId,
+      Boolean forced,
       SecurityContext securityContext) {
     if (updateDeviceBody == null || updateDeviceBody.getFirmware() == null) {
       // If there is no file, then the system sends back an error.
@@ -168,6 +168,10 @@ public class DeviceAPIimplement implements DeviceApiService {
           .entity("no File provided")
           .build();
     }
+    
+    //get MAC
+    DAOpanel daopanel = new DAOpanel();
+    String deviceId = daopanel.getById(panelId).getDevice_mac();
 
     // Start the connection with MQTT with the correct credentials
     DAOecsettings daoecsettings = new DAOecsettings();
@@ -180,7 +184,7 @@ public class DeviceAPIimplement implements DeviceApiService {
     String fwrequest = String.join("/", deviceToUpdate.getBasetopic(),deviceToUpdate.getDeviceid(),"$fw/checksum");
     requestMsgMd5.add(fwrequest);//("/" + deviceToUpdate.getBasetopic() + "/" + deviceToUpdate.getDeviceid() + "/" + "$fw/checksum");
     Map<String,String> receivedMsgMd5 = mqtt.getMessages(requestMsgMd5, 1000);
-    System.out.println("The MD5 is " + receivedMsgMd5.get(fwrequest));
+    System.out.println("Upgrade for " + panelId + ">>" + deviceId + "The MD5 is " + receivedMsgMd5.get(fwrequest));
 
     byte[] newFirmware = updateDeviceBody.getFirmware();
     
