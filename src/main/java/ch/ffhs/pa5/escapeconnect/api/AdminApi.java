@@ -4,7 +4,7 @@ import ch.ffhs.pa5.escapeconnect.api.AdminApiService;
 
 import io.swagger.annotations.ApiParam;
 
-import ch.ffhs.pa5.escapeconnect.bean.Body2;
+import ch.ffhs.pa5.escapeconnect.bean.LoginBody;
 import ch.ffhs.pa5.escapeconnect.bean.Setup;
 
 
@@ -42,7 +42,7 @@ public class AdminApi  {
         @io.swagger.annotations.ApiResponse(code = 200, message = "Login erfolgreich", response = String.class),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Passwort falsch", response = Void.class) })
-    public Response doLogin(@ApiParam(value = "" ,required=true) Body2 body
+    public Response doLogin(@ApiParam(value = "" ,required=true) LoginBody body
 ,@Context SecurityContext securityContext)
     throws NotFoundException {
         return delegate.doLogin(body,securityContext);

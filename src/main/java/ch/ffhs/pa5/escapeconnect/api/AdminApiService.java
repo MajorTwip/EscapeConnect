@@ -1,6 +1,6 @@
 package ch.ffhs.pa5.escapeconnect.api;
 
-import ch.ffhs.pa5.escapeconnect.bean.Body2;
+import ch.ffhs.pa5.escapeconnect.bean.LoginBody;
 import ch.ffhs.pa5.escapeconnect.bean.Setup;
 
 
@@ -11,7 +11,7 @@ import javax.ws.rs.core.SecurityContext;
 
 public interface AdminApiService {
     
-    public Response doLogin(Body2 body,SecurityContext securityContext);
+    public Response doLogin(LoginBody body,SecurityContext securityContext);
     
     public Response setup(Setup body,SecurityContext securityContext);
     

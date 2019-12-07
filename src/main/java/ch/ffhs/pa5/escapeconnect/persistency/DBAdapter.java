@@ -35,7 +35,7 @@ public class DBAdapter {
 		}		
 	}
 
-	public static void createDBifNone() {
+	public void createDBifNone() {
 		try {
 			Context ctx = new InitialContext();
 			DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/escapeconnect");
