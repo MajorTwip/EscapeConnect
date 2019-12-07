@@ -39,7 +39,7 @@
 			</div>
 		</nav>
 
-		<div class="card border-primary mb-3 mt-3" id="card_addDevice">
+		<div class="card border-primary" id="card_addDevice">
 			<div class="card-header">Gerät hinzufügen</div>
 			<div class="card-body">
 				<div class="form-row">
@@ -59,6 +59,21 @@
 				</div>
 			</div>
 		</div>
+		<div id=ec-panels></div>
+
+		<div class="card border-primary ec-panel invisible" id="panel-tmp">
+			<div class="card-header">
+				<div class="ec-panel-name"></div>
+				<div class="ec-panel-status"></div>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-sm ec-panel-vals"></div>
+					<div class="col-sm ec-panel-actions"></div>
+				</div>
+			</div>
+		</div>
+
 
 
 	</div>
@@ -76,6 +91,16 @@
 
 	<script type="text/javascript" src="js/login.js"></script>
 	<script type="text/javascript" src="js/addDevice.js"></script>
+	<script type="text/javascript" src="js/getPanels.js"></script>
+	<script type="text/javascript" src="js/action.js"></script>
+	
+	<script>
+		$("#btn_addDevice").bind("click", addDevice);
+		$("#btn_login").bind("click", login);
+
+		getPanels();
+	</script>
+
 
 </body>
 

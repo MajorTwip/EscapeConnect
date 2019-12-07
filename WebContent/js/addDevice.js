@@ -1,4 +1,3 @@
-$("#btn_addDevice").bind("click", addDevice);
 
 async function addDevice() {
 	var name = $("#txt_deviceName").val().trim();
