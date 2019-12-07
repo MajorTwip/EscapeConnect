@@ -1,26 +1,31 @@
 package ch.ffhs.pa5.escapeconnect;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import ch.ffhs.pa5.escapeconnect.bean.AddDeviceBody;
+import ch.ffhs.pa5.escapeconnect.bean.DeviceDAOBean;
+import ch.ffhs.pa5.escapeconnect.bean.EcSettings;
+import ch.ffhs.pa5.escapeconnect.bean.PanelDAOBean;
+import ch.ffhs.pa5.escapeconnect.bean.UpdateDeviceBody;
 import ch.ffhs.pa5.escapeconnect.handlers.DeviceAPIimplement;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOactionIF;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOdeviceIF;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOpanelIF;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOsettingIF;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOvalueIF;
+import ch.ffhs.pa5.escapeconnect.mqtt.MQTTconnector;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOaction;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOdevice;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOecsettings;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOpanel;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOsettings;
+import ch.ffhs.pa5.escapeconnect.persistency.DAOvalue;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
@@ -32,19 +37,25 @@ public class TestDevice {
 	DeviceAPIimplement devapi;
 	
 	@Mock
-	DAOdeviceIF daodevice;
+	DAOdevice daodevice;
 	
 	@Mock
-	DAOpanelIF daopanel;
+	DAOpanel daopanel;
 	
 	@Mock
-	DAOactionIF daoaction;
+	DAOaction daoaction;
 	
 	@Mock
-	DAOvalueIF daovalue;
+	DAOvalue daovalue;
 	
 	@Mock
-	DAOsettingIF daosetting;
+	DAOsettings daosetting;
+	
+	@Mock
+	DAOecsettings daoecsettings;
+	
+	@Mock
+  	MQTTconnector mqtt;
     
 	@Test
 	public void addDevice() {
@@ -152,7 +163,49 @@ public class TestDevice {
 	}
 	
 	@Test
-	public void testTest() {
-		assertTrue(true);
+	public void deleteDevice() {
+        MockitoAnnotations.initMocks(this);
+		Mockito.when(daodevice.delete(Mockito.anyString())).thenReturn(true);
+
+		//wenn "Forced" nicht gesetzt"
+		assertEquals(Response.Status.EXPECTATION_FAILED.getStatusCode(), devapi.deleteDevice("mac", false,null).getStatus());
+		//wenn "Forced"  gesetzt"
+		assertEquals(Response.Status.OK.getStatusCode(), devapi.deleteDevice("mac", true,null).getStatus());
+	}
+	
+	@Test
+	public void upgradeDevice() {
+        MockitoAnnotations.initMocks(this);
+
+		//wenn body = null
+		assertEquals(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), devapi.upgradeFirmware(null,0, null,null).getStatus());
+		//wenn firmware leer
+		UpdateDeviceBody udb = new UpdateDeviceBody();
+		assertEquals(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), devapi.upgradeFirmware(udb, 0, null, null).getStatus());
+		//wenn unbekanntes panel
+		udb.setFirmware("Firmware".getBytes());
+		Mockito.when(daopanel.getById(0)).thenReturn(null);
+		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), devapi.upgradeFirmware(udb, 0, null, null).getStatus());
+		
+		//Wenn alles IO
+		EcSettings ecs = new EcSettings("123","url");
+		Mockito.when(daoecsettings.get()).thenReturn(ecs);
+		
+		PanelDAOBean pdb = new PanelDAOBean();
+		pdb.setDevice_mac("1212121212");
+		Mockito.when(daopanel.getById(1)).thenReturn(pdb);
+		
+		DeviceDAOBean ddb = new DeviceDAOBean();
+		ddb.setBasetopic("bt");
+		ddb.setDeviceid("dId");
+		ddb.setsupportsOTA(true);
+		Mockito.when(daodevice.getByMac("1212121212")).thenReturn(ddb);
+		
+		Map<String,String> fw = new HashMap<>();
+		fw.put("bt/dId/$fw/checksum", "actuamd5hash");
+		//Mockito.when(mqtt.getMessages(Mockito.any(), Mockito.any())).thenReturn(fw);
+
+		assertEquals(Response.Status.OK.getStatusCode(), devapi.upgradeFirmware(udb, 1, null, null).getStatus());
+
 	}
 }

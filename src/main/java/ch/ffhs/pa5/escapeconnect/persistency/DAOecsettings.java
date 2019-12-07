@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
-import java.sql.Statement;
-
 import javax.ws.rs.WebApplicationException;
 
 import ch.ffhs.pa5.escapeconnect.bean.EcSettings;
@@ -54,24 +52,6 @@ public class DAOecsettings implements DAOecsettingsIF{
 		return settings;
 	}
 
-	public String getpassword() {
-		Connection con = DBAdapter.getConnection();
-		Statement selectStmt = null;
-		try {
-				selectStmt = con.createStatement();
-				ResultSet rs = selectStmt.executeQuery("select adminpass from ecsettings");
-				return rs.getString(1);
-		} catch (Exception e) {
-		    System.err.println("Got an exception! ");
-		    System.err.println(e.getMessage());
-		}
-		try {
-			con.close();
-		} catch (SQLException e) {
-			throw new WebApplicationException(e.getMessage());
-		}
-		return null;
-	}
 	public void write(EcSettings settings) {
 		
 		String query = "UPDATE ecsettings SET adminpass = ?, mqtturl = ?, mqttport = ?, mqttuser = ?, mqttpass = ?";

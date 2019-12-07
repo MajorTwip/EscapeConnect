@@ -1,7 +1,6 @@
 package ch.ffhs.pa5.escapeconnect.handlers;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
@@ -28,26 +27,25 @@ import ch.ffhs.pa5.escapeconnect.bean.UpdateDeviceBody;
 import ch.ffhs.pa5.escapeconnect.bean.ValueDAOBean;
 import ch.ffhs.pa5.escapeconnect.mqtt.MQTTconnector;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOaction;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOactionIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOdevice;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOdeviceIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOecsettings;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOpanel;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOpanelIF;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOsettingIF;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOsettings;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOvalue;
-import ch.ffhs.pa5.escapeconnect.persistency.DAOvalueIF;
 import ch.ffhs.pa5.escapeconnect.utils.FirmwareUtil;
 import ch.ffhs.pa5.escapeconnect.utils.MACformating;
 
 public class DeviceAPIimplement implements DeviceApiService {
 
-  DAOdeviceIF daodevice;
-  DAOpanelIF daopanel;
-  DAOactionIF daoaction;
-  DAOvalueIF daovalue;
-  DAOsettingIF daosetting;
+  DAOdevice daodevice;
+  DAOpanel daopanel;
+  DAOaction daoaction;
+  DAOvalue daovalue;
+  DAOsettings daosetting;
+  DAOecsettings daoecsettings;
+
+  
+  MQTTconnector mqtt = new MQTTconnector();
 
   public DeviceAPIimplement() {
     daodevice = new DAOdevice();
@@ -55,6 +53,8 @@ public class DeviceAPIimplement implements DeviceApiService {
     daoaction = new DAOaction();
     daovalue = new DAOvalue();
     daosetting = new DAOsettings();
+    daoecsettings = new DAOecsettings();
+    
   }
 
   @Override
@@ -170,13 +170,20 @@ public class DeviceAPIimplement implements DeviceApiService {
     }
     
     //get MAC
-    DAOpanel daopanel = new DAOpanel();
-    String deviceId = daopanel.getById(panelId).getDevice_mac();
+    PanelDAOBean pan = daopanel.getById(panelId);
+    if(pan==null) {
+    	// If there panel with this ID.
+        return Response.status(Response.Status.NOT_FOUND)
+            .entity("no such panel")
+            .build();
+    }
+    
+    String deviceId =pan.getDevice_mac();
+    
 
     // Start the connection with MQTT with the correct credentials
-    DAOecsettings daoecsettings = new DAOecsettings();
     EcSettings settings = daoecsettings.get();
-    MQTTconnector mqtt = new MQTTconnector(settings.getMqttUrl(), settings.getMqttName(), settings.getMqttPass());
+    mqtt.config(settings.getMqttUrl(), settings.getMqttName(), settings.getMqttPass());
     
     // Get the MD5 from the device via MQTT
     DeviceDAOBean deviceToUpdate = daodevice.getByMac(deviceId);
@@ -184,7 +191,7 @@ public class DeviceAPIimplement implements DeviceApiService {
     String fwrequest = String.join("/", deviceToUpdate.getBasetopic(),deviceToUpdate.getDeviceid(),"$fw/checksum");
     requestMsgMd5.add(fwrequest);//("/" + deviceToUpdate.getBasetopic() + "/" + deviceToUpdate.getDeviceid() + "/" + "$fw/checksum");
     Map<String,String> receivedMsgMd5 = mqtt.getMessages(requestMsgMd5, 1000);
-    System.out.println("Upgrade for " + panelId + ">>" + deviceId + "The MD5 is " + receivedMsgMd5.get(fwrequest));
+    System.out.println("Upgrade for panel " + panelId + " >> MAC: " + deviceId + "The MD5 is " + receivedMsgMd5.get(fwrequest));
 
     byte[] newFirmware = updateDeviceBody.getFirmware();
     

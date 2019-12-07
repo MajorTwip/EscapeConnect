@@ -33,7 +33,7 @@ import javax.validation.constraints.*;
  * Body2
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaJerseyDIServerCodegen", date = "2019-10-16T16:22:47.544870800+02:00[Europe/Berlin]")
-public class Body2   {
+public class LoginBody   {
 
   @JsonProperty("passhash")
   
@@ -46,7 +46,7 @@ public class Body2   {
   
   
   
-  public Body2 passhash(String passhash) {
+  public LoginBody passhash(String passhash) {
     this.passhash = passhash;
     return this;
   }
@@ -92,8 +92,8 @@ public class Body2   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Body2 body2 = (Body2) o;
-    return Objects.equals(this.passhash, body2.passhash);
+    LoginBody loginBody = (LoginBody) o;
+    return Objects.equals(this.passhash, loginBody.passhash);
   }
 
   @Override

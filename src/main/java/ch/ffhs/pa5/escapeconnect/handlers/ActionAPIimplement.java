@@ -18,6 +18,9 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class ActionAPIimplement implements ActionApiService {
 	DAOaction daoaction = new DAOaction();
+  	DAOecsettings daoecsettings = new DAOecsettings();
+  	MQTTconnector mqtt = new MQTTconnector();
+  	
 	String maintopic = null;
 	String mainpayload = null;
 	
@@ -33,12 +36,11 @@ public class ActionAPIimplement implements ActionApiService {
 			}
 		      if(listDaoActions.isEmpty()){
 		    	  System.out.println("No Action Found with that ID");
-					return Response.status(Response.Status.CONFLICT).entity("No Action Found with that ID").build();
+					return Response.status(Response.Status.NOT_FOUND).entity("No Action Found with that ID").build();
 		      }
 		      else {
-		    	  	DAOecsettings daoecsettings = new DAOecsettings();
 		    	  	EcSettings settings = daoecsettings.get();
-		    	  	MQTTconnector mqtt = new MQTTconnector(settings.getMqttUrl(), settings.getMqttName(), settings.getMqttPass());
+		    	  	mqtt.config(settings.getMqttUrl(), settings.getMqttName(), settings.getMqttPass());
 		    	  	MqttMessage hello = new MqttMessage();
 		            hello.setPayload("mainpayload".getBytes());
 					mqtt.publish(maintopic,hello);
