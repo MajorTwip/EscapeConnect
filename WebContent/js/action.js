@@ -1,5 +1,5 @@
 async function doAction(deviceId, url = 'rest/action') {
-		url=url+"?deviceId="+deviceId;
+		url=url+"?actionId="+deviceId;
 	  const response = await fetch(url, {
 	    method: 'POST'
 	  });

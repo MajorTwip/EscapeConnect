@@ -34,14 +34,15 @@ async function populatePanels(json){
 			
 			actions = paneljson["actions"];
 			$actions = $ecpanel.find(".ec-panel-actions");
-			for(var a = 0;a<actions.length;a++){
-				action = actions[a];
-				$action = $("<input></input>").attr("id", "action-" + action["id"]);
+			for(let a = 0;a<actions.length;a++){
+				let action = actions[a];
+				let id= "action-" + action["id"];
+				$action = $("<input></input>").attr("id", id);
 				$action.attr("type", "button");
 				$action.addClass("btn btn-secondary my-2 my-sm-0");
-				$action.val(action["label"]);				
-			    $action.bind("click", function () { doAction(action["id"]); });
-				$action.appendTo($actions);
+				$action.val(action["label"]);			
+			    $action.unbind().bind("click", function () { doAction(action["id"]); });
+				$actions.append($action);
 			}
 			
 			$ecpanel.appendTo("#ec-panels");
