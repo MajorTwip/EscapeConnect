@@ -5,7 +5,7 @@ async function getPanels(url = 'rest/panel/getAll') {
 	  });
 	  if(response.ok){
 		  populatePanels(response.json());
-		  //alert("Got them");
+		  // alert("Got them");
 	  }
 	  if(response.status==409)
 		  alert("getpanes wrong");
@@ -45,9 +45,20 @@ async function populatePanels(json){
 				$actions.append($action);
 			}
 			
+			$ecpanel.find(".ec-panel-setting").bind("click", function () {});
+			$ecpanel.find(".ec-panel-upgrade").bind("click", function () { selectedpanelid=paneljson["id"]; $("#btn-fw").click(); });
+			
 			$ecpanel.appendTo("#ec-panels");
-			//$("#ec-panels").append(ecpanel);
+		}else{
+			
+			let $ecpanel = $("#"+panelname);
+			$ecpanel.find(".ec-panel-status").text(paneljson["status"]?"Online":"Offline");
+			
+			vals = paneljson["values"];
+			for(var v = 0;v<vals.length;v++){
+				val = vals[v];
+				$("#value-" + val["id"]).text(val["label"] + " : " + val["value"]);
+			}
 		}
-		//console.log(resp[i]);
 	}
 }
