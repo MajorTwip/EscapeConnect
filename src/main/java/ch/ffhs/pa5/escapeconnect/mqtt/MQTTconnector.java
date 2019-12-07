@@ -27,7 +27,17 @@ public class MQTTconnector implements MqttCallback {
 	
 	MqttClient client;
 
+	public MQTTconnector() {}
+	
 	public MQTTconnector(String url, String name, String pass) {
+		this.url = url;
+		this.name = name;
+		this.pass = pass;
+		
+		this.persistence=new MemoryPersistence();
+	}
+	
+	public void config(String url, String name, String pass) {
 		this.url = url;
 		this.name = name;
 		this.pass = pass;
