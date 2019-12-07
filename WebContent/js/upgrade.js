@@ -14,6 +14,7 @@ async function upgradeFw() {
 		  });
 		  const result = await response;
 		  console.log('Success:', JSON.stringify(result));
+		  getPanels();
 		} catch (error) {
 		  console.error('Error:', error);
 		}
