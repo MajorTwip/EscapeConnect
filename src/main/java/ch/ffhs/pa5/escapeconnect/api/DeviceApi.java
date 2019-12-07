@@ -144,7 +144,7 @@ public class DeviceApi {
             response = Void.class),
         @io.swagger.annotations.ApiResponse(
             code = 404,
-            message = "DeviceId nicht verfügbar",
+            message = "PanelId nicht verfügbar",
             response = Void.class),
         @io.swagger.annotations.ApiResponse(
             code = 415,
@@ -158,11 +158,11 @@ public class DeviceApi {
   public Response upgradeFirmware(
       @ApiParam(value = "", required = true)  @FormDataParam("firmware") InputStream file,
       @ApiParam(value = "Id des devices welches upgedatet werden soll", required = true)
-          @QueryParam("deviceid")
-          String deviceid,
+          @QueryParam("panelid")
+          int panelid,
       @ApiParam(value = "Muss gesetzt werden, falls Firmware-name alt und neu nicht übereinstimmen")
-          @QueryParam("forces")
-          Boolean forces,
+          @QueryParam("forced")
+          Boolean forced,
       @Context SecurityContext securityContext)
       throws NotFoundException {
 	  UpdateDeviceBody updateDeviceBody = new UpdateDeviceBody();
@@ -177,6 +177,6 @@ public class DeviceApi {
 	            .build();
 	      }  
 	    }
-    return delegate.upgradeFirmware(updateDeviceBody, deviceid, forces, securityContext);
+    return delegate.upgradeFirmware(updateDeviceBody, panelid, forced, securityContext);
   }
 }

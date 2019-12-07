@@ -1,4 +1,3 @@
-$("#btn_login").bind("click", login);
 
 function login() {
 	var pass = $("#txt_pw").val().trim();
