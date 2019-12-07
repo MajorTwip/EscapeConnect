@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.ws.rs.WebApplicationException;
 
@@ -62,5 +64,39 @@ public class DAOsettings implements DAOsettingIF {
 			}
 		}
 		return -1;
+	}
+
+	public List<SettingDAOBean> getSettingsByPanelId(Integer panelId) {
+		String query = "SELECT * FROM setting WHERE panel_id = ?";
+		// We use an ArrayList so that TomCat can easily convert it to a JSON.
+		List<SettingDAOBean> settings = new LinkedList<>();
+		try (Connection con = DBAdapter.getConnection(); PreparedStatement pstm = con.prepareStatement(query)) {
+			pstm.setInt(1, panelId);
+			ResultSet rs = pstm.executeQuery();
+			// Take the ResultSet rs and iterate through it in order to create the beans
+			// "Values"
+			while (rs.next()) {
+				SettingDAOBean set = new SettingDAOBean();
+				set.setId(rs.getInt("id"));
+				set.setDevice_mac(rs.getString("device_mac"));
+				set.setPanel_id(panelId);
+				set.setLabel(rs.getString("label"));
+				set.setValue(rs.getString("value"));
+				set.setMax(rs.getInt("max"));
+				set.setMin(rs.getInt("min"));
+				set.setName(rs.getString("name"));
+				set.setType(rs.getString("type"));
+				settings.add(set);
+			}
+			// Close the connection to the DB
+			pstm.close();
+		} catch (
+
+		SQLException e) {
+			e.printStackTrace();
+			throw new WebApplicationException(e.getMessage());
+		}
+		// Return the list of actions or empty.
+		return settings;
 	}
 }

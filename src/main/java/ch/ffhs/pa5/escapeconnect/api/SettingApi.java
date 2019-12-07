@@ -45,11 +45,11 @@ public class SettingApi  {
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Token nicht mitgeliefert oder ungültig", response = Void.class),
         
-        @io.swagger.annotations.ApiResponse(code = 404, message = "DeviceId nicht verfügbar", response = Void.class) })
-    public Response getSettingsByDeviceId(@ApiParam(value = "") @QueryParam("deviceId") Integer deviceId
+        @io.swagger.annotations.ApiResponse(code = 404, message = "panelId nicht verfügbar", response = Void.class) })
+    public Response getSettingsByPanelId(@ApiParam(value = "") @QueryParam("panelId") Integer panelId
 ,@Context SecurityContext securityContext)
     throws NotFoundException {
-        return delegate.getSettingsByDeviceId(deviceId,securityContext);
+        return delegate.getSettingsByPanelId(panelId,securityContext);
     }
 
     @POST
@@ -62,14 +62,14 @@ public class SettingApi  {
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Token nicht mitgeliefert oder ungültig", response = Void.class),
         
-        @io.swagger.annotations.ApiResponse(code = 404, message = "DeviceId nicht verfügbar", response = Void.class),
+        @io.swagger.annotations.ApiResponse(code = 404, message = "panelId nicht verfügbar", response = Void.class),
         
         @io.swagger.annotations.ApiResponse(code = 409, message = "Eine Einstellung enthielt Ungütligen Wert", response = Integer.class, responseContainer = "List") })
     public Response setSetting(@ApiParam(value = "" ) List<SettingMod> body
-,@ApiParam(value = "") @QueryParam("deviceId") Integer deviceId
+,@ApiParam(value = "") @QueryParam("panelId") Integer panelId
 ,@Context SecurityContext securityContext)
     throws NotFoundException {
-        return delegate.setSetting(body,deviceId,securityContext);
+        return delegate.setSetting(body,securityContext);
     }
 
 }

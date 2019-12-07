@@ -12,9 +12,9 @@ import javax.ws.rs.core.SecurityContext;
 
 public interface SettingApiService {
     
-    public Response getSettingsByDeviceId( Integer deviceId,SecurityContext securityContext);
+    public Response getSettingsByPanelId( Integer panelId,SecurityContext securityContext);
     
-    public Response setSetting(List<SettingMod> body, Integer deviceId,SecurityContext securityContext);
+    public Response setSetting(List<SettingMod> body,SecurityContext securityContext);
     
 }
 
