@@ -16,10 +16,16 @@ import javax.ws.rs.WebApplicationException;
 import org.sqlite.SQLiteConfig;
 
 public class DBAdapter {
+	
+	Context ctx;
+	
+	public void setctx(Context ctx) {
+		this.ctx = ctx;
+	}
 
-	public static Connection getConnection() throws WebApplicationException {
+	public Connection getConnection() throws WebApplicationException {
 		try {
-			Context ctx = new InitialContext();
+			if(ctx==null)ctx = new InitialContext();
 			DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/escapeconnect");
 			Connection con = ds.getConnection();
 			Statement st = con.createStatement();
@@ -34,10 +40,11 @@ public class DBAdapter {
 			throw new WebApplicationException(e.getMessage());
 		}		
 	}
-
+		
 	public void createDBifNone() {
+		System.out.println("Creating DB");
 		try {
-			Context ctx = new InitialContext();
+			if(ctx==null)ctx = new InitialContext();
 			DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/escapeconnect");
 			try (Connection con = ds.getConnection();
 				Statement stmt = con.createStatement()){
@@ -139,6 +146,7 @@ public class DBAdapter {
 					stmt.executeUpdate(query);
 					con.close();
 					stmt.close();
+					
 				} catch (SQLException e) {
 					e.printStackTrace();
 					throw new WebApplicationException(e.getMessage());

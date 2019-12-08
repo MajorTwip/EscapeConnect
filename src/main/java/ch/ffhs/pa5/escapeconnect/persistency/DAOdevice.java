@@ -10,13 +10,16 @@ import javax.ws.rs.WebApplicationException;
 import ch.ffhs.pa5.escapeconnect.bean.DeviceDAOBean;
 
 public class DAOdevice implements DAOdeviceIF {
+	DBAdapter dba = new DBAdapter();
+
+	
 	@Override
 	public  boolean write(DeviceDAOBean device) {
 		String query = "INSERT INTO device (name,mac,basetopic,deviceid,supportsOTA,firmware_id) VALUES(?,?,?,?,?,?)" + 
 				"  ON CONFLICT(mac) DO UPDATE SET name=?, basetopic=?, deviceid=?, supportsOTA=?,firmware_id=? WHERE mac=?;";
 		
 		//Connection con = DBAdapter.getConnection();
-		try (Connection con = DBAdapter.getConnection();
+		try (Connection con = dba.getConnection();
 				PreparedStatement pstm = con.prepareStatement(query);){
 			pstm.setString(1, device.getName());
 			pstm.setString(7, device.getName());
@@ -56,7 +59,7 @@ public class DAOdevice implements DAOdeviceIF {
 		String query = "DELETE FROM device WHERE mac=?;";
 		
 		//Connection con = DBAdapter.getConnection();
-		try (Connection con = DBAdapter.getConnection();
+		try (Connection con = dba.getConnection();
 				PreparedStatement pstm = con.prepareStatement(query);){
 			pstm.setString(1, mac);
 			pstm.executeUpdate();
@@ -73,7 +76,7 @@ public class DAOdevice implements DAOdeviceIF {
 		// Create an empty DAOBean
 		DeviceDAOBean device = new DeviceDAOBean();
 		// Get the device
-		try (Connection con = DBAdapter.getConnection();
+		try (Connection con = dba.getConnection();
 				PreparedStatement pstm = con.prepareStatement(query)){
 			pstm.setString(1, device_mac);
 			ResultSet rs = pstm.executeQuery();
@@ -101,7 +104,7 @@ public class DAOdevice implements DAOdeviceIF {
 		// Create an empty DAOBean
 		DeviceDAOBean device = new DeviceDAOBean();
 		// Get the device
-		try (Connection con = DBAdapter.getConnection();
+		try (Connection con = dba.getConnection();
 				PreparedStatement pstm = con.prepareStatement(query)){
 			pstm.setString(1, deviceId);
 			ResultSet rs = pstm.executeQuery();

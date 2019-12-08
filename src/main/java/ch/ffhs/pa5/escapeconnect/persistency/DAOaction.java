@@ -13,15 +13,18 @@ import ch.ffhs.pa5.escapeconnect.bean.ActionDAOBean;
 import ch.ffhs.pa5.escapeconnect.bean.PanelDAOBean;
 
 public class DAOaction implements DAOactionIF {
+	
+	DBAdapter dba = new DBAdapter();
+
 	@Override
 	public int write(ActionDAOBean action) {
-		
+
 		String query = "";
 		
 		if(action.getId() == 0 ||action.getId() <1) {
 			query = "INSERT INTO action (panel_id,label,topic,payload) VALUES(?,?,?,?)";
 			
-			try (Connection con = DBAdapter.getConnection();
+			try (Connection con = dba.getConnection();
 					PreparedStatement pstm = con.prepareStatement(query);){
 				pstm.setInt(1, action.getPanel_id());				
 				pstm.setString(2, action.getLabel());				
@@ -43,7 +46,7 @@ public class DAOaction implements DAOactionIF {
 		}else {
 			query = "UPDATE action SET panel_id = ?,label = ?,topic = ?,payload = ? WHERE id = ?";
 			
-			try (Connection con = DBAdapter.getConnection();
+			try (Connection con = dba.getConnection();
 					PreparedStatement pstm = con.prepareStatement(query);){
 				pstm.setInt(1, action.getPanel_id());				
 				pstm.setString(2, action.getLabel());				
@@ -59,10 +62,13 @@ public class DAOaction implements DAOactionIF {
 		}
 		return -1;
 	}
+	
+	
 	public List<ActionDAOBean> getActionByID(int actionId) {
+
 		String query = "select basetopic,deviceid,topic,payload from device,panel,action where device.mac in(select panel.device_mac from panel where panel.id in (select action.panel_id from action where action.id = ?)) and panel.id in (select action.id from action where action.id = ?) and action.id = ?";
 		List<ActionDAOBean> list_actions = new ArrayList<>();
-		try (Connection con = DBAdapter.getConnection();
+		try (Connection con = dba.getConnection();
 				PreparedStatement pstm = con.prepareStatement(query)){
 			pstm.setInt(1, actionId);
 			pstm.setInt(2, actionId);
@@ -92,7 +98,7 @@ public class DAOaction implements DAOactionIF {
 		String query = "SELECT * FROM action WHERE panel_id = ?";
 		// We use an ArrayList so that TomCat can easily convert it to a JSON.
 		List<ActionDAOBean> list_actions = new ArrayList<>();
-		try (Connection con = DBAdapter.getConnection();
+		try (Connection con = dba.getConnection();
 				PreparedStatement pstm = con.prepareStatement(query)){
 			pstm.setInt(1, panelId);
 			ResultSet rs = pstm.executeQuery();

@@ -9,13 +9,14 @@ import javax.ws.rs.WebApplicationException;
 import ch.ffhs.pa5.escapeconnect.bean.EcSettings;
 
 public class DAOecsettings implements DAOecsettingsIF{
+	DBAdapter dba = new DBAdapter();
 
 	@Override
 	public EcSettings get() {
 		String query = "SELECT * FROM ecsettings";
 		// Create an empty PanelDAOBean
 		EcSettings settings = new EcSettings();
-		try (Connection con = DBAdapter.getConnection();
+		try (Connection con = dba.getConnection();
 				PreparedStatement pstm = con.prepareStatement(query)){
 			ResultSet rs = pstm.executeQuery();
 			// Take the ResultSet rs and get the first line.
@@ -56,7 +57,7 @@ public class DAOecsettings implements DAOecsettingsIF{
 		
 		String query = "UPDATE ecsettings SET adminpass = ?, mqtturl = ?, mqttport = ?, mqttuser = ?, mqttpass = ?";
 		
-		Connection con = DBAdapter.getConnection();
+		Connection con = dba.getConnection();
 		try (PreparedStatement pstm = con.prepareStatement(query);){
 			pstm.setString(1, settings.getPassword());
 			String mqtturl[] = settings.getMqttUrl().split(":");
