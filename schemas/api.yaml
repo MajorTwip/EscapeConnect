@@ -4,7 +4,7 @@ info:
   description: Dies ist die Dokumentation des REST API des EscapeManager
   contact:
     email: yvo.vonkaenel@students.ffhs.ch
-  version: 0.0.5
+  version: 0.0.6
 externalDocs:
   description: Die ganze Doku wird schlussendlich hier zu finden sein
   url: https://github.com/MajorTwip/EscapeConnect
@@ -262,13 +262,13 @@ paths:
                   description: Name des ugültigen Parameters
   /setting/get:
     get:
-      operationId: getSettingsByDeviceId
+      operationId: getSettingsByPanelId
       tags:
       - setting
       summary: Abfrage der Einstellungen eines Gerätes
       parameters:
       - in: query
-        name: deviceId
+        name: panelId
         schema:
           type: integer
       responses:
@@ -283,18 +283,13 @@ paths:
         401:
           $ref: '#/components/responses/UnauthorizedError'
         404:
-          description: DeviceId nicht verfügbar
+          description: panelId nicht verfügbar
   /setting/set:
     post:
       operationId: setSetting
       tags:
       - setting
       summary: Setzen der Einstellungen eines Gerätes
-      parameters:
-      - in: query
-        name: deviceId
-        schema:
-          type: integer
       requestBody:
         content:
           application/json:
@@ -308,7 +303,7 @@ paths:
         401:
           $ref: '#/components/responses/UnauthorizedError'
         404:
-          description: DeviceId nicht verfügbar
+          description: panelId nicht verfügbar
         409:
           description: Eine Einstellung enthielt Ungütligen Wert
           content:
