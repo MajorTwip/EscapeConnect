@@ -13,7 +13,8 @@ import ch.ffhs.pa5.escapeconnect.bean.Panel;
 import ch.ffhs.pa5.escapeconnect.bean.PanelDAOBean;
 
 public class DAOpanel implements DAOpanelIF {
-	
+	DBAdapter dba = new DBAdapter();
+
 	@Override
 	public int write(PanelDAOBean panel) {
 		
@@ -22,7 +23,7 @@ public class DAOpanel implements DAOpanelIF {
 		if(panel.getId()<1) {
 			query = "INSERT INTO panel (name,device_mac) VALUES(?,?)";
 			
-			try (Connection con = DBAdapter.getConnection();
+			try (Connection con = dba.getConnection();
 					PreparedStatement pstm = con.prepareStatement(query);){
 				pstm.setString(1, panel.getName());				
 				pstm.setString(2, panel.getDevice_mac());
@@ -42,7 +43,7 @@ public class DAOpanel implements DAOpanelIF {
 		}else {
 			query = "UPDATE panel SET name = ?, device_mac = ? WHERE id = ?";
 			
-			try (Connection con = DBAdapter.getConnection();
+			try (Connection con = dba.getConnection();
 					PreparedStatement pstm = con.prepareStatement(query);){
 				pstm.setString(1, panel.getName());				
 				pstm.setString(2, panel.getDevice_mac());
@@ -62,7 +63,7 @@ public class DAOpanel implements DAOpanelIF {
 		String query = "SELECT * FROM panel";
 		// We use an ArrayList so that TomCat can easily convert it to a JSON.
 		List<PanelDAOBean> list_panels = new ArrayList<>();
-		try (Connection con = DBAdapter.getConnection();
+		try (Connection con = dba.getConnection();
 			 PreparedStatement pstm = con.prepareStatement(query)) {
 			ResultSet rs = pstm.executeQuery();
 			// if the DB has no Panels, skip the code with the if-statement
@@ -92,7 +93,7 @@ public class DAOpanel implements DAOpanelIF {
 		// Create an empty PanelDAOBean
 		PanelDAOBean generated_panel = new PanelDAOBean();
 		// We use an ArrayList so that TomCat can easily convert it to a JSON.
-		try (Connection con = DBAdapter.getConnection();
+		try (Connection con = dba.getConnection();
 				PreparedStatement pstm = con.prepareStatement(query)){
 			pstm.setInt(1, deviceId);
 			ResultSet rs = pstm.executeQuery();
@@ -116,7 +117,7 @@ public class DAOpanel implements DAOpanelIF {
 		String query = "SELECT * FROM panel WHERE id = ?";
 		// Create an empty PanelDAOBean
 		PanelDAOBean generated_panel = new PanelDAOBean();
-		try (Connection con = DBAdapter.getConnection();
+		try (Connection con = dba.getConnection();
 				PreparedStatement pstm = con.prepareStatement(query)){
 			pstm.setInt(1, id);
 			ResultSet rs = pstm.executeQuery();

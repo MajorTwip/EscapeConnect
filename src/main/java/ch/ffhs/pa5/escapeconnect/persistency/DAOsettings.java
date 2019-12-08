@@ -12,6 +12,7 @@ import javax.ws.rs.WebApplicationException;
 import ch.ffhs.pa5.escapeconnect.bean.SettingDAOBean;
 
 public class DAOsettings implements DAOsettingIF {
+	DBAdapter dba = new DBAdapter();
 
 	@Override
 	public int write(SettingDAOBean setting) {
@@ -21,7 +22,7 @@ public class DAOsettings implements DAOsettingIF {
 		if (setting.getId() < 1) {
 			query = "INSERT INTO setting (device_mac,panel_id,label,value,name,type,min,max) VALUES(?,?,?,?,?,?,?,?)";
 
-			try (Connection con = DBAdapter.getConnection(); PreparedStatement pstm = con.prepareStatement(query);) {
+			try (Connection con = dba.getConnection(); PreparedStatement pstm = con.prepareStatement(query);) {
 				pstm.setString(1, setting.getDevice_mac());
 				pstm.setInt(2, setting.getPanel_id());
 				pstm.setString(3, setting.getLabel());
@@ -46,7 +47,7 @@ public class DAOsettings implements DAOsettingIF {
 		} else {
 			query = "UPDATE setting SET device_mac = ?,panel_id = ?,label = ?,value = ?,name = ?,type = ?,min = ?,max = ? WHERE id = ?";
 
-			try (Connection con = DBAdapter.getConnection(); PreparedStatement pstm = con.prepareStatement(query);) {
+			try (Connection con = dba.getConnection(); PreparedStatement pstm = con.prepareStatement(query);) {
 				pstm.setString(1, setting.getDevice_mac());
 				pstm.setInt(2, setting.getPanel_id());
 				pstm.setString(3, setting.getLabel());
@@ -70,7 +71,7 @@ public class DAOsettings implements DAOsettingIF {
 		String query = "SELECT * FROM setting WHERE panel_id = ?";
 		// We use an ArrayList so that TomCat can easily convert it to a JSON.
 		List<SettingDAOBean> settings = new LinkedList<>();
-		try (Connection con = DBAdapter.getConnection(); PreparedStatement pstm = con.prepareStatement(query)) {
+		try (Connection con = dba.getConnection(); PreparedStatement pstm = con.prepareStatement(query)) {
 			pstm.setInt(1, panelId);
 			ResultSet rs = pstm.executeQuery();
 			// Take the ResultSet rs and iterate through it in order to create the beans

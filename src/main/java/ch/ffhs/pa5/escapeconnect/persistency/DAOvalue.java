@@ -13,6 +13,9 @@ import ch.ffhs.pa5.escapeconnect.bean.ActionDAOBean;
 import ch.ffhs.pa5.escapeconnect.bean.ValueDAOBean;
 
 public class DAOvalue implements DAOvalueIF {
+	DBAdapter dba = new DBAdapter();
+
+	
 	@Override
 	public int write(ValueDAOBean value) {
 		
@@ -21,7 +24,7 @@ public class DAOvalue implements DAOvalueIF {
 		if(value.getId()<1) {
 			query = "INSERT INTO value (panel_id,label,topic,type) VALUES(?,?,?,?)";
 			
-			try (Connection con = DBAdapter.getConnection();
+			try (Connection con = dba.getConnection();
 					PreparedStatement pstm = con.prepareStatement(query);){
 				pstm.setInt(1, value.getPanel_id());				
 				pstm.setString(2, value.getLabel());				
@@ -43,7 +46,7 @@ public class DAOvalue implements DAOvalueIF {
 		}else {
 			query = "UPDATE value SET panel_id = ?,label = ?,topic = ?,type = ? WHERE id = ?";
 			
-			try (Connection con = DBAdapter.getConnection();
+			try (Connection con = dba.getConnection();
 					PreparedStatement pstm = con.prepareStatement(query);){
 				pstm.setInt(1, value.getPanel_id());				
 				pstm.setString(2, value.getLabel());				
@@ -64,7 +67,7 @@ public class DAOvalue implements DAOvalueIF {
 		String query = "SELECT * FROM value WHERE panel_id = ?";
 		// We use an ArrayList so that TomCat can easily convert it to a JSON.
 		List<ValueDAOBean> list_values = new ArrayList<>();
-		try (Connection con = DBAdapter.getConnection();
+		try (Connection con = dba.getConnection();
 				PreparedStatement pstm = con.prepareStatement(query)){
 			pstm.setInt(1, panelId);
 			ResultSet rs = pstm.executeQuery();
