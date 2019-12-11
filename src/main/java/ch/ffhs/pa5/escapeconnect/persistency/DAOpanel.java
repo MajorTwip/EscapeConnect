@@ -87,30 +87,6 @@ public class DAOpanel implements DAOpanelIF {
 		return list_panels;
 	}
 	
-	public PanelDAOBean getByDevice(int deviceId) {
-		
-		String query = "SELECT * FROM panel WHERE device_id = ?";
-		// Create an empty PanelDAOBean
-		PanelDAOBean generated_panel = new PanelDAOBean();
-		// We use an ArrayList so that TomCat can easily convert it to a JSON.
-		try (Connection con = dba.getConnection();
-				PreparedStatement pstm = con.prepareStatement(query)){
-			pstm.setInt(1, deviceId);
-			ResultSet rs = pstm.executeQuery();
-			// Take the ResultSet rs and get the first line.
-			if(rs.next() != false) {
-				generated_panel.setId(rs.getInt("id"));
-				generated_panel.setName(rs.getString("name"));
-			}
-			// Close the connection to the DB
-			pstm.close(); 
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new WebApplicationException(e.getMessage());
-		}
-		// Return the rs with the panel or empty.
-		return generated_panel;			
-	}
 	
 	public PanelDAOBean getById(int id) {
 

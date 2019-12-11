@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import javax.naming.NamingException;
 
@@ -18,16 +19,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ch.ffhs.pa5.escapeconnect.bean.DeviceDAOBean;
+
+import ch.ffhs.pa5.escapeconnect.bean.ValueDAOBean;
+
 import org.junit.jupiter.api.MethodOrderer;
 
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(MockitoExtension.class)
-public class TestDeviceDAO {
+public class TestValueDAO {
 
 	@InjectMocks
-	DAOdevice daodevice;
+	DAOvalue daovalue;
 
 	@Mock
 	DBAdapter dba;
@@ -37,15 +40,14 @@ public class TestDeviceDAO {
 		try(Connection con = DriverManager.getConnection("jdbc:sqlite:/data/test.db");
 				Statement stm = con.createStatement();){
 			stm.executeUpdate(
-					"DROP TABLE IF EXISTS \"device\";" +
-				" CREATE TABLE \"device\"(" +
-				"  \"mac\" VARCHAR(12) PRIMARY KEY NOT NULL," +
-				"  \"name\" VARCHAR(45) NOT NULL," +
-				"  \"basetopic\" VARCHAR(45)," +
-				"  \"deviceid\" VARCHAR(45)," +
-				"  \"supportsOTA\" INTEGER DEFAULT 0," +
-				"  \"firmware_id\" INTEGER);");
-			System.out.println("devicetable created");
+					"DROP TABLE IF EXISTS \"value\";" +
+					"CREATE TABLE IF NOT EXISTS \"value\"(" +
+					"  \"id\" INTEGER PRIMARY KEY NOT NULL," +
+					"  \"panel_id\" INTEGER," +
+					"  \"label\" VARCHAR(45) NOT NULL," +
+					"  \"topic\" VARCHAR(45) NOT NULL," +
+					"  \"type\" VARCHAR(45) NOT NULL);");
+			System.out.println("valuetable created");
 			stm.close();
 			con.close();
 		};
@@ -57,41 +59,50 @@ public class TestDeviceDAO {
 
 		Mockito.when(dba.getConnection()).thenAnswer(invocation -> DriverManager.getConnection("jdbc:sqlite:/data/test.db"));
 		
-		DeviceDAOBean ddb = new DeviceDAOBean();
-		ddb.setMac("1234567890ab");
-		ddb.setName("Name");
+		ValueDAOBean vdb = new ValueDAOBean();
+		vdb.setLabel("Label");
+		vdb.setSubtopic("topic");
+		vdb.setType("string");
+		vdb.setPanel_id(2);
 		
-		daodevice.write(ddb);
+		daovalue.write(vdb);
+
+		vdb.setLabel("Label2");
+		vdb.setSubtopic("subtopic2");
 		
-		ddb.setMac("1234567890ac");
-		ddb.setFirmwareid(1);
-		daodevice.write(ddb);
-		System.out.println("Devices written");
+		int id = daovalue.write(vdb);
+
+		System.out.println("values written, second was nr " + id);
+		
 	}
 	
 	
 	@Test
 	@Order(2)
-	public void delete(){
+	public void update(){
 
 		Mockito.when(dba.getConnection()).thenAnswer(invocation -> DriverManager.getConnection("jdbc:sqlite:/data/test.db"));
 		
-		daodevice.delete("1234567890ac");
-		System.out.println("Device 1234567890ac deleted");
+		ValueDAOBean vdb = new ValueDAOBean();
+		vdb.setId(1);
+		vdb.setLabel("Label3");
+		vdb.setSubtopic("topic");
+		vdb.setType("string");
+		vdb.setPanel_id(3);
 
+		daovalue.write(vdb);//updated value 1
+		
 	}
 	
 	@Test
 	@Order(3)
-	public void get() {
+	public void getByPanelId() {
 		Mockito.when(dba.getConnection()).thenAnswer(invocation -> DriverManager.getConnection("jdbc:sqlite:/data/test.db"));
 
-		DeviceDAOBean dev = daodevice.getByMac("1234567890ab");
-		assertEquals("Name", dev.getName());
-		System.out.println("Device 1234567890ab checked");
+		List<ValueDAOBean> values = daovalue.getValuesByPanelID(3);
+		assertEquals(1, values.size(), "List should be 1 long");
+		assertEquals("Label3", values.get(0).getLabel(), "If not Label3 possible error on update");
 		
-		dev = daodevice.getByMac("1234567890ad"); //not existing
-		assertEquals(null, dev.getName());
 	}
 	
 	

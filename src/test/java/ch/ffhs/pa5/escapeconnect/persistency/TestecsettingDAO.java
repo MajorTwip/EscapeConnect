@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import javax.naming.NamingException;
 
@@ -18,16 +19,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ch.ffhs.pa5.escapeconnect.bean.DeviceDAOBean;
+
+import ch.ffhs.pa5.escapeconnect.bean.EcSettings;
+import ch.ffhs.pa5.escapeconnect.bean.ValueDAOBean;
+
 import org.junit.jupiter.api.MethodOrderer;
 
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(MockitoExtension.class)
-public class TestDeviceDAO {
+public class TestecsettingDAO {
 
 	@InjectMocks
-	DAOdevice daodevice;
+	DAOecsettings daosetting;
 
 	@Mock
 	DBAdapter dba;
@@ -37,15 +41,16 @@ public class TestDeviceDAO {
 		try(Connection con = DriverManager.getConnection("jdbc:sqlite:/data/test.db");
 				Statement stm = con.createStatement();){
 			stm.executeUpdate(
-					"DROP TABLE IF EXISTS \"device\";" +
-				" CREATE TABLE \"device\"(" +
-				"  \"mac\" VARCHAR(12) PRIMARY KEY NOT NULL," +
-				"  \"name\" VARCHAR(45) NOT NULL," +
-				"  \"basetopic\" VARCHAR(45)," +
-				"  \"deviceid\" VARCHAR(45)," +
-				"  \"supportsOTA\" INTEGER DEFAULT 0," +
-				"  \"firmware_id\" INTEGER);");
-			System.out.println("devicetable created");
+					"DROP TABLE IF EXISTS \"ecsettings\";" +
+					"CREATE TABLE IF NOT EXISTS \"ecsettings\"(" +
+					"  \"adminpass\" VARCHAR(45) NOT NULL," +
+					"  \"mqtturl\" VARCHAR(45) NOT NULL," +
+					"  \"mqttport\" INTEGER NOT NULL DEFAULT 1883," +
+					"  \"mqttuser\" VARCHAR(45)," +
+					"  \"mqttpass\" VARCHAR(45)" +
+					");" + 
+			"INSERT INTO ecsettings (adminpass,mqtturl) VALUES(\"1234\",\"mqtt.comstock,ch\");");
+			System.out.println("valuetable created");
 			stm.close();
 			con.close();
 		};
@@ -57,41 +62,28 @@ public class TestDeviceDAO {
 
 		Mockito.when(dba.getConnection()).thenAnswer(invocation -> DriverManager.getConnection("jdbc:sqlite:/data/test.db"));
 		
-		DeviceDAOBean ddb = new DeviceDAOBean();
-		ddb.setMac("1234567890ab");
-		ddb.setName("Name");
+		EcSettings setting = new EcSettings();
+		setting.setMqttName("mqttName");
+		setting.setMqttPass("mqttPass");
+		setting.setMqttUrl("mqttUrl:1234");
+		setting.setPassword("password");
 		
-		daodevice.write(ddb);
-		
-		ddb.setMac("1234567890ac");
-		ddb.setFirmwareid(1);
-		daodevice.write(ddb);
-		System.out.println("Devices written");
+		daosetting.write(setting);
 	}
 	
+
 	
 	@Test
 	@Order(2)
-	public void delete(){
-
-		Mockito.when(dba.getConnection()).thenAnswer(invocation -> DriverManager.getConnection("jdbc:sqlite:/data/test.db"));
-		
-		daodevice.delete("1234567890ac");
-		System.out.println("Device 1234567890ac deleted");
-
-	}
-	
-	@Test
-	@Order(3)
 	public void get() {
 		Mockito.when(dba.getConnection()).thenAnswer(invocation -> DriverManager.getConnection("jdbc:sqlite:/data/test.db"));
 
-		DeviceDAOBean dev = daodevice.getByMac("1234567890ab");
-		assertEquals("Name", dev.getName());
-		System.out.println("Device 1234567890ab checked");
+		EcSettings setting = daosetting.get();
+		assertEquals("mqttName",setting.getMqttName());
+		assertEquals("mqttPass",setting.getMqttPass());
+		assertEquals("tcp://mqttUrl:1234",setting.getMqttUrl());
+		assertEquals("password",setting.getPassword());
 		
-		dev = daodevice.getByMac("1234567890ad"); //not existing
-		assertEquals(null, dev.getName());
 	}
 	
 	
