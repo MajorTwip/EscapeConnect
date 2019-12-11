@@ -39,7 +39,7 @@ public class TestSettingsDAO {
 		try(Connection con = DriverManager.getConnection("jdbc:sqlite:/data/test.db");
 				Statement stm = con.createStatement();){
 			stm.executeUpdate(
-					"DROP TABLE IF EXISTS \"settings\";" +
+					"DROP TABLE IF EXISTS \"setting\";" +
 					"CREATE TABLE IF NOT EXISTS \"setting\"(" +
 					"  \"id\" INTEGER PRIMARY KEY NOT NULL," +
 					"  \"device_mac\" VARCHAR(12) NOT NULL," +
