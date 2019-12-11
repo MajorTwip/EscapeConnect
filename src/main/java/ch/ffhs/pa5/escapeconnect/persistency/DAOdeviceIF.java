@@ -10,6 +10,4 @@ public interface DAOdeviceIF {
 	
 	DeviceDAOBean getByMac(String device_mac);
 	
-	DeviceDAOBean getByDeviceID(String deviceId);
-
 }
