@@ -131,27 +131,6 @@ public class AddDeviceBody   {
   }
   
 
-  
-
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    AddDeviceBody addDeviceBody = (AddDeviceBody) o;
-    return Objects.equals(this.name, addDeviceBody.name) &&
-        Objects.equals(this.file, addDeviceBody.file);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name, file);
-  }
-
 
 
 

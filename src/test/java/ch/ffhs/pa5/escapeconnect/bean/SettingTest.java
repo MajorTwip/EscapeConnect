@@ -1,5 +1,9 @@
 package ch.ffhs.pa5.escapeconnect.bean;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -191,19 +195,7 @@ public class SettingTest {
 		testSubject.setMax(max);
 	}
 
-	@MethodRef(name = "equals", signature = "(Qjava.lang.Object;)Z")
-	@Test
-	public void testEquals() throws Exception {
-		Setting testSubject;
-		Object o = null;
-		boolean result;
 
-		// test 1
-		testSubject = createTestSubject();
-		o = null;
-		result = testSubject.equals(o);
-		Assert.assertEquals(false, result);
-	}
 
 	@MethodRef(name = "hashCode", signature = "()I")
 	@Test
@@ -221,5 +213,12 @@ public class SettingTest {
 		// default test
 		testSubject = createTestSubject();
 		testSubject.toString();
+	}
+	
+	@Test
+	public void testENUM() {
+		assertEquals("constchar", Setting.TypeEnum.CONSTCHAR.toString());
+		assertEquals(Setting.TypeEnum.BOOL, Setting.TypeEnum.fromValue("bool"));
+		assertNull(Setting.TypeEnum.fromValue("nonExistingEnum"));
 	}
 }

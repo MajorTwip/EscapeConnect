@@ -230,21 +230,6 @@ public class Setup   {
 
 
   @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Setup setup = (Setup) o;
-    return Objects.equals(this.mqtturl, setup.mqtturl) &&
-        Objects.equals(this.mqttuser, setup.mqttuser) &&
-        Objects.equals(this.mqttpass, setup.mqttpass) &&
-        Objects.equals(this.adminpass, setup.adminpass);
-  }
-
-  @Override
   public int hashCode() {
     return Objects.hash(mqtturl, mqttuser, mqttpass, adminpass);
   }

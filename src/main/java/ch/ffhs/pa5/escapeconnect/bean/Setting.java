@@ -370,25 +370,7 @@ public class Setting   {
   }
   
 
-  
-
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Setting setting = (Setting) o;
-    return Objects.equals(this.id, setting.id) &&
-        Objects.equals(this.label, setting.label) &&
-        Objects.equals(this.type, setting.type) &&
-        Objects.equals(this.value, setting.value) &&
-        Objects.equals(this.min, setting.min) &&
-        Objects.equals(this.max, setting.max);
-  }
+ 
 
   @Override
   public int hashCode() {
