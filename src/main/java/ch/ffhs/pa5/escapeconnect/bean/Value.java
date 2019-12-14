@@ -181,22 +181,6 @@ public class Value   {
   }
   
 
-  
-
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Value value = (Value) o;
-    return Objects.equals(this.id, value.id) &&
-        Objects.equals(this.label, value.label) &&
-        Objects.equals(this.value, value.value);
-  }
 
   @Override
   public int hashCode() {

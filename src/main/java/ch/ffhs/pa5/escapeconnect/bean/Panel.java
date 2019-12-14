@@ -442,27 +442,6 @@ public class Panel   {
   }
   
 
-  
-
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Panel panel = (Panel) o;
-    return Objects.equals(this.id, panel.id) &&
-        Objects.equals(this.order, panel.order) &&
-        Objects.equals(this.title, panel.title) &&
-        Objects.equals(this.status, panel.status) &&
-        Objects.equals(this.settingsenabled, panel.settingsenabled) &&
-        Objects.equals(this.upgradeenabled, panel.upgradeenabled) &&
-        Objects.equals(this.values, panel.values) &&
-        Objects.equals(this.actions, panel.actions);
-  }
 
   @Override
   public int hashCode() {

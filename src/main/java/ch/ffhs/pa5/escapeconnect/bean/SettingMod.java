@@ -134,21 +134,6 @@ public class SettingMod   {
   }
   
 
-  
-
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    SettingMod settingMod = (SettingMod) o;
-    return Objects.equals(this.id, settingMod.id) &&
-        Objects.equals(this.value, settingMod.value);
-  }
 
   @Override
   public int hashCode() {

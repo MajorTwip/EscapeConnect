@@ -81,20 +81,7 @@ public class LoginBody   {
   }
   
 
-  
 
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    LoginBody loginBody = (LoginBody) o;
-    return Objects.equals(this.passhash, loginBody.passhash);
-  }
 
   @Override
   public int hashCode() {

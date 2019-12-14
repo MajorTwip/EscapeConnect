@@ -6,17 +6,10 @@ import io.swagger.annotations.ApiParam;
 
 import ch.ffhs.pa5.escapeconnect.bean.AddDeviceBody;
 import ch.ffhs.pa5.escapeconnect.bean.UpdateDeviceBody;
-import ch.ffhs.pa5.escapeconnect.bean.InlineResponse200;
-
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.Response.Status;
-
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import java.io.File;
-import java.nio.file.Files;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -122,7 +115,6 @@ public class DeviceApi {
   @io.swagger.annotations.ApiOperation(
       value = "Firmwareupgrade eines Gerätes mittels der .bin Datei des Herstellers",
       notes = "",
-      response = InlineResponse200.class,
       responseContainer = "List",
       tags = {
         "device",
@@ -132,7 +124,6 @@ public class DeviceApi {
         @io.swagger.annotations.ApiResponse(
             code = 200,
             message = "Erfolgreich update angestossen",
-            response = InlineResponse200.class,
             responseContainer = "List"),
         @io.swagger.annotations.ApiResponse(
             code = 401,

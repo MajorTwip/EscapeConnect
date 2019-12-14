@@ -136,20 +136,6 @@ public class Action   {
 
   
 
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Action action = (Action) o;
-    return Objects.equals(this.id, action.id) &&
-        Objects.equals(this.label, action.label);
-  }
-
   @Override
   public int hashCode() {
     return Objects.hash(id, label);
