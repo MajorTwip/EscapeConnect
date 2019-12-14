@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.WebApplicationException;
 
 import ch.ffhs.pa5.escapeconnect.bean.SettingDAOBean;
@@ -99,5 +100,10 @@ public class DAOsettings implements DAOsettingIF {
 		}
 		// Return the list of actions or empty.
 		return settings;
+	}
+
+	public SettingDAOBean getSettingById(@NotNull Integer id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

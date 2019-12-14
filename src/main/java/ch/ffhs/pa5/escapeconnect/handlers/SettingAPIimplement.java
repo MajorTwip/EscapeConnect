@@ -1,5 +1,6 @@
 package ch.ffhs.pa5.escapeconnect.handlers;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,8 @@ import java.util.Map;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import ch.ffhs.pa5.escapeconnect.api.SettingApiService;
 import ch.ffhs.pa5.escapeconnect.bean.DeviceDAOBean;
@@ -88,8 +91,38 @@ public class SettingAPIimplement implements SettingApiService {
 
 	@Override
 	public Response setSetting(List<SettingMod> body, SecurityContext securityContext) {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String,String> settings = new HashMap<>();
+		String device_mac = "";
+		for(SettingMod setting:body) {
+			SettingDAOBean settingbean = daosettings.getSettingById(setting.getId());
+			if(settingbean==null) {
+				return Response.status(Response.Status.NOT_FOUND).entity("Activity " + setting.getId() + " not found").build();
+			}else {
+				if(device_mac.isEmpty()) {
+					device_mac=settingbean.getDevice_mac();
+				}else {
+					if(!device_mac.equals(settingbean.getDevice_mac())) {
+						return Response.status(Response.Status.CONFLICT).entity("Can not change Settings from multiple devices at a time").build();
+					}
+				}
+				if(isValid(setting.getValue(), settingbean)) {
+					settings.put(settingbean.getName(), setting.getValue());
+				}else{
+					return Response.status(Response.Status.CONFLICT).entity("Setting " + setting.getId() + " is invalid").build();
+				}
+			}
+		}
+		
+		DeviceDAOBean device = daodevice.getByMac(device_mac);
+		
+		String topic = String.join("/", device.getBasetopic(), device.getDeviceid(), "$implementation/config/set");
+		MqttMessage msg = new MqttMessage(ParseSettingsJSON.prepareJSON(settings).getBytes());
+		mqtt.publish(topic, msg);
+		return Response.status(Response.Status.OK).build();
+	}
+	
+	private boolean isValid(String val, SettingDAOBean condition) {
+		return true;
 	}
 
 } 
