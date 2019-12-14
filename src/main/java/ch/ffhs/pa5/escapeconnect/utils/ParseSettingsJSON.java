@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+
 public class ParseSettingsJSON {
 	public static Map<String, String> parseJSON(String json) {
 		Map<String, String> result = new HashMap<String, String>();
@@ -21,6 +22,7 @@ public class ParseSettingsJSON {
 			while (firstlevels.hasNext()) {
 				Map.Entry<String, JsonNode> element = firstlevels.next();
 				JsonNode val = element.getValue();
+
 				if (val.isValueNode()) {
 					result.put(element.getKey(), val.asText());
 				}
@@ -33,6 +35,7 @@ public class ParseSettingsJSON {
 						if (element2.getValue().isValueNode()) {
 							String name = String.join("/", element.getKey(), element2.getKey());
 							result.put(name, element2.getValue().asText());
+
 						}
 
 					}
@@ -44,6 +47,7 @@ public class ParseSettingsJSON {
 
 		return result;
 	}
+
 	
 	public static String prepareJSON(Map<String,String> settings) {
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -64,4 +68,5 @@ public class ParseSettingsJSON {
 		}
 		return root.toPrettyString();
 	}
+
 }
