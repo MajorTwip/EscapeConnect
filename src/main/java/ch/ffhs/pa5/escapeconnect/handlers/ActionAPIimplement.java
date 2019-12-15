@@ -42,7 +42,7 @@ public class ActionAPIimplement implements ActionApiService {
 		    	  	EcSettings settings = daoecsettings.get();
 		    	  	mqtt.config(settings.getMqttUrl(), settings.getMqttName(), settings.getMqttPass());
 		    	  	MqttMessage hello = new MqttMessage();
-		            hello.setPayload("mainpayload".getBytes());
+		            hello.setPayload(mainpayload.getBytes());
 					mqtt.publish(maintopic,hello);
 					return Response.status(Response.Status.OK).entity("Aktion ausgelöst").build();
 				

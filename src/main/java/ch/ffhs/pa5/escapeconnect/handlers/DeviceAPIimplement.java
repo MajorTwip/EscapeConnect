@@ -133,7 +133,7 @@ public class DeviceAPIimplement implements DeviceApiService {
       }
 
     } catch (JsonParseException e) {
-      e.printStackTrace();
+      //e.printStackTrace();
       return Response.status(418).build();
     } catch (IOException e1) {
       e1.printStackTrace();

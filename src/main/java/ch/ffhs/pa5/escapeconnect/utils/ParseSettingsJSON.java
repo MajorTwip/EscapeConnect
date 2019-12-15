@@ -59,7 +59,7 @@ public class ParseSettingsJSON {
 			}
 			if(parts.length==2) {
 				if(!root.has(parts[0])) {
-					root.putObject(parts[0]).put(parts[0], settings.get(key));
+					root.putObject(parts[0]).put(parts[1], settings.get(key));
 				}else {
 					ObjectNode secondlevel = (ObjectNode) root.get(parts[0]);
 					secondlevel.put(parts[1], settings.get(key));

@@ -101,6 +101,7 @@ public class DAOpanel implements DAOpanelIF {
 			if(rs.next() != false) {
 				generated_panel.setId(rs.getInt("id"));
 				generated_panel.setName(rs.getString("name"));
+				generated_panel.setDevice_mac(rs.getString("device_mac"));
 			}
 			// Close the connection to the DB
 			pstm.close(); 

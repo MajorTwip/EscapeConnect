@@ -37,7 +37,7 @@ public class TestSettingJSON {
 		
 		String wanted = "{\n" + 
 				"  \"wifi\" : {\n" + 
-				"    \"wifi\" : \"TestPASS\",\n" + 
+				"    \"pass\" : \"TestPASS\",\n" + 
 				"    \"ssid\" : \"TestSSID\"\n" + 
 				"  },\n" + 
 				"  \"name\" : \"Name\"\n" + 
