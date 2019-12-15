@@ -96,7 +96,7 @@ public class MQTTconnector implements MqttCallback {
 		try {
 			this.client.close(true);
 			System.out.println("close connection to MQTT");
-		}catch (MqttException e){
+		}catch (MqttException | NullPointerException e){
 			//Schliessen einer geschlossenen Verbindung, keine Reaktion nötig
 		}
 	}

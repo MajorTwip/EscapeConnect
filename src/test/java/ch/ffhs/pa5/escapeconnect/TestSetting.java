@@ -111,6 +111,9 @@ public class TestSetting {
         ddb.setBasetopic("bt");
         ddb.setDeviceid("di");
         Mockito.when(daodevice.getByMac(Mockito.any())).thenReturn(ddb);
+        
+		EcSettings ecs = new EcSettings("123","url");
+		Mockito.when(daoecsettings.get()).thenReturn(ecs);
         //normal, nur ein Setting
 		assertEquals(Response.Status.OK.getStatusCode(), settingapi.setSetting(settinglist, null).getStatus());
 		
