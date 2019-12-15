@@ -31,6 +31,9 @@ public class PanelAPIimplement implements PanelApiService {
   DAOpanel daopanel = new DAOpanel();
   DAOaction daoaction = new DAOaction();
   DAOvalue daovalue = new DAOvalue();
+  DAOdevice daoDevice = new DAOdevice();
+  DAOecsettings daoecsettings = new DAOecsettings();
+  MQTTconnector mqtt = new MQTTconnector();
 
   @Override
   public Response getPanes(SecurityContext securityContext) {
@@ -52,7 +55,6 @@ public class PanelAPIimplement implements PanelApiService {
       // check if already recognized on server
       // the function getByMac returns a DeviceDAOBean
       // Only device has boolean OTA but panel use it on frontend
-      DAOdevice daoDevice = new DAOdevice();
       DeviceDAOBean device = daoDevice.getByMac(generatedPanel.getDevice_mac());
 
       // Info will be used on the frontend (Button "Upgrade riddle" visible)
@@ -61,10 +63,8 @@ public class PanelAPIimplement implements PanelApiService {
       LinkedList<String> topicToQuery = new LinkedList<>();
 
       // Start the connection with MQTT with the correct credentials
-      DAOecsettings daoecsettings = new DAOecsettings();
       EcSettings settings = daoecsettings.get();
-      MQTTconnector mqtt =
-          new MQTTconnector(settings.getMqttUrl(), settings.getMqttName(), settings.getMqttPass());
+      mqtt.config(settings.getMqttUrl(), settings.getMqttName(), settings.getMqttPass());
 
       String baseTopic = device.getBasetopic();
       String deviceId = device.getDeviceid();
