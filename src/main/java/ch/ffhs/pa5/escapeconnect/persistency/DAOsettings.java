@@ -103,7 +103,34 @@ public class DAOsettings implements DAOsettingIF {
 	}
 
 	public SettingDAOBean getSettingById(@NotNull Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		String query = "SELECT * FROM setting WHERE id = ?";
+		SettingDAOBean set = null;
+		try (Connection con = dba.getConnection(); PreparedStatement pstm = con.prepareStatement(query)) {
+			pstm.setInt(1, id);
+			ResultSet rs = pstm.executeQuery();
+			// Take the ResultSet rs and iterate through it in order to create the bean
+			// "Setting"
+			if (rs.next()) {
+				set = new SettingDAOBean();
+				set.setId(rs.getInt("id"));
+				set.setDevice_mac(rs.getString("device_mac"));
+				set.setPanel_id(rs.getInt("panel_id"));
+				set.setLabel(rs.getString("label"));
+				set.setValue(rs.getString("value"));
+				set.setMax(rs.getInt("max"));
+				set.setMin(rs.getInt("min"));
+				set.setName(rs.getString("name"));
+				set.setType(rs.getString("type"));
+			}
+			// Close the connection to the DB
+			pstm.close();
+		} catch (
+
+		SQLException e) {
+			e.printStackTrace();
+			throw new WebApplicationException(e.getMessage());
+		}
+		// Return setting or null.
+		return set;
 	}
 }

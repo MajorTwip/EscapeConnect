@@ -102,12 +102,22 @@ public class TestSettingsDAO {
 
 	@Test
 	@Order(3)
-	public void getBysettingsPanelId() {
+	public void getByPanelId() {
 		Mockito.when(dba.getConnection())
 				.thenAnswer(invocation -> DriverManager.getConnection("jdbc:sqlite:/data/test.db"));
 
 		List<SettingDAOBean> settings = daosettings.getSettingsByPanelId(1);
 		assertEquals(2, settings.size());
+	}
+	
+	@Test
+	@Order(4)
+	public void getBySettingsId() {
+		Mockito.when(dba.getConnection())
+				.thenAnswer(invocation -> DriverManager.getConnection("jdbc:sqlite:/data/test.db"));
+
+		SettingDAOBean setting = daosettings.getSettingById(2);
+		assertEquals("23", setting.getValue());
 	}
 	
 
