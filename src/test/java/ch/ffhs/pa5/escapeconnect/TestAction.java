@@ -43,7 +43,13 @@ public class TestAction {
         
 		List<ActionDAOBean> act0 = new ArrayList<>();
 		List<ActionDAOBean> act = new ArrayList<>();
-		act.add(new ActionDAOBean());
+		ActionDAOBean adb = new ActionDAOBean();
+		adb.setBasetopic("bt");
+		adb.setDeviceid("id");
+		adb.setId(2);
+		adb.setPayload("pl");
+		adb.setSubtopic("st");
+		act.add(adb);
 		Mockito.when(daoaction.getActionByID(1)).thenReturn(act0);
 		Mockito.when(daoaction.getActionByID(2)).thenReturn(act);
 		
