@@ -10,144 +10,81 @@
  * Do not edit the class manually.
  */
 
-
-
 package ch.ffhs.pa5.escapeconnect.bean;
 
-
 import java.util.Objects;
-
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-
-
 import javax.validation.constraints.*;
 
-
-
-
-/**
- * Änderungsauftrag einer Einstellung
- */
+/** Änderungsauftrag einer Einstellung */
 @ApiModel(description = "Änderungsauftrag einer Einstellung")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaJerseyDIServerCodegen", date = "2019-10-16T16:22:47.544870800+02:00[Europe/Berlin]")
-public class SettingMod   {
-  
-    
-      
-  
+@javax.annotation.Generated(
+    value = "io.swagger.codegen.languages.java.JavaJerseyDIServerCodegen",
+    date = "2019-10-16T16:22:47.544870800+02:00[Europe/Berlin]")
+public class SettingMod {
+
   @JsonProperty("id")
-  
-  
-  
-  
   private Integer id = null;
-  
 
-  
-    
-      
-  
   @JsonProperty("value")
-  
-  
-  
-  
   private String value = null;
-  
 
-  
-  
-  
   public SettingMod id(Integer id) {
     this.id = id;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * EinstellungsID
-  
-  
-  
-  
+   *
    * @return id
-   **/
- 
-  
+   */
   @JsonProperty("id")
-  
   @ApiModelProperty(required = true, value = "EinstellungsID")
-
   @NotNull
-
   public Integer getId() {
     return id;
   }
-  
 
   public void setId(Integer id) {
     this.id = id;
   }
-  
 
-  
-  
   public SettingMod value(String value) {
     this.value = value;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * Neuer Wert als String
-  
-  
-  
-  
+   *
    * @return value
-   **/
- 
-  
+   */
   @JsonProperty("value")
-  
   @ApiModelProperty(required = true, value = "Neuer Wert als String")
-
   @NotNull
-
   public String getValue() {
     return value;
   }
-  
 
   public void setValue(String value) {
     this.value = value;
   }
-  
-
 
   @Override
   public int hashCode() {
     return Objects.hash(id, value);
   }
 
-
-
-
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class SettingMod {\n");
-    
+
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    value: ").append(toIndentedString(value)).append("\n");
     sb.append("}");
@@ -155,8 +92,7 @@ public class SettingMod   {
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces (except the first line).
    */
   private String toIndentedString(java.lang.Object o) {
     if (o == null) {
@@ -165,6 +101,3 @@ public class SettingMod   {
     return o.toString().replace("\n", "\n    ");
   }
 }
-
-
-

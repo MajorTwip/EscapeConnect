@@ -1,88 +1,89 @@
+/** Code has been formated */
+/** @author Yvo von Kaenel */
 package ch.ffhs.pa5.escapeconnect.bean;
 
 public class SettingDAOBean {
 
-		private int id=0;
-		private String device_mac;
-		private int panel_id;
-		private String label;
-		private String value;
-		private String name;
-		private String type;
-		private int min, max;
-		
-		public SettingDAOBean() {}
+  private int id = 0;
+  private String device_mac;
+  private int panel_id;
+  private String label;
+  private String value;
+  private String name;
+  private String type;
+  private int min, max;
 
-		public int getId() {
-			return id;
-		}
+  public SettingDAOBean() {}
 
-		public void setId(int id) {
-			this.id = id;
-		}
+  public int getId() {
+    return id;
+  }
 
-		public String getDevice_mac() {
-			return device_mac;
-		}
+  public void setId(int id) {
+    this.id = id;
+  }
 
-		public void setDevice_mac(String device_mac) {
-			this.device_mac = device_mac;
-		}
+  public String getDevice_mac() {
+    return device_mac;
+  }
 
-		public int getPanel_id() {
-			return panel_id;
-		}
+  public void setDevice_mac(String device_mac) {
+    this.device_mac = device_mac;
+  }
 
-		public void setPanel_id(int panel_id) {
-			this.panel_id = panel_id;
-		}
+  public int getPanel_id() {
+    return panel_id;
+  }
 
-		public String getLabel() {
-			return label;
-		}
+  public void setPanel_id(int panel_id) {
+    this.panel_id = panel_id;
+  }
 
-		public void setLabel(String label) {
-			this.label = label;
-		}
+  public String getLabel() {
+    return label;
+  }
 
-		public String getValue() {
-			return value;
-		}
+  public void setLabel(String label) {
+    this.label = label;
+  }
 
-		public void setValue(String value) {
-			this.value = value;
-		}
+  public String getValue() {
+    return value;
+  }
 
-		public String getName() {
-			return name;
-		}
+  public void setValue(String value) {
+    this.value = value;
+  }
 
-		public void setName(String name) {
-			this.name = name;
-		}
+  public String getName() {
+    return name;
+  }
 
-		public String getType() {
-			return type;
-		}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-		public void setType(String type) {
-			this.type = type;
-		}
+  public String getType() {
+    return type;
+  }
 
-		public int getMin() {
-			return min;
-		}
+  public void setType(String type) {
+    this.type = type;
+  }
 
-		public void setMin(int min) {
-			this.min = min;
-		}
+  public int getMin() {
+    return min;
+  }
 
-		public int getMax() {
-			return max;
-		}
+  public void setMin(int min) {
+    this.min = min;
+  }
 
-		public void setMax(int max) {
-			this.max = max;
-		}
+  public int getMax() {
+    return max;
+  }
 
+  public void setMax(int max) {
+    this.max = max;
+  }
 }

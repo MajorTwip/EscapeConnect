@@ -10,12 +10,9 @@
  * Do not edit the class manually.
  */
 
-
 package ch.ffhs.pa5.escapeconnect.bean;
 
-
 import java.util.Objects;
-
 
 import ch.ffhs.pa5.escapeconnect.bean.Action;
 import ch.ffhs.pa5.escapeconnect.bean.Value;
@@ -26,436 +23,233 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 import javax.validation.constraints.*;
 
-
-
-
-/**
- * Objekt, welches ein Panel beschreibt
- */
+/** Objekt, welches ein Panel beschreibt */
 @ApiModel(description = "Objekt, welches ein Panel beschreibt")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaJerseyDIServerCodegen", date = "2019-10-16T16:22:47.544870800+02:00[Europe/Berlin]")
-public class Panel   {
-  
-    
-      
-  
+@javax.annotation.Generated(
+    value = "io.swagger.codegen.languages.java.JavaJerseyDIServerCodegen",
+    date = "2019-10-16T16:22:47.544870800+02:00[Europe/Berlin]")
+public class Panel {
+
   @JsonProperty("id")
-  
-  
-  
-  
   private Integer id = null;
-  
 
-  
-    
-      
-  
   @JsonProperty("order")
-  
-  
-  
-  
   private Integer order = null;
-  
 
-  
-    
-      
-  
   @JsonProperty("title")
-  
-  
-  
-  
   private String title = null;
-  
 
-  
-    
-      
-  
   @JsonProperty("status")
-  
-  
-  
-  
   private Boolean status = null;
-  
 
-  
-    
-      
-  
   @JsonProperty("settingsenabled")
-  
-  
-  
-  
   private Boolean settingsenabled = null;
-  
 
-  
-    
-      
-  
   @JsonProperty("upgradeenabled")
-  
-  
-  
-  
   private Boolean upgradeenabled = null;
-  
 
-  
-    
-      
-  
   @JsonProperty("values")
-  
-  
-  
   private List<Value> values = null;
-  
-  
 
-  
-    
-      
-  
   @JsonProperty("actions")
-  
-  
-  
   private List<Action> actions = null;
-  
-  
 
-  
-  
-  
   public Panel id(Integer id) {
     this.id = id;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * Die ID des Panels
-  
-  
-  
-  
+   *
    * @return id
-   **/
- 
-  
+   */
   @JsonProperty("id")
-  
   @ApiModelProperty(required = true, value = "Die ID des Panels")
-
   @NotNull
-
   public Integer getId() {
     return id;
   }
-  
 
   public void setId(Integer id) {
     this.id = id;
   }
-  
 
-  
-  
   public Panel order(Integer order) {
     this.order = order;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * Das wievielte Element dieses Panel im Dashboard sein sollte
-  
-  
-  
-  
+   *
    * @return order
-   **/
- 
-  
+   */
   @JsonProperty("order")
-  
   @ApiModelProperty(value = "Das wievielte Element dieses Panel im Dashboard sein sollte")
-
   public Integer getOrder() {
     return order;
   }
-  
 
   public void setOrder(Integer order) {
     this.order = order;
   }
-  
 
-  
-  
   public Panel title(String title) {
     this.title = title;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * Der angezeigte Titel des Panel, verutlich der Name des Rätsels
-  
-  
-  
-  
+   *
    * @return title
-   **/
- 
-  
+   */
   @JsonProperty("title")
-  
-  @ApiModelProperty(required = true, value = "Der angezeigte Titel des Panel, verutlich der Name des Rätsels")
-
+  @ApiModelProperty(
+      required = true,
+      value = "Der angezeigte Titel des Panel, verutlich der Name des Rätsels")
   @NotNull
-
   public String getTitle() {
     return title;
   }
-  
 
   public void setTitle(String title) {
     this.title = title;
   }
-  
 
-  
-  
   public Panel status(Boolean status) {
     this.status = status;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * Device online/offline, online &#x3D; true
-  
-  
-  
-  
+   *
    * @return status
-   **/
- 
-  
+   */
   @JsonProperty("status")
-  
   @ApiModelProperty(value = "Device online/offline, online = true")
-
   public Boolean isisStatus() {
     return status;
   }
-  
 
   public void setStatus(Boolean status) {
     this.status = status;
   }
-  
 
-  
-  
   public Panel settingsenabled(Boolean settingsenabled) {
     this.settingsenabled = settingsenabled;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * Unterstützt das Device Einstellungsänderungen
-  
-  
-  
-  
+   *
    * @return settingsenabled
-   **/
- 
-  
+   */
   @JsonProperty("settingsenabled")
-  
   @ApiModelProperty(value = "Unterstützt das Device Einstellungsänderungen")
-
   public Boolean isisSettingsenabled() {
     return settingsenabled;
   }
-  
 
   public void setSettingsenabled(Boolean settingsenabled) {
     this.settingsenabled = settingsenabled;
   }
-  
 
-  
-  
   public Panel upgradeenabled(Boolean upgradeenabled) {
     this.upgradeenabled = upgradeenabled;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * Unterstützt das Device OTA-Update
-  
-  
-  
-  
+   *
    * @return upgradeenabled
-   **/
- 
-  
+   */
   @JsonProperty("upgradeenabled")
-  
   @ApiModelProperty(value = "Unterstützt das Device OTA-Update")
-
   public Boolean isisUpgradeenabled() {
     return upgradeenabled;
   }
-  
 
   public void setUpgradeenabled(Boolean upgradeenabled) {
     this.upgradeenabled = upgradeenabled;
   }
-  
 
-  
-  
   public Panel values(List<Value> values) {
     this.values = values;
     return this;
   }
-  
 
   public Panel addValuesItem(Value valuesItem) {
-    
+
     if (this.values == null) {
       this.values = new ArrayList<Value>();
     }
-    
+
     this.values.add(valuesItem);
     return this;
   }
-  
-  
 
-  
   /**
-  
-  
    * Get values
-  
-  
-  
+   *
    * @return values
-   **/
- 
-  
+   */
   @JsonProperty("values")
-  
   @ApiModelProperty(value = "")
-
   public List<Value> getValues() {
     return values;
   }
-  
 
   public void setValues(List<Value> values) {
     this.values = values;
   }
-  
 
-  
-  
   public Panel actions(List<Action> actions) {
     this.actions = actions;
     return this;
   }
-  
 
   public Panel addActionsItem(Action actionsItem) {
-    
+
     if (this.actions == null) {
       this.actions = new ArrayList<Action>();
     }
-    
+
     this.actions.add(actionsItem);
     return this;
   }
-  
-  
 
-  
   /**
-  
-  
    * Get actions
-  
-  
-  
+   *
    * @return actions
-   **/
- 
-  
+   */
   @JsonProperty("actions")
-  
   @ApiModelProperty(value = "")
-
   public List<Action> getActions() {
     return actions;
   }
-  
 
   public void setActions(List<Action> actions) {
     this.actions = actions;
   }
-  
-
 
   @Override
   public int hashCode() {
     return Objects.hash(id, order, title, status, settingsenabled, upgradeenabled, values, actions);
   }
 
-
-
-
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Panel {\n");
-    
+
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    order: ").append(toIndentedString(order)).append("\n");
     sb.append("    title: ").append(toIndentedString(title)).append("\n");
@@ -469,8 +263,7 @@ public class Panel   {
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces (except the first line).
    */
   private String toIndentedString(java.lang.Object o) {
     if (o == null) {
@@ -479,6 +272,3 @@ public class Panel   {
     return o.toString().replace("\n", "\n    ");
   }
 }
-
-
-

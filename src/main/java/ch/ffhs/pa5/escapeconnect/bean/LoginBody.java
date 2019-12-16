@@ -10,100 +10,64 @@
  * Do not edit the class manually.
  */
 
-
 package ch.ffhs.pa5.escapeconnect.bean;
 
-
 import java.util.Objects;
-
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-
-
 import javax.validation.constraints.*;
 
-
-
-
-/**
- * Body2
- */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaJerseyDIServerCodegen", date = "2019-10-16T16:22:47.544870800+02:00[Europe/Berlin]")
-public class LoginBody   {
+/** Body2 */
+@javax.annotation.Generated(
+    value = "io.swagger.codegen.languages.java.JavaJerseyDIServerCodegen",
+    date = "2019-10-16T16:22:47.544870800+02:00[Europe/Berlin]")
+public class LoginBody {
 
   @JsonProperty("passhash")
-  
-
-  
-  
   private String passhash = null;
-  
 
-  
-  
-  
   public LoginBody passhash(String passhash) {
     this.passhash = passhash;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * SHA256 Hash des Passwortes
-  
-  
-  
-  
+   *
    * @return passhash
-   **/
- 
-  
+   */
   @JsonProperty("passhash")
-  
   @ApiModelProperty(required = true, value = "SHA256 Hash des Passwortes")
-
   @NotNull
-
   public String getPasshash() {
     return passhash;
   }
-  
 
   public void setPasshash(String passhash) {
     this.passhash = passhash;
   }
-  
-
-
 
   @Override
   public int hashCode() {
     return Objects.hash(passhash);
   }
 
-
-
-
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Body2 {\n");
-    
+
     sb.append("    passhash: ").append(toIndentedString(passhash)).append("\n");
     sb.append("}");
     return sb.toString();
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces (except the first line).
    */
   private String toIndentedString(java.lang.Object o) {
     if (o == null) {
@@ -112,6 +76,3 @@ public class LoginBody   {
     return o.toString().replace("\n", "\n    ");
   }
 }
-
-
-

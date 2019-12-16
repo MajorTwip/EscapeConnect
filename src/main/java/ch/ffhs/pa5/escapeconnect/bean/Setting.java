@@ -10,12 +10,9 @@
  * Do not edit the class manually.
  */
 
-
 package ch.ffhs.pa5.escapeconnect.bean;
 
-
 import java.util.Objects;
-
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -23,66 +20,29 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-
-
 import javax.validation.constraints.*;
 
+/** Setting */
+@javax.annotation.Generated(
+    value = "io.swagger.codegen.languages.java.JavaJerseyDIServerCodegen",
+    date = "2019-10-16T16:22:47.544870800+02:00[Europe/Berlin]")
+public class Setting {
 
-
-
-/**
- * Setting
- */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaJerseyDIServerCodegen", date = "2019-10-16T16:22:47.544870800+02:00[Europe/Berlin]")
-public class Setting   {
-  
-    
-      
-  
   @JsonProperty("id")
-  
-  
-  
-  
   private Integer id = null;
-  
 
-  
-    
-      
-  
   @JsonProperty("label")
-  
-  
-  
-  
   private String label = null;
-  
 
-  
-    
-    
-  /**
-   * typ der Einstellung
-   */
+  /** typ der Einstellung */
   public enum TypeEnum {
-    
-    
-        
-            
     CONSTCHAR("constchar"),
-    
-            
+
     BOOL("bool"),
-    
-            
+
     LONG("long"),
-    
-            
+
     DOUBLE("double");
-            
-        
-    
 
     private String value;
 
@@ -107,284 +67,151 @@ public class Setting   {
     }
   }
 
-      
-  
   @JsonProperty("type")
-  
-  
-  
-  
   private TypeEnum type = null;
-  
 
-  
-    
-      
-  
   @JsonProperty("value")
-  
-  
-  
-  
   private String value = null;
-  
 
-  
-    
-      
-  
   @JsonProperty("min")
-  
-  
-  
-  
   private String min = null;
-  
 
-  
-    
-      
-  
   @JsonProperty("max")
-  
-  
-  
-  
   private String max = null;
-  
 
-  
-  
-  
   public Setting id(Integer id) {
     this.id = id;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * EinstellungsID
-  
-  
-  
-  
+   *
    * @return id
-   **/
- 
-  
+   */
   @JsonProperty("id")
-  
   @ApiModelProperty(required = true, value = "EinstellungsID")
-
   @NotNull
-
   public Integer getId() {
     return id;
   }
-  
 
   public void setId(Integer id) {
     this.id = id;
   }
-  
 
-  
-  
   public Setting label(String label) {
     this.label = label;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * Einstellungsanzeigename
-  
-  
-  
-  
+   *
    * @return label
-   **/
- 
-  
+   */
   @JsonProperty("label")
-  
   @ApiModelProperty(required = true, value = "Einstellungsanzeigename")
-
   @NotNull
-
   public String getLabel() {
     return label;
   }
-  
 
   public void setLabel(String label) {
     this.label = label;
   }
-  
 
-  
-  
   public Setting type(TypeEnum type) {
     this.type = type;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * typ der Einstellung
-  
-  
-  
-  
+   *
    * @return type
-   **/
- 
-  
+   */
   @JsonProperty("type")
-  
   @ApiModelProperty(required = true, value = "typ der Einstellung")
-
   @NotNull
-
   public TypeEnum getType() {
     return type;
   }
-  
 
   public void setType(TypeEnum type) {
     this.type = type;
   }
-  
 
-  
-  
   public Setting value(String value) {
     this.value = value;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * Aktueller Wert als String
-  
-  
-  
-  
+   *
    * @return value
-   **/
- 
-  
+   */
   @JsonProperty("value")
-  
   @ApiModelProperty(value = "Aktueller Wert als String")
-
   public String getValue() {
     return value;
   }
-  
 
   public void setValue(String value) {
     this.value = value;
   }
-  
 
-  
-  
   public Setting min(String min) {
     this.min = min;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * Minimalwert als String
-  
-  
-  
-  
+   *
    * @return min
-   **/
- 
-  
+   */
   @JsonProperty("min")
-  
   @ApiModelProperty(value = "Minimalwert als String")
-
   public String getMin() {
     return min;
   }
-  
 
   public void setMin(String min) {
     this.min = min;
   }
-  
 
-  
-  
   public Setting max(String max) {
     this.max = max;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * Maximalwert als String
-  
-  
-  
-  
+   *
    * @return max
-   **/
- 
-  
+   */
   @JsonProperty("max")
-  
   @ApiModelProperty(value = "Maximalwert als String")
-
   public String getMax() {
     return max;
   }
-  
 
   public void setMax(String max) {
     this.max = max;
   }
-  
-
- 
 
   @Override
   public int hashCode() {
     return Objects.hash(id, label, type, value, min, max);
   }
 
-
-
-
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Setting {\n");
-    
+
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    label: ").append(toIndentedString(label)).append("\n");
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
@@ -396,8 +223,7 @@ public class Setting   {
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces (except the first line).
    */
   private String toIndentedString(java.lang.Object o) {
     if (o == null) {
@@ -406,6 +232,3 @@ public class Setting   {
     return o.toString().replace("\n", "\n    ");
   }
 }
-
-
-
