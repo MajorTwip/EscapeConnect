@@ -1,3 +1,5 @@
+/** Code has been formated */
+/** @author Yvo von Kaenel */
 package ch.ffhs.pa5.escapeconnect;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,60 +23,61 @@ import ch.ffhs.pa5.escapeconnect.persistency.DBAdapter;
 
 @ExtendWith(MockitoExtension.class)
 public class TestAdmin {
-	
-	@InjectMocks
-	AdminAPIimplement adminapi;
-	
-	@Mock
-	DAOecsettings daoecsettings; 
-	
-	@Mock
-	DBAdapter dba;
-	
-	@Test
-	public void doLogin() {
-        MockitoAnnotations.initMocks(this);
-        
-        EcSettings ecs = new EcSettings("123", "url");
-        Mockito.when(daoecsettings.get()).thenReturn(ecs);
 
-        LoginBody emptybody = new LoginBody();
-        emptybody.setPasshash("");
-        
-        LoginBody okbody = new LoginBody();
-        okbody.setPasshash("123");
-        
-        LoginBody notokbody = new LoginBody();
-        notokbody.setPasshash("falsepass");
-        
-        //wenn login ohne Param augerufen wird
-		assertEquals(Response.Status.CONFLICT.getStatusCode(), adminapi.doLogin(null, null).getStatus());
-		//wenn leeres PW
-		assertEquals(Response.Status.CONFLICT.getStatusCode(), adminapi.doLogin(emptybody, null).getStatus());
-		//PW OK
-		assertEquals(Response.Status.OK.getStatusCode(), adminapi.doLogin(okbody, null).getStatus());
-		//PW Falsch
-		assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), adminapi.doLogin(notokbody, null).getStatus());
-        
-	}
-	
-	@Test
-	public void doSetup() {
-        MockitoAnnotations.initMocks(this);
-   
-        Mockito.doNothing().when(dba).createDBifNone();
-        
-        Setup body = new Setup();
-        body.setAdminpass("123");
-        body.setMqtturl("url");
-        body.setMqttuser("MQTTUSER");
-        body.setMqttpass("MQTTPASS");
-        
-        //wenn keine Param übergeben
-		assertEquals(Response.Status.CONFLICT.getStatusCode(), adminapi.setup(null, null).getStatus());
-		//Alles OK
-		assertEquals(Response.Status.OK.getStatusCode(), adminapi.setup(body, null).getStatus());
+  @InjectMocks AdminAPIimplement adminapi;
 
-	}
+  @Mock DAOecsettings daoecsettings;
 
+  @Mock DBAdapter dba;
+
+  @Test
+  public void doLogin() {
+    MockitoAnnotations.initMocks(this);
+
+    // Necessary in order to have a password in the system and compare it to the body "okbody"
+    EcSettings ecs = new EcSettings("123", "url");
+    Mockito.when(daoecsettings.get()).thenReturn(ecs);
+
+    // Create different body with different passwords (pwd) for the assertequals()
+    LoginBody emptybody = new LoginBody();
+    emptybody.setPasshash("");
+
+    LoginBody okbody = new LoginBody();
+    okbody.setPasshash("123");
+
+    LoginBody notokbody = new LoginBody();
+    notokbody.setPasshash("falsepass");
+
+    // Test when there is no body, no pwd
+    assertEquals(
+        Response.Status.CONFLICT.getStatusCode(), adminapi.doLogin(null, null).getStatus());
+    // when the body is there but empty
+    assertEquals(
+        Response.Status.CONFLICT.getStatusCode(), adminapi.doLogin(emptybody, null).getStatus());
+    // when the pwd is correct
+    assertEquals(Response.Status.OK.getStatusCode(), adminapi.doLogin(okbody, null).getStatus());
+    // when the pwd is incorrect
+    assertEquals(
+        Response.Status.UNAUTHORIZED.getStatusCode(),
+        adminapi.doLogin(notokbody, null).getStatus());
+  }
+
+  @Test
+  public void doSetup() {
+    MockitoAnnotations.initMocks(this);
+
+    Mockito.doNothing().when(dba).createDBifNone();
+
+    // prepare the object for the 2nd test below
+    Setup body = new Setup();
+    body.setAdminpass("123");
+    body.setMqtturl("url");
+    body.setMqttuser("MQTTUSER");
+    body.setMqttpass("MQTTPASS");
+
+    // When there is no setup object (case "unsuccessful")
+    assertEquals(Response.Status.CONFLICT.getStatusCode(), adminapi.setup(null, null).getStatus());
+    // When there is a setup object (case "successful")
+    assertEquals(Response.Status.OK.getStatusCode(), adminapi.setup(body, null).getStatus());
+  }
 }
