@@ -1,3 +1,5 @@
+/** Code has been formated */
+/** @author Ludovic Renevey */
 package ch.ffhs.pa5.escapeconnect.handlers;
 
 import java.util.ArrayList;
@@ -28,6 +30,8 @@ import ch.ffhs.pa5.escapeconnect.persistency.DAOvalue;
 import ch.ffhs.pa5.escapeconnect.utils.MACformating;
 
 public class PanelAPIimplement implements PanelApiService {
+
+  // Instances must be created here in order to mock them later
   DAOpanel daopanel = new DAOpanel();
   DAOaction daoaction = new DAOaction();
   DAOvalue daovalue = new DAOvalue();
@@ -42,7 +46,6 @@ public class PanelAPIimplement implements PanelApiService {
     // get the data through the DAO
     List<PanelDAOBean> resultsFromDB = daopanel.getAllPanels();
 
-    
     int place = 0;
     // convert the PanelDAOBeans to Panels
     for (PanelDAOBean generatedPanel : resultsFromDB) {
