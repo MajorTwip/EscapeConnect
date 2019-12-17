@@ -164,6 +164,7 @@ public class DeviceAPIimplement implements DeviceApiService {
       @NotNull int panelId,
       Boolean forced,
       SecurityContext securityContext) {
+
     if (updateDeviceBody == null || updateDeviceBody.getFirmware() == null) {
       // If there is no file, then the system sends back an error.
       return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE)
@@ -173,7 +174,9 @@ public class DeviceAPIimplement implements DeviceApiService {
 
     // get MAC
     PanelDAOBean pan = daopanel.getById(panelId);
-    if (pan == null) {
+    System.out.println("This is the panel: " + pan.getId());
+    // Per default, an empty PanelDAOBean has an id of 0, see the bean
+    if (pan == null || pan.getId() == 0) {
       // If there panel with this ID.
       return Response.status(Response.Status.NOT_FOUND).entity("no such panel").build();
     }
@@ -194,20 +197,20 @@ public class DeviceAPIimplement implements DeviceApiService {
     requestMsgMd5.add(fwrequest);
     Map<String, String> receivedMsgMd5 = mqtt.getMessages(requestMsgMd5, 1000);
     System.out.println(
-        "Upgrade for panel "
+        "Upgrade for panel: "
             + panelId
             + " >> MAC: "
             + deviceId
-            + "The MD5 is "
+            + " >> The MD5 is "
             + receivedMsgMd5.get(fwrequest));
 
     byte[] newFirmware = updateDeviceBody.getFirmware();
 
     // get name/version of the new firmware
     System.out.println(
-        "New Firmwarename:Version  "
+        "New Firmwarename - Version: "
             + FirmwareUtil.getFirmwareName(newFirmware)
-            + ":"
+            + ": "
             + FirmwareUtil.getFirmwareVersion(newFirmware));
 
     // Calculate the MD5 of the new firmware
@@ -233,7 +236,7 @@ public class DeviceAPIimplement implements DeviceApiService {
             "$implementation/ota/firmware",
             newChecksum);
 
-    // Publish the bin file
+    // Publish the bin file (Fire & forget logic for this version)
     // No need to handle exceptions here, since the MQTT functions do it.
     MqttMessage msg = new MqttMessage(updateDeviceBody.getFirmware());
     mqtt.publish(topic, msg);
