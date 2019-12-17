@@ -202,6 +202,7 @@ public class TestDevice {
 
     PanelDAOBean pdb = new PanelDAOBean();
     pdb.setDevice_mac("1212121212");
+    pdb.setId(1);
     Mockito.when(daopanel.getById(1)).thenReturn(pdb);
 
     DeviceDAOBean ddb = new DeviceDAOBean();
