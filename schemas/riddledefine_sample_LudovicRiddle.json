@@ -1,0 +1,69 @@
+{
+	"$schema" : "https://github.com/MajorTwip/EscapeConnect/schemas/riddledefine_v0.json",
+	"definition" : {
+		"name" : "Sandriddle",
+		"version" : "1.0",
+		"author" : "Yvo von Känel",
+		"contact" : "yvo.vonkaenel@students.ffhs.ch"
+	},
+	"device" : {
+		"default_name" : "Riddle Test",
+		"mac" : "84:F3:EB:7B:2E:07",
+		"allows_ota" : true
+	},
+	"panel" : {
+		"values" : [
+			{
+				"label" : "Sandniveau",
+				"subtopic" : "tank/sandlevel",
+				"type" : "string"
+			},
+			{
+				"label" : "Schlüsselklappe",
+				"subtopic" : "tank/trap",
+				"type" : "string"
+			}
+		],
+		"actions" : [
+			{
+				"label" : "Schlüssel freigeben",
+				"subtopic" : "tank/trap/set",
+				"payload": "1"
+			}
+		]
+	},
+	"settings" : 
+	[
+		{
+			"name" : "settings/riddleSolution",
+			"label" : "Lösungswert",
+			"type" : "long",
+			"min" : 0,
+			"max" : 1024
+		},
+		{
+			"name" : "settings/riddleSolutionPrecision",
+			"label" : "Lösungstoleranz",
+			"type" : "long",
+			"min" : 0,
+			"max" : 1024
+		},
+		{
+			"name" : "settings/sensorIntervall",
+			"label" : "Sendeintervall in Sekunden",
+			"type" : "long",
+			"min" : 1,
+			"max" : 3600
+		},
+		{
+			"name" : "wifi/ssid",
+			"label" : "WLAN-Name",
+			"type" : "constchar"
+		},
+		{
+			"name" : "wifi/password",
+			"label" : "WLAN-Passwort",
+			"type" : "constchar"
+		}
+	]
+}

@@ -1,3 +1,5 @@
+/** Code has been formated */
+/** @author Yvo von Kaenel and Ludovic Renevey */
 package ch.ffhs.pa5.escapeconnect.handlers;
 
 import java.io.IOException;
@@ -44,17 +46,17 @@ public class DeviceAPIimplement implements DeviceApiService {
   DAOsettings daosetting;
   DAOecsettings daoecsettings;
 
-  
   MQTTconnector mqtt = new MQTTconnector();
 
   public DeviceAPIimplement() {
+
+    // Instances must be created here in order to mock them later
     daodevice = new DAOdevice();
     daopanel = new DAOpanel();
     daoaction = new DAOaction();
     daovalue = new DAOvalue();
     daosetting = new DAOsettings();
     daoecsettings = new DAOecsettings();
-    
   }
 
   @Override
@@ -133,7 +135,7 @@ public class DeviceAPIimplement implements DeviceApiService {
       }
 
     } catch (JsonParseException e) {
-      //e.printStackTrace();
+      // e.printStackTrace();
       return Response.status(418).build();
     } catch (IOException e1) {
       e1.printStackTrace();
@@ -162,64 +164,82 @@ public class DeviceAPIimplement implements DeviceApiService {
       @NotNull int panelId,
       Boolean forced,
       SecurityContext securityContext) {
+
     if (updateDeviceBody == null || updateDeviceBody.getFirmware() == null) {
       // If there is no file, then the system sends back an error.
       return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE)
           .entity("no File provided")
           .build();
     }
-    
-    //get MAC
+
+    // get MAC
     PanelDAOBean pan = daopanel.getById(panelId);
-    if(pan==null) {
-    	// If there panel with this ID.
-        return Response.status(Response.Status.NOT_FOUND)
-            .entity("no such panel")
-            .build();
+    // Per default, an empty PanelDAOBean has an id of 0, see the bean
+    if (pan == null || pan.getId() == 0) {
+      // If there panel with this ID.
+      return Response.status(Response.Status.NOT_FOUND).entity("no such panel").build();
     }
-    
-    String deviceId =pan.getDevice_mac();
-    
+
+    String deviceId = pan.getDevice_mac();
 
     // Start the connection with MQTT with the correct credentials
     EcSettings settings = daoecsettings.get();
     mqtt.config(settings.getMqttUrl(), settings.getMqttName(), settings.getMqttPass());
-    
+
     // Get the MD5 from the device via MQTT
+    // In a new version of this method, this can be used and compared to the new checksum
     DeviceDAOBean deviceToUpdate = daodevice.getByMac(deviceId);
     LinkedList<String> requestMsgMd5 = new LinkedList<>();
-    String fwrequest = String.join("/", deviceToUpdate.getBasetopic(),deviceToUpdate.getDeviceid(),"$fw/checksum");
-    requestMsgMd5.add(fwrequest);//("/" + deviceToUpdate.getBasetopic() + "/" + deviceToUpdate.getDeviceid() + "/" + "$fw/checksum");
-    Map<String,String> receivedMsgMd5 = mqtt.getMessages(requestMsgMd5, 1000);
-    System.out.println("Upgrade for panel " + panelId + " >> MAC: " + deviceId + "The MD5 is " + receivedMsgMd5.get(fwrequest));
+    String fwrequest =
+        String.join(
+            "/", deviceToUpdate.getBasetopic(), deviceToUpdate.getDeviceid(), "$fw/checksum");
+    requestMsgMd5.add(fwrequest);
+    Map<String, String> receivedMsgMd5 = mqtt.getMessages(requestMsgMd5, 1000);
+    System.out.println(
+        "Upgrade for panel: "
+            + panelId
+            + " >> MAC: "
+            + deviceId
+            + " >> The MD5 is "
+            + receivedMsgMd5.get(fwrequest));
 
     byte[] newFirmware = updateDeviceBody.getFirmware();
-    
-    //get name/version of the new Fw
-    System.out.println("New Firmwarename:Version  " + FirmwareUtil.getFirmwareName(newFirmware) + ":" + FirmwareUtil.getFirmwareVersion(newFirmware));
-    
+
+    // get name/version of the new firmware
+    System.out.println(
+        "New Firmwarename - Version: "
+            + FirmwareUtil.getFirmwareName(newFirmware)
+            + ": "
+            + FirmwareUtil.getFirmwareVersion(newFirmware));
+
     // Calculate the MD5 of the new firmware
     String newChecksum = null;
-    try { 
-    	MessageDigest md = MessageDigest.getInstance("MD5"); 
-    	byte[] hash = md.digest(newFirmware); 
-    	StringBuilder sb = new StringBuilder(2*hash.length); 
-    	for(byte b : hash){ 
-    		sb.append(String.format("%02x", b&0xff)); 
-    	} 
-    	newChecksum = sb.toString(); 
-    } catch (NoSuchAlgorithmException e) { 
-    	e.printStackTrace();
-    } 
-    
-    //Prepare topic for publishing
-    String topic = String.join("/", deviceToUpdate.getBasetopic(), deviceToUpdate.getDeviceid(), "$implementation/ota/firmware", newChecksum);
-    
-    //Publish the bin file
-    //No need to handle exceptions here, since the MQTT functions do it.
+    try {
+      MessageDigest md = MessageDigest.getInstance("MD5");
+      byte[] hash = md.digest(newFirmware);
+      StringBuilder sb = new StringBuilder(2 * hash.length);
+      for (byte b : hash) {
+        sb.append(String.format("%02x", b & 0xff));
+      }
+      newChecksum = sb.toString();
+    } catch (NoSuchAlgorithmException e) {
+      e.printStackTrace();
+    }
+
+    // Prepare topic for publishing
+    String topic =
+        String.join(
+            "/",
+            deviceToUpdate.getBasetopic(),
+            deviceToUpdate.getDeviceid(),
+            "$implementation/ota/firmware",
+            newChecksum);
+
+    // Publish the bin file (Fire & forget logic for this version)
+    // No need to handle exceptions here, since the MQTT functions do it.
     MqttMessage msg = new MqttMessage(updateDeviceBody.getFirmware());
     mqtt.publish(topic, msg);
-    
+
     return Response.status(Response.Status.OK).build();
   }
 }

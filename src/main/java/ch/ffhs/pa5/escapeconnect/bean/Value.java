@@ -10,191 +10,105 @@
  * Do not edit the class manually.
  */
 
-
 package ch.ffhs.pa5.escapeconnect.bean;
 
-
 import java.util.Objects;
-
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-
-
 import javax.validation.constraints.*;
 
-
-
-
-/**
- * Anzuzeigender Wert
- */
+/** Anzuzeigender Wert */
 @ApiModel(description = "Anzuzeigender Wert")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.java.JavaJerseyDIServerCodegen", date = "2019-10-16T16:22:47.544870800+02:00[Europe/Berlin]")
-public class Value   {
-  
-    
-      
-  
+@javax.annotation.Generated(
+    value = "io.swagger.codegen.languages.java.JavaJerseyDIServerCodegen",
+    date = "2019-10-16T16:22:47.544870800+02:00[Europe/Berlin]")
+public class Value {
+
   @JsonProperty("id")
-  
-  
-  
-  
   private Integer id = null;
-  
 
-  
-    
-      
-  
   @JsonProperty("label")
-  
-  
-  
-  
   private String label = null;
-  
 
-  
-    
-      
-  
   @JsonProperty("value")
-  
-  
-  
-  
   private String value = null;
-  
 
-  
-  
-  
   public Value id(Integer id) {
     this.id = id;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * id des Anzeigewertes
-  
-  
-  
-  
+   *
    * @return id
-   **/
- 
-  
+   */
   @JsonProperty("id")
-  
   @ApiModelProperty(required = true, value = "id des Anzeigewertes")
-
   @NotNull
-
   public Integer getId() {
     return id;
   }
-  
 
   public void setId(Integer id) {
     this.id = id;
   }
-  
 
-  
-  
   public Value label(String label) {
     this.label = label;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * Label des Wertes
-  
-  
-  
-  
+   *
    * @return label
-   **/
- 
-  
+   */
   @JsonProperty("label")
-  
   @ApiModelProperty(required = true, value = "Label des Wertes")
-
   @NotNull
-
   public String getLabel() {
     return label;
   }
-  
 
   public void setLabel(String label) {
     this.label = label;
   }
-  
 
-  
-  
   public Value value(String value) {
     this.value = value;
     return this;
   }
-  
-  
 
-  
   /**
-  
    * Anzeigewert
-  
-  
-  
-  
+   *
    * @return value
-   **/
- 
-  
+   */
   @JsonProperty("value")
-  
   @ApiModelProperty(value = "Anzeigewert")
-
   public String getValue() {
     return value;
   }
-  
 
   public void setValue(String value) {
     this.value = value;
   }
-  
-
 
   @Override
   public int hashCode() {
     return Objects.hash(id, label, value);
   }
 
-
-
-
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Value {\n");
-    
+
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    label: ").append(toIndentedString(label)).append("\n");
     sb.append("    value: ").append(toIndentedString(value)).append("\n");
@@ -203,8 +117,7 @@ public class Value   {
   }
 
   /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
+   * Convert the given object to string with each line indented by 4 spaces (except the first line).
    */
   private String toIndentedString(java.lang.Object o) {
     if (o == null) {
@@ -213,6 +126,3 @@ public class Value   {
     return o.toString().replace("\n", "\n    ");
   }
 }
-
-
-
