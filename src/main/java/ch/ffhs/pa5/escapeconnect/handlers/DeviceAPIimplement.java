@@ -174,7 +174,6 @@ public class DeviceAPIimplement implements DeviceApiService {
 
     // get MAC
     PanelDAOBean pan = daopanel.getById(panelId);
-    System.out.println("This is the panel: " + pan.getId());
     // Per default, an empty PanelDAOBean has an id of 0, see the bean
     if (pan == null || pan.getId() == 0) {
       // If there panel with this ID.
