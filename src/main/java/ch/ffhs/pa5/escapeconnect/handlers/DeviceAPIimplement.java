@@ -1,5 +1,4 @@
-/** Code has been formated */
-/** @author Yvo von Kaenel and Ludovic Renevey */
+/* Code has been formated */
 package ch.ffhs.pa5.escapeconnect.handlers;
 
 import java.io.IOException;
@@ -37,6 +36,13 @@ import ch.ffhs.pa5.escapeconnect.persistency.DAOvalue;
 import ch.ffhs.pa5.escapeconnect.utils.FirmwareUtil;
 import ch.ffhs.pa5.escapeconnect.utils.MACformating;
 
+/** 
+ * Handler "DeviceAPIimplement" manages the devices (ESP) which contain 1 or more riddles
+ * 
+ * @author Yvo von Kaenel and Ludovic Renevey 
+ * 
+ */
+
 public class DeviceAPIimplement implements DeviceApiService {
 
   DAOdevice daodevice;
@@ -48,6 +54,12 @@ public class DeviceAPIimplement implements DeviceApiService {
 
   MQTTconnector mqtt = new MQTTconnector();
 
+  /** 
+   * 
+   * The constructor does not take any parameters. It creates an instance of the class itself and instances of the DAO.
+   * 
+   */
+  
   public DeviceAPIimplement() {
 
     // Instances must be created here in order to mock them later
@@ -59,6 +71,18 @@ public class DeviceAPIimplement implements DeviceApiService {
     daoecsettings = new DAOecsettings();
   }
 
+  /** 
+   * 
+   * addDevice uses the parameter addDeviceBody, which contains the definition file (JSON) of the device and its riddle(s). A new device will be added to the database.
+   * 
+   * @param addDeviceBody contains the name of the device as well as the JSON-file (definition of the device and riddle)	 
+   * @param securityContext An injectable interface that provides access to security related information
+   * @return a response if the device can be created (more: https://docs.oracle.com/javaee/7/api/javax/ws/rs/core/Response.html)
+   * @throws JsonParseException used when non-well-formed content (content that does not conform to JSON syntax as per specification) is encountered.
+   * @throws IOException Signals that an I/O exception of some sort has occurred when uploading and parsing the JSON file.
+   *
+   */
+  
   @Override
   public Response addDevice(AddDeviceBody addDeviceBody, SecurityContext securityContext) {
     // wird aufgerufen wenn /device/add aufgerufen wird
@@ -144,6 +168,17 @@ public class DeviceAPIimplement implements DeviceApiService {
     return Response.status(Response.Status.OK).build();
   }
 
+  /** 
+   * 
+   * deleteDevice() is used in order to delete a device from the database.
+   * 
+   * @param devicemac identifier of a device	 
+   * @param forces boolean which would force the user to validate the deletion (not used)
+   * @param securityContext An injectable interface that provides access to security related information
+   * @return a response if the device can be deleted (more: https://docs.oracle.com/javaee/7/api/javax/ws/rs/core/Response.html)
+   *
+   */
+  
   @Override
   public Response deleteDevice(
       @NotNull String devicemac, Boolean forces, SecurityContext securityContext) {
@@ -158,6 +193,19 @@ public class DeviceAPIimplement implements DeviceApiService {
     return Response.status(Response.Status.OK).build();
   }
 
+  /** 
+   * 
+   * upgradeFirmare() uses a body which contains the BIN file. This file is sent to the ESP/device over MQTT.
+   * 
+   * @param updateDeviceBody BIN file in form of a byte[]
+   * @param panelId	identifier of the panel (riddle) in order to find the linked device 
+   * @param forces boolean which would force the user to validate the upgrade (not used)
+   * @param securityContext An injectable interface that provides access to security related information
+   * @return a response if the device can be upgraded (more: https://docs.oracle.com/javaee/7/api/javax/ws/rs/core/Response.html)
+   * @throws NoSuchAlgorithmException the cryptographic algorithm for MD5 is requested but is not available in the environment
+   *
+   */
+  
   @Override
   public Response upgradeFirmware(
       UpdateDeviceBody updateDeviceBody,

@@ -1,4 +1,4 @@
-/** Code has been formated */
+/* Code has been formated */
 /** @author Yvo von Kaenel */
 package ch.ffhs.pa5.escapeconnect;
 

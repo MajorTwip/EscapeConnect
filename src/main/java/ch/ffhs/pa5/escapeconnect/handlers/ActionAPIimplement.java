@@ -1,5 +1,5 @@
-/** Code has been formated */
-/** @author Javier Garcia */
+/* Code has been formated */
+
 package ch.ffhs.pa5.escapeconnect.handlers;
 
 import java.util.List;
@@ -16,6 +16,13 @@ import ch.ffhs.pa5.escapeconnect.persistency.DAOecsettings;
 import ch.ffhs.pa5.escapeconnect.mqtt.MQTTconnector;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+/** 
+ * Handler "ActionAPIimplement" triggers an action of a riddle (panel) over MQTT 
+ * 
+ * @author Javier Garcia 
+ * 
+ */
+
 public class ActionAPIimplement implements ActionApiService {
   DAOaction daoaction = new DAOaction();
   DAOecsettings daoecsettings = new DAOecsettings();
@@ -24,6 +31,16 @@ public class ActionAPIimplement implements ActionApiService {
   String maintopic = null;
   String mainpayload = null;
 
+  /** 
+   * 
+   * doAction() has the actionId has a parameter so that it can find it in the database and trigger the action over MQTT.
+   * 
+   * @param actionId Identifier of an action (of a panel, also called riddle)	 
+   * @param securityContext An injectable interface that provides access to security related information
+   * @return a response if the action has been triggered or not found (more: https://docs.oracle.com/javaee/7/api/javax/ws/rs/core/Response.html)
+   *
+   */
+  
   @Override
   public Response doAction(@NotNull Integer actionId, SecurityContext securityContext) {
     // get the data through the DAO

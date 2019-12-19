@@ -1,5 +1,4 @@
-/** Code has been formated */
-/** @author Yvo von Kaenel */
+/* Code has been formated */
 package ch.ffhs.pa5.escapeconnect.handlers;
 
 import java.util.HashMap;
@@ -12,6 +11,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import ch.ffhs.pa5.escapeconnect.api.SettingApiService;
 import ch.ffhs.pa5.escapeconnect.bean.DeviceDAOBean;
@@ -27,6 +28,12 @@ import ch.ffhs.pa5.escapeconnect.persistency.DAOpanel;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOsettings;
 import ch.ffhs.pa5.escapeconnect.utils.ParseSettingsJSON;
 
+/**
+ * Handler "SettingAPIimplement" manage the settings of a riddle. Used in the first line to send the
+ * settings back to the API caller in order to modify them.
+ *
+ * @author Yvo von Kaenel
+ */
 public class SettingAPIimplement implements SettingApiService {
 
   DAOsettings daosettings = new DAOsettings();
@@ -35,6 +42,15 @@ public class SettingAPIimplement implements SettingApiService {
   DAOecsettings daoecsettings = new DAOecsettings();
   MQTTconnector mqtt = new MQTTconnector();
 
+  /**
+   * getSettingsByPanelId() get the setting for a specific riddle (panel).
+   *
+   * @param panelId identifier of the riddle
+   * @param securityContext An injectable interface that provides access to security related information
+   * @return list of settings (bean)
+   *   
+   */
+  
   @Override
   public Response getSettingsByPanelId(Integer panelId, SecurityContext securityContext) {
 
@@ -87,6 +103,15 @@ public class SettingAPIimplement implements SettingApiService {
     return Response.status(200).entity(settingsresponse).build();
   }
 
+  /**
+   * setSetting() set the setting for a specific riddle (panel).
+   *
+   * @param body as a list of setting
+   * @param securityContext An injectable interface that provides access to security related information
+   * @return a response if the device can be upgraded (more: https://docs.oracle.com/javaee/7/api/javax/ws/rs/core/Response.html)
+   *   
+   */
+  
   @Override
   public Response setSetting(List<SettingMod> body, SecurityContext securityContext) {
     Map<String, String> settings = new HashMap<>();
