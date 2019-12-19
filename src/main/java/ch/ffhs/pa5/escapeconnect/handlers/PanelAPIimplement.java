@@ -1,7 +1,7 @@
-/** Code has been formated */
-/** @author Ludovic Renevey */
+/* Code has been formated */
 package ch.ffhs.pa5.escapeconnect.handlers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+
+import com.fasterxml.jackson.core.JsonParseException;
 
 import ch.ffhs.pa5.escapeconnect.api.PanelApiService;
 import ch.ffhs.pa5.escapeconnect.bean.Action;
@@ -29,6 +31,13 @@ import ch.ffhs.pa5.escapeconnect.persistency.DAOpanel;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOvalue;
 import ch.ffhs.pa5.escapeconnect.utils.MACformating;
 
+/** 
+ * handler "PanelAPIimplement" manage the panels (riddle) linked to a device. Used in the first line to send the panels (saved in the database) back to the API caller. 
+ * 
+ * @author Ludovic Renevey 
+ * 
+ */
+
 public class PanelAPIimplement implements PanelApiService {
 
   // Instances must be created here in order to mock them later
@@ -39,6 +48,15 @@ public class PanelAPIimplement implements PanelApiService {
   DAOecsettings daoecsettings = new DAOecsettings();
   MQTTconnector mqtt = new MQTTconnector();
 
+  /** 
+   * 
+   * getPanes() gets the panels (riddles) from the database (panelDAOBean) in order to send them back the the API caller (panel).
+   * 
+   * @param securityContext An injectable interface that provides access to security related information
+   * @return a list of panels (see corresponding java bean in the package bean)
+   *
+   */
+  
   @Override
   public Response getPanes(SecurityContext securityContext) {
 
@@ -139,6 +157,12 @@ public class PanelAPIimplement implements PanelApiService {
     return Response.status(Response.Status.OK).entity(resultsToShow).build();
   }
 
+  /** 
+   * 
+   * swapPanes() can change the order of 2 panels. This method has not been implemented in this version.
+   * 
+   */
+  
   @Override
   public Response swapPanes(Integer pid1, Integer pid2, SecurityContext securityContext) {
     // TODO Auto-generated method stub

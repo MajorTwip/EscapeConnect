@@ -1,5 +1,4 @@
-/** Code has been formated */
-/** @author Yvo von Kaenel and Javier Garcia */
+/* Code has been formated */
 package ch.ffhs.pa5.escapeconnect.handlers;
 
 import javax.ws.rs.core.Response;
@@ -12,11 +11,28 @@ import ch.ffhs.pa5.escapeconnect.bean.Setup;
 import ch.ffhs.pa5.escapeconnect.persistency.DAOecsettings;
 import ch.ffhs.pa5.escapeconnect.persistency.DBAdapter;
 
+/** 
+ * Handler "AdminAPIimplement" manages the authentication of a user
+ * 
+ * @author Yvo von Kaenel and Javier Garcia
+ * 
+ */
+
 public class AdminAPIimplement implements AdminApiService {
 
   DAOecsettings daoecsettings = new DAOecsettings();
   DBAdapter dba = new DBAdapter();
 
+  /** 
+   * 
+   * doLogin() uses the parameter LoginBody, which contains the password, in order to authenticate the user.
+   * 
+   * @param body contains the password given by the user (passhash)	 
+   * @param securityContext An injectable interface that provides access to security related information
+   * @return a response if the password is valid or not (more: https://docs.oracle.com/javaee/7/api/javax/ws/rs/core/Response.html)
+   *
+   */
+  
   @Override
   public Response doLogin(LoginBody body, SecurityContext securityContext) {
     if (body == null) {
@@ -37,6 +53,16 @@ public class AdminAPIimplement implements AdminApiService {
     return Response.status(Response.Status.UNAUTHORIZED).entity("Acess denied").build();
   }
 
+  /** 
+   * 
+   * setup() uses the parameter setup, which contains the information for the connection with the MQTT broker.
+   * 
+   * @param body contains the Admin password of the MQTT Broker, the URL, the user and its password	 
+   * @param securityContext An injectable interface that provides access to security related information
+   * @return a positive response when data are written in the database (more: https://docs.oracle.com/javaee/7/api/javax/ws/rs/core/Response.html)
+   *
+   */
+  
   @Override
   public Response setup(Setup body, SecurityContext securityContext) {
     if (body == null) {
