@@ -15,14 +15,21 @@ import javax.ws.rs.WebApplicationException;
 
 import org.sqlite.SQLiteConfig;
 
+/**
+ * Manages the connection to the DB
+ * SQLite by Xerial
+ * @author Yvo von Känel
+ *
+ */
 public class DBAdapter {
 	
 	Context ctx;
-	
-	public void setctx(Context ctx) {
-		this.ctx = ctx;
-	}
 
+	/**
+	 * Gets Connection to the DB
+	 * @return Connection
+	 * @throws WebApplicationException Wrapped expection
+ 	 */
 	public Connection getConnection() throws WebApplicationException {
 		try {
 			if(ctx==null)ctx = new InitialContext();
@@ -41,6 +48,10 @@ public class DBAdapter {
 		}		
 	}
 		
+	/**
+	 * Initializes DB if not already existing.
+	 * Implements Schema given in /schema
+	 */
 	public void createDBifNone() {
 		System.out.println("Creating DB");
 		try {
