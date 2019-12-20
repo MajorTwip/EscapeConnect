@@ -78,8 +78,6 @@ public class DeviceAPIimplement implements DeviceApiService {
    * @param addDeviceBody contains the name of the device as well as the JSON-file (definition of the device and riddle)	 
    * @param securityContext An injectable interface that provides access to security related information
    * @return a response if the device can be created (more: https://docs.oracle.com/javaee/7/api/javax/ws/rs/core/Response.html)
-   * @throws JsonParseException used when non-well-formed content (content that does not conform to JSON syntax as per specification) is encountered.
-   * @throws IOException Signals that an I/O exception of some sort has occurred when uploading and parsing the JSON file.
    *
    */
   
@@ -199,10 +197,9 @@ public class DeviceAPIimplement implements DeviceApiService {
    * 
    * @param updateDeviceBody BIN file in form of a byte[]
    * @param panelId	identifier of the panel (riddle) in order to find the linked device 
-   * @param forces boolean which would force the user to validate the upgrade (not used)
+   * @param forced boolean which would force the user to validate the upgrade (not used)
    * @param securityContext An injectable interface that provides access to security related information
    * @return a response if the device can be upgraded (more: https://docs.oracle.com/javaee/7/api/javax/ws/rs/core/Response.html)
-   * @throws NoSuchAlgorithmException the cryptographic algorithm for MD5 is requested but is not available in the environment
    *
    */
   

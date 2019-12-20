@@ -25,7 +25,6 @@ public class ParseSettingsJSON {
     *  
     * @param json as a String	 
     * @return parsed JSON as a hashmap
-    * @throws JsonProcessingException Error when processing (parsing in this case) JSON content that are not pure I/O problems
     *
     */ 
 	
@@ -69,7 +68,7 @@ public class ParseSettingsJSON {
    * 
    * prepareJSON() creates a JSON for the settings. Used by setSetting(). 
    *  
-   * @param Hashmap of settings	 
+   * @param settings Hashmap of settings	 
    * @return JSON
    *
    */ 

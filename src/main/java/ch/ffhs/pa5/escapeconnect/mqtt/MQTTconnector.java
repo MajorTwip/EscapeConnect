@@ -17,6 +17,12 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+/**
+ * 
+ * @author Yvo von Känel
+ * Provides interactions with an MQTT-Broker
+ *
+ */
 public class MQTTconnector implements MqttCallback {
 	private String url;
 	private String name;
@@ -27,8 +33,17 @@ public class MQTTconnector implements MqttCallback {
 	
 	MqttClient client;
 
+	/**
+	 * If used, use {@link #config(String, String, String)} before connecting
+	 */
 	public MQTTconnector() {}
 	
+	/**
+	 * Creates and configures an Instance ready to interact with an MQTT-Broker
+	 * @param url URL of the Broker in the form tcp://url:port
+	 * @param name Username to login at the Broker or null
+	 * @param pass Password for the Broker or null
+	 */
 	public MQTTconnector(String url, String name, String pass) {
 		this.url = url;
 		this.name = name;
@@ -37,6 +52,12 @@ public class MQTTconnector implements MqttCallback {
 		this.persistence=new MemoryPersistence();
 	}
 	
+	/**
+	 * (Re)configures an Instance ready to interact with an MQTT-Broker
+	 * @param url URL of the Broker in the form tcp://url:port
+	 * @param name Username to login at the Broker or null
+	 * @param pass Password for the Broker or null
+	 */
 	public void config(String url, String name, String pass) {
 		this.url = url;
 		this.name = name;
@@ -45,6 +66,11 @@ public class MQTTconnector implements MqttCallback {
 		this.persistence=new MemoryPersistence();
 	}
 	
+	/**
+	 * Connects to the configured Broker
+	 * Called by public methods
+	 * @throws MqttException see @link https://www.eclipse.org/paho/files/javadoc/org/eclipse/paho/client/mqttv3/MqttException.html
+	 */
 	private void connect() throws MqttException {
 		client = new MqttClient(url, "EscapeConnect",persistence);
 		MqttConnectOptions connOpts = new MqttConnectOptions();
@@ -63,6 +89,12 @@ public class MQTTconnector implements MqttCallback {
         client.publish("EscapeConnect/client", hello);
 	}
 	
+	/**
+	 * Connects to a Broker and subscribes to a topic
+	 * @param callback	Called when a message arrives
+	 * @param topic	Topic to subscribe, explicit or wildcard
+	 * @throws MqttException see @link https://www.eclipse.org/paho/files/javadoc/org/eclipse/paho/client/mqttv3/MqttException.html
+	 */
 	public void subscribe(MQTTmessageHandler callback, String topic) throws MqttException {
 		this.callback=callback;
 		if(client==null||!client.isConnected()) {
@@ -76,6 +108,11 @@ public class MQTTconnector implements MqttCallback {
 		
 	}
 	
+	/**
+	 * Sends a Message to a given Topic
+	 * @param topic Topic
+	 * @param msg see @link https://www.eclipse.org/paho/files/javadoc/org/eclipse/paho/client/mqttv3/MqttMessage.html
+	 */
 	public void publish(String topic, MqttMessage msg) {
 		try {
 			connect();
@@ -92,6 +129,10 @@ public class MQTTconnector implements MqttCallback {
 		}
 	}
 	
+	/**
+	 * closes eventual connections
+	 * public because needed after async subscriptions {@link #subscribe(MQTTmessageHandler, String)}
+	 */
 	public void close() {
 		try {
 			this.client.close(true);
@@ -106,6 +147,10 @@ public class MQTTconnector implements MqttCallback {
 		// TODO Auto-generated method stub
 	}
 
+	
+	/**
+	 * calls callback given by {@link #subscribe(MQTTmessageHandler, String)}
+	 */
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
 		System.out.println("got msg, topic: " + topic + " Msg: " + String.valueOf(message.getPayload()));
@@ -119,11 +164,30 @@ public class MQTTconnector implements MqttCallback {
 		// TODO Auto-generated method stub
 	};
 	
+	
 	volatile boolean completed=false;
+	/**
+	 * Subscribes to a list of Topics and waits for at least one response per given topic
+	 * Returns when every topic returned at least one response or after timeout
+	 * @param topics List of Topics to subscribe
+	 * @param timeout Maximal time to wait
+	 * @return Map with topics as key (same as param topics, reordered) and the response
+	 * @throws WebApplicationException Wraps MqttExeptions
+	 */
 	public Map<String,String> getMessages(List<String> topics, int timeout) throws WebApplicationException{
 		return getMessages(topics, timeout,false,false);
 	}
 	
+	/**
+	 * Subscribes to a list of Topics and waits for at least one response per given topic
+	 * Returns when every topic returned at least one response or after timeout
+	 * @param wildcard if wildcards are used (then multiple responses per topic can occure). Will wait till timeout
+	 * @param single if wildcards are used awaits only first response
+	 * @param topics List of Topics to subscribe
+	 * @param timeout Maximal time to wait
+	 * @return Map with topics as key (same as param topics, reordered) and the response
+	 * @throws WebApplicationException Wraps MqttExeptions
+	 */
 	public Map<String,String> getMessages(List<String> topics, int timeout, boolean wildcard, boolean single) throws WebApplicationException{
 		Map<String,String> result = new HashMap<>();
 		List<String> topicsOpen = new LinkedList<String>(topics);

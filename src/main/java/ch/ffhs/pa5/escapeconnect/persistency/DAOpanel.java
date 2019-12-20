@@ -113,9 +113,6 @@ public class DAOpanel implements DAOpanelIF {
 		return generated_panel;			
 	}
 	
-	public void delete(int id) {
-		
-	}
 	
 	
 }
