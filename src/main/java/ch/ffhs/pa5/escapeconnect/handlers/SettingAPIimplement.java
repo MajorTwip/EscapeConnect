@@ -114,7 +114,7 @@ public class SettingAPIimplement implements SettingApiService {
   
   @Override
   public Response setSetting(List<SettingMod> body, SecurityContext securityContext) {
-    Map<String, String> settings = new HashMap<>();
+    Map<String, Object> settings = new HashMap<>();
     String device_mac = "";
     for (SettingMod setting : body) {
       SettingDAOBean settingbean = daosettings.getSettingById(setting.getId());
@@ -133,7 +133,29 @@ public class SettingAPIimplement implements SettingApiService {
           }
         }
         if (isValid(setting.getValue(), settingbean)) {
-          settings.put(settingbean.getName(), setting.getValue());
+        	switch(settingbean.getType()) {
+        	case "long":
+        		try {
+                    settings.put(settingbean.getName(), Long.valueOf(setting.getValue()));
+        		}catch(NumberFormatException e) {
+                    settings.put(settingbean.getName(), setting.getValue());
+                    System.out.println("Got wrong formatting in Long-Setting, sent as String");
+        		}
+                break;
+        	case "bool":
+                settings.put(settingbean.getName(), setting.getValue().toLowerCase().equals("true"));
+                break;
+        	case "double":
+	        	try {
+	                settings.put(settingbean.getName(), Double.valueOf(setting.getValue()));
+	    		}catch(NumberFormatException e) {
+	                settings.put(settingbean.getName(), setting.getValue());
+	                System.out.println("Got wrong formatting in Long-Setting, sent as String");
+	    		}
+	            break;
+	        default:
+	          settings.put(settingbean.getName(), setting.getValue());
+        	}
         } else {
           return Response.status(Response.Status.CONFLICT)
               .entity("Setting " + setting.getId() + " is invalid")

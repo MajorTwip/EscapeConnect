@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ValueNode;
 
 /** 
  * ParseSettingsJSON allows to parse a JSON File.
@@ -64,6 +65,8 @@ public class ParseSettingsJSON {
     return result;
   }
 
+  
+
   /**  
    * 
    * prepareJSON() creates a JSON for the settings. Used by setSetting(). 
@@ -73,20 +76,21 @@ public class ParseSettingsJSON {
    *
    */ 
   
-  public static String prepareJSON(Map<String, String> settings) {
+  public static String prepareJSON(Map<String, Object> settings) {
     ObjectMapper objectMapper = new ObjectMapper();
     ObjectNode root = objectMapper.createObjectNode();
     for (String key : settings.keySet()) {
+    	JsonNode val = objectMapper.convertValue(settings.get(key), JsonNode.class);
       String[] parts = key.split("/");
       if (parts.length == 1) {
-        root.put(parts[0], settings.get(key));
+        root.set(parts[0], val);
       }
       if (parts.length == 2) {
         if (!root.has(parts[0])) {
-          root.putObject(parts[0]).put(parts[1], settings.get(key));
+          root.putObject(parts[0]).set(parts[1], val);
         } else {
           ObjectNode secondlevel = (ObjectNode) root.get(parts[0]);
-          secondlevel.put(parts[1], settings.get(key));
+          secondlevel.set(parts[1], val);
         }
       }
     }
