@@ -121,6 +121,8 @@
 			$("#btn_login").bind("click", login);
 			var selectedpanelid = 0;
 			getPanels();
+			setInterval(async () => {
+			    await getPanels()}, 5000);
 		</script>
 </body>
 
