@@ -30,7 +30,7 @@ public class TestSettingJSON {
 	
 	@Test
 	public void testPrepareJson() {
-		Map<String,String> settings = new HashMap<>();
+		Map<String,Object> settings = new HashMap<>();
 		settings.put("name", "Name");
 		settings.put("wifi/ssid", "TestSSID");
 		settings.put("wifi/pass", "TestPASS");
