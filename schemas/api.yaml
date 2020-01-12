@@ -11,6 +11,7 @@ externalDocs:
 servers:
 - url: https://EscapeConnect.comstock.ch/rest
 - url: http://EscapeConnect.comstock.ch/rest
+- url: /rest
 tags:
 - name: panel
   description: Dashboardspezifische Interaktionen
