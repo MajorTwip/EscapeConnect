@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
 	<Resource maxWaitMillis="10000" minIdle="5" maxIdle="20"
-		maxTotal="10" url="jdbc:sqlite:/Users/ludovicrenevey/EscapeConnect.db"
+		maxTotal="10" url="jdbc:sqlite:/data/EscapeConnect.db"
 		driverClassName="org.sqlite.JDBC" type="javax.sql.DataSource"
 		auth="Container" name="jdbc/escapeconnect" />
 </Context>
