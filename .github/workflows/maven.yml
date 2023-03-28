@@ -53,7 +53,7 @@ jobs:
         docker build -t majortwip/escapeconnect:latest .
         
     - name: Publish to Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
+      uses: elgohr/Publish-Docker-Github-Action@v5
       with:
         name: majortwip/escapeconnect
         username: ${{ secrets.DOCKER_USERNAME }}
